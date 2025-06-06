@@ -483,13 +483,13 @@ body {
 
   .hero-section h1 {
     font-size: 2rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 1rem !important;
     line-height: 1.2;
   }
 
   .hero-section p {
     font-size: 1rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 1rem !important;
   }
 
   .glass-card {
@@ -656,12 +656,12 @@ body {
 
   .hero-section h1 {
     font-size: 1.75rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .hero-section p {
     font-size: 0.9rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .glass-card {

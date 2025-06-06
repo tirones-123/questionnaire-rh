@@ -94,7 +94,7 @@ export default function Home() {
           </p>
           
           {/* Processus d'analyse dans le hero */}
-          <div className="process-container" style={{ 
+          <div className="process-container desktop-only" style={{ 
             background: 'rgba(255, 255, 255, 0.1)', 
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.2)', 
@@ -316,17 +316,10 @@ export default function Home() {
             </h3>
             <div style={{ fontSize: '0.95rem', lineHeight: '1.6', color: '#4b5563', marginBottom: '1.5rem' }}>
               <p style={{ marginBottom: '1rem' }}>
-                Vos données sont collectées par <strong>AURA Management</strong>. Après analyse, elles permettront de
+                Vos données sont collectées par notre cabinet. Après analyse, elles permettront de
                 générer votre rapport d'autodiagnostic. Supervisé par un expert, ce rapport sera envoyé (sous
                 24 à 48 heures) à l'adresse e-mail que vous indiquez et uniquement à cette adresse. Libre à
                 vous ensuite de le partager.
-              </p>
-              <p style={{ marginBottom: '1rem' }}>
-                Après anonymisation, les résultats pourront être agrégés à des fins statistiques et pour
-                améliorer l'outil ; seuls nos collaborateurs habilités et notre hébergeur certifié y ont accès.
-              </p>
-              <p style={{ marginBottom: '0' }}>
-                Ce traitement repose sur votre consentement.
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
