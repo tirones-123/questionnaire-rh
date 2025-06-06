@@ -6,6 +6,7 @@ import { sections, responseOptions } from '../../data/questions';
 interface UserInfo {
   firstName: string;
   lastName: string;
+  email: string;
 }
 
 interface RequestBody {
@@ -51,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     worksheet.addRow(['Informations', '', '']);
     worksheet.addRow(['Prénom', userInfo.firstName, '']);
     worksheet.addRow(['Nom', userInfo.lastName, '']);
+    worksheet.addRow(['Email', userInfo.email, '']);
     worksheet.addRow(['Date de completion', new Date().toLocaleDateString('fr-FR'), '']);
     worksheet.addRow(['', '', '']); // Ligne vide
 
@@ -116,6 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             <h2>Informations du participant</h2>
             <p><strong>Prénom :</strong> ${userInfo.firstName}</p>
             <p><strong>Nom :</strong> ${userInfo.lastName}</p>
+            <p><strong>Email :</strong> ${userInfo.email}</p>
             <p><strong>Date de completion :</strong> ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}</p>
             
             <h2>Résumé</h2>

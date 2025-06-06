@@ -468,11 +468,61 @@ body {
 
 
 
+
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
   }
+
+  /* Amélioration de la page d'accueil sur mobile */
+  .hero-section {
+    padding: 1rem 1rem !important;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.2;
+  }
+
+  .hero-section p {
+    font-size: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .glass-card {
+    padding: 1.5rem !important;
+    margin: 0 0.5rem !important;
+  }
+
+  /* Processus d'analyse responsive */
+  .hero-section .process-container {
+    padding: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .hero-section .process-container > div {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  .hero-section .process-step {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.8rem !important;
+    width: auto !important;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .hero-section .process-arrow {
+    transform: rotate(90deg);
+    font-size: 1rem !important;
+  }
+
+
 
   /* Cacher la version desktop, afficher la version mobile */
   .desktop-only {
@@ -599,6 +649,67 @@ body {
 }
 
 @media (max-width: 480px) {
+  /* Page d'accueil très petits écrans */
+  .hero-section {
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  .hero-section h1 {
+    font-size: 1.75rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .hero-section p {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .glass-card {
+    padding: 1rem !important;
+    margin: 0 0.25rem !important;
+  }
+
+  /* Processus en version verticale compacte */
+  .hero-section .process-container {
+    padding: 0.4rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .hero-section .process-container > div {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  .hero-section .process-step {
+    font-size: 0.7rem !important;
+    padding: 0.3rem 0.6rem !important;
+    text-align: center;
+    width: auto !important;
+    min-width: 180px;
+    justify-content: center;
+  }
+
+  .hero-section .process-arrow {
+    font-size: 0.8rem !important;
+    transform: rotate(90deg);
+  }
+
+  /* Formulaires plus lisibles */
+  .input-field {
+    font-size: 16px; /* Évite le zoom sur iOS */
+    padding: 1rem 0.75rem;
+  }
+
+  /* Sections plus lisibles */
+  .warning-text, .error-message, .success-message {
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* Tables questionnaire */
   .likert-table th,
   .likert-table td {
     font-size: 0.75rem;
