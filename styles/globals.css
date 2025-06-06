@@ -478,23 +478,39 @@ body {
 
   /* Amélioration de la page d'accueil sur mobile */
   .hero-section {
-    padding: 1rem 1rem !important;
+    padding: 1.5rem 1rem !important;
+    min-height: 45vh !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   .hero-section h1 {
-    font-size: 2rem !important;
-    margin-bottom: 1rem !important;
+    font-size: 2.5rem !important;
+    margin-bottom: 1.5rem !important;
     line-height: 1.2;
   }
 
   .hero-section p {
-    font-size: 1rem !important;
-    margin-bottom: 1rem !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 1.2rem !important;
   }
 
   .glass-card {
     padding: 1.5rem !important;
     margin: 0 0.5rem !important;
+  }
+
+  /* Boutons de reprise/recommencer sur mobile */
+  .warning-text > div {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .resume-button,
+  .restart-button {
+    width: 100% !important;
+    flex: none !important;
+    min-width: auto !important;
   }
 
   /* Processus d'analyse responsive */
@@ -567,6 +583,12 @@ body {
   .secondary-button {
     width: 100%;
     margin: 0.25rem 0;
+  }
+
+  /* Bouton précédent plus petit sur mobile dans les questionnaires */
+  .navigation-buttons .secondary-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
   }
 
   /* Optimisations pour mobile */
@@ -651,22 +673,37 @@ body {
 @media (max-width: 480px) {
   /* Page d'accueil très petits écrans */
   .hero-section {
-    padding: 0.75rem 0.5rem !important;
+    padding: 1.2rem 0.5rem !important;
+    min-height: 40vh !important;
   }
 
   .hero-section h1 {
-    font-size: 1.75rem !important;
-    margin-bottom: 0.75rem !important;
+    font-size: 2.2rem !important;
+    margin-bottom: 1.2rem !important;
   }
 
   .hero-section p {
-    font-size: 0.9rem !important;
-    margin-bottom: 0.75rem !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
   }
 
   .glass-card {
     padding: 1rem !important;
     margin: 0 0.25rem !important;
+  }
+
+  /* Boutons de reprise/recommencer sur très petits écrans */
+  .warning-text > div {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .resume-button,
+  .restart-button {
+    width: 100% !important;
+    flex: none !important;
+    min-width: auto !important;
+    padding: 0.75rem 1rem !important;
   }
 
   /* Processus en version verticale compacte */

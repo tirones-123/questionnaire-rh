@@ -86,7 +86,7 @@ export default function Home() {
           <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.75rem', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
             QAP
           </h1>
-          <p style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '0.75rem' }}>
+          <p style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '0.75rem', fontWeight: '600' }}>
           Questionnaire d’analyse du potentiel : autodiagnostic
           </p>
           <p style={{ fontSize: '1rem', opacity: 0.8, marginBottom: '1.5rem' }}>
@@ -106,38 +106,38 @@ export default function Home() {
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center', 
-              gap: '0.75rem',
-              fontSize: '0.8rem',
+              gap: '0.5rem',
+              fontSize: '0.75rem',
               flexWrap: 'wrap'
             }}>
               <div className="process-step" style={{ 
                 background: 'rgba(255, 255, 255, 0.9)', 
                 color: '#1d4e89',
                 borderRadius: '6px', 
-                padding: '0.4rem 0.8rem',
+                padding: '0.3rem 0.6rem',
                 fontWeight: '600',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem'
+                gap: '0.3rem'
               }}>
                 <div style={{ 
-                  width: '14px', 
-                  height: '14px', 
+                  width: '12px', 
+                  height: '12px', 
                   borderRadius: '50%', 
                   background: '#667eea',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 'bold'
                 }}>✓</div>
-                Soumission du questionnaire
+                Questionnaire en ligne
               </div>
               <div className="process-arrow" style={{ 
-                fontSize: '1rem', 
+                fontSize: '0.9rem', 
                 color: 'white',
                 fontWeight: 'bold'
               }}>→</div>
@@ -145,30 +145,61 @@ export default function Home() {
                 background: 'rgba(255, 255, 255, 0.9)', 
                 color: '#1d4e89',
                 borderRadius: '6px', 
-                padding: '0.4rem 0.8rem',
+                padding: '0.3rem 0.6rem',
                 fontWeight: '600',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem'
+                gap: '0.3rem'
               }}>
                 <div style={{ 
-                  width: '14px', 
-                  height: '14px', 
+                  width: '12px', 
+                  height: '12px', 
+                  borderRadius: '50%', 
+                  background: '#8b5cf6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '8px',
+                  fontWeight: 'bold'
+                }}>📊</div>
+                Analyse des résultats
+              </div>
+              <div className="process-arrow" style={{ 
+                fontSize: '0.9rem', 
+                color: 'white',
+                fontWeight: 'bold'
+              }}>→</div>
+              <div className="process-step" style={{ 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                color: '#1d4e89',
+                borderRadius: '6px', 
+                padding: '0.3rem 0.6rem',
+                fontWeight: '600',
+                fontSize: '0.75rem',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem'
+              }}>
+                <div style={{ 
+                  width: '12px', 
+                  height: '12px', 
                   borderRadius: '50%', 
                   background: '#f59e0b',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 'bold'
                 }}>👤</div>
-                Revue par un expert
+                Validation par un expert
               </div>
               <div className="process-arrow" style={{ 
-                fontSize: '1rem', 
+                fontSize: '0.9rem', 
                 color: 'white',
                 fontWeight: 'bold'
               }}>→</div>
@@ -176,27 +207,27 @@ export default function Home() {
                 background: 'rgba(255, 255, 255, 0.9)', 
                 color: '#1d4e89',
                 borderRadius: '6px', 
-                padding: '0.4rem 0.8rem',
+                padding: '0.3rem 0.6rem',
                 fontWeight: '600',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem'
+                gap: '0.3rem'
               }}>
                 <div style={{ 
-                  width: '14px', 
-                  height: '14px', 
+                  width: '12px', 
+                  height: '12px', 
                   borderRadius: '50%', 
                   background: '#22c55e',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 'bold'
                 }}>↗</div>
-                Envoi des résultats sous 24-48h
+                Rapport sous 24/48h
               </div>
             </div>
           </div>
@@ -204,7 +235,7 @@ export default function Home() {
        </div>
        
        <div className="container" style={{ marginTop: '-1rem', position: 'relative', zIndex: 2, paddingBottom: '4rem' }}>
-         <div className="glass-card" style={{ maxWidth: '700px', margin: '0 auto', padding: '3rem' }}>
+         <div className="glass-card" style={{ maxWidth: '700px', margin: '0 auto', padding: '2.5rem' }}>
 
           <div style={{ 
             background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)', 
@@ -213,7 +244,7 @@ export default function Home() {
             borderRadius: '15px',
             fontSize: '1rem',
             lineHeight: '1.7',
-            marginBottom: '0.5rem'
+            marginBottom: '2rem'
           }}>
 
             <p style={{ marginBottom: '1rem', color: '#4b5563' }}>
@@ -229,12 +260,18 @@ export default function Home() {
           {hasExistingData && (
             <div className="warning-text" style={{ marginBottom: '2rem' }}>
               <p><strong>Reprise détectée :</strong> Vous avez déjà commencé ce questionnaire.</p>
-              <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ 
+                marginTop: '1rem', 
+                display: 'flex', 
+                gap: '1rem', 
+                flexDirection: 'row',
+                flexWrap: 'wrap'
+              }}>
                 <button 
                   type="button" 
                   onClick={handleResume}
                   disabled={!isFormValid}
-                  className="primary-button"
+                  className="primary-button resume-button"
                   style={{ flex: 1, minWidth: '120px' }}
                 >
                   Reprendre
@@ -242,7 +279,7 @@ export default function Home() {
                 <button 
                   type="button" 
                   onClick={handleRestart}
-                  className="secondary-button"
+                  className="secondary-button restart-button"
                   style={{ flex: 1, minWidth: '120px' }}
                 >
                   Recommencer
@@ -351,7 +388,7 @@ export default function Home() {
           <button 
             type="submit" 
             className="primary-button" 
-            style={{ width: '100%' }}
+            style={{ width: '100%', marginTop: '1.5rem' }}
             disabled={!isFormValid}
           >
             {hasExistingData ? 'Reprendre le questionnaire' : 'Commencer le questionnaire'}
