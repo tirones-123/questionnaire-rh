@@ -85,10 +85,7 @@ export default function QuestionnairePage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <div className="hero-section" style={{ padding: '1rem' }}>
-      </div>
-      
-      <div className="container" style={{ marginTop: '-1rem', position: 'relative', zIndex: 2, paddingBottom: '4rem' }}>
+      <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
         <div className="glass-card" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
 
         <div className="section-info">
@@ -102,11 +99,7 @@ export default function QuestionnairePage() {
           ></div>
         </div>
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+
 
         {/* Version Desktop - Tableau Likert */}
         <div className="likert-table-container desktop-only">
@@ -174,6 +167,13 @@ export default function QuestionnairePage() {
             </div>
           ))}
         </div>
+
+        {/* Message d'erreur en bas (mobile et desktop) */}
+        {error && (
+          <div className="error-message" style={{ marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
 
         <div className="navigation-buttons">
           <button 

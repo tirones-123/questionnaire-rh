@@ -68,6 +68,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       cell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
+    // Mapping des réponses pour l'Excel
+    const excelResponseMapping: { [key: string]: string } = {
+      'a': 'a Tout à fait d\'accord',
+      'b': 'b Plutôt d\'accord', 
+      'c': 'c Je ne sais pas me décider entre les deux grandes orientations.',
+      'd': 'd Plutôt pas d\'accord',
+      'e': 'e Pas d\'accord du tout.'
+    };
+
     // Ajouter les réponses
     for (const section of sections) {
       for (const question of section.questions) {
@@ -75,8 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const responseValue = responses[responseKey];
         
         if (responseValue) {
-          const responseOption = responseOptions.find(opt => opt.value === responseValue);
-          const responseText = responseOption ? responseOption.shortLabel : responseValue;
+          const responseText = excelResponseMapping[responseValue] || responseValue;
           
           worksheet.addRow([
             question.id,
