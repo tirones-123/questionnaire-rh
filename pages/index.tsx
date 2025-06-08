@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 interface UserInfo {
   firstName: string;
   lastName: string;
+  age: string;
+  profession: string;
   email: string;
 }
 
@@ -12,6 +14,8 @@ export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({
     firstName: '',
     lastName: '',
+    age: '',
+    profession: '',
     email: ''
   });
   const [hasExistingData, setHasExistingData] = useState(false);
@@ -32,6 +36,8 @@ export default function Home() {
         setUserInfo({
           firstName: parsedUserInfo.firstName || '',
           lastName: parsedUserInfo.lastName || '',
+          age: parsedUserInfo.age || '',
+          profession: parsedUserInfo.profession || '',
           email: parsedUserInfo.email || ''
         });
       } catch (error) {
@@ -42,7 +48,7 @@ export default function Home() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.email.trim() && consentAccepted) {
+    if (userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.age.trim() && userInfo.profession.trim() && userInfo.email.trim() && consentAccepted) {
       // Sauvegarder les informations utilisateur
       localStorage.setItem('user-info', JSON.stringify(userInfo));
       router.push('/questionnaire/1');
@@ -56,7 +62,7 @@ export default function Home() {
   };
 
   const handleResume = () => {
-    if (userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.email.trim() && consentAccepted) {
+    if (userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.age.trim() && userInfo.profession.trim() && userInfo.email.trim() && consentAccepted) {
       localStorage.setItem('user-info', JSON.stringify(userInfo));
       // Trouver la dernière section complétée
       const existingData = JSON.parse(localStorage.getItem('questionnaire-data') || '{}');
@@ -76,7 +82,7 @@ export default function Home() {
     }
   };
 
-  const isFormValid = userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.email.trim() && consentAccepted;
+  const isFormValid = userInfo.firstName.trim() && userInfo.lastName.trim() && userInfo.age.trim() && userInfo.profession.trim() && userInfo.email.trim() && consentAccepted;
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -319,6 +325,38 @@ export default function Home() {
             />
           </div>
 
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label htmlFor="age" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+              Âge *
+            </label>
+            <input
+              type="number"
+              id="age"
+              value={userInfo.age}
+              onChange={(e) => setUserInfo(prev => ({ ...prev, age: e.target.value }))}
+              className="input-field"
+              required
+              min="16"
+              max="99"
+              placeholder="Votre âge"
+            />
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label htmlFor="profession" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+              Profession *
+            </label>
+            <input
+              type="text"
+              id="profession"
+              value={userInfo.profession}
+              onChange={(e) => setUserInfo(prev => ({ ...prev, profession: e.target.value }))}
+              className="input-field"
+              required
+              placeholder="Votre profession"
+            />
+          </div>
+
           <div style={{ marginBottom: '2rem' }}>
             <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
               Adresse e-mail *
@@ -380,7 +418,7 @@ export default function Home() {
                 cursor: 'pointer',
                 flex: 1
               }}>
-                J'ai lu et compris la mention relative à la confidentialité de mes réponses *
+                J'ai lu et compris la mention relative à la confidentialité de mes réponses.
               </label>
             </div>
           </div>

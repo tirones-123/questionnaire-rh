@@ -6,6 +6,8 @@ import { sections, responseOptions } from '../../data/questions';
 interface UserInfo {
   firstName: string;
   lastName: string;
+  age: string;
+  profession: string;
   email: string;
 }
 
@@ -52,6 +54,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     worksheet.addRow(['Informations', '', '']);
     worksheet.addRow(['Prénom', userInfo.firstName, '']);
     worksheet.addRow(['Nom', userInfo.lastName, '']);
+    worksheet.addRow(['Âge', userInfo.age, '']);
+    worksheet.addRow(['Profession', userInfo.profession, '']);
     worksheet.addRow(['Email', userInfo.email, '']);
     worksheet.addRow(['Date de completion', new Date().toLocaleDateString('fr-FR'), '']);
     worksheet.addRow(['', '', '']); // Ligne vide
@@ -68,13 +72,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       cell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
-    // Mapping des réponses pour l'Excel
+    // Mapping des réponses pour l'Excel - seulement les lettres
     const excelResponseMapping: { [key: string]: string } = {
-      'a': 'a Tout à fait d\'accord',
-      'b': 'b Plutôt d\'accord', 
-      'c': 'c Je ne sais pas me décider entre les deux grandes orientations.',
-      'd': 'd Plutôt pas d\'accord',
-      'e': 'e Pas d\'accord du tout.'
+      'a': 'a',
+      'b': 'b', 
+      'c': 'c',
+      'd': 'd',
+      'e': 'e'
     };
 
     // Ajouter les réponses
@@ -126,6 +130,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             <h2>Informations du participant</h2>
             <p><strong>Prénom :</strong> ${userInfo.firstName}</p>
             <p><strong>Nom :</strong> ${userInfo.lastName}</p>
+            <p><strong>Âge :</strong> ${userInfo.age} ans</p>
+            <p><strong>Profession :</strong> ${userInfo.profession}</p>
             <p><strong>Email :</strong> ${userInfo.email}</p>
             <p><strong>Date de completion :</strong> ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}</p>
             
