@@ -307,6 +307,7 @@ export default function Home() {
               className="input-field"
               required
               autoComplete="given-name"
+              placeholder="Votre prénom"
             />
           </div>
 
@@ -322,6 +323,7 @@ export default function Home() {
               className="input-field"
               required
               autoComplete="family-name"
+              placeholder="Votre nom"
             />
           </div>
 
