@@ -96,7 +96,7 @@ export default function Home() {
           />
 
           <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.75rem', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-            QAP
+            Autodiagnostic
           </h1>
           <p style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '0.75rem', fontWeight: '600' }}>
           Questionnaire d’analyse du potentiel : autodiagnostic
