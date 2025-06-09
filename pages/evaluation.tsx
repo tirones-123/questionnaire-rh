@@ -54,10 +54,10 @@ export default function Evaluation() {
   ];
 
   // Options de hiérarchie pour collaborateur
-  const collaboratorLevels = ['N-1', 'N-2', 'N-3', 'N-4', 'N-5+'];
+  const collaboratorLevels = ['N-1', 'N-2', 'N-3 et +'];
   
   // Options de hiérarchie pour manager
-  const managerLevels = ['N+1', 'N+2', 'N+3', 'N+4', 'N+5+'];
+  const managerLevels = ['N+1', 'N+2', 'N+3 et +'];
 
   useEffect(() => {
     // Vérifier s'il y a des données existantes
