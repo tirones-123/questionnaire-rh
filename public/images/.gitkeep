@@ -1,0 +1,7 @@
+# Ce fichier permet de garder le dossier /public/images/ dans git
+# Vous pouvez le supprimer après avoir ajouté votre logo
+
+# Pour ajouter votre logo :
+# 1. Placez votre fichier logo dans ce dossier
+# 2. Nommez-le : logo.png, logo.svg, logo.jpg ou logo.webp
+# 3. L'application le détectera automatiquement 

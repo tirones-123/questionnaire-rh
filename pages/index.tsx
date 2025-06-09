@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Logo from '../components/Logo';
 
 interface UserInfo {
   firstName: string;
@@ -88,6 +89,11 @@ export default function Home() {
     <div style={{ minHeight: '100vh' }}>
       <div className="hero-section" style={{ padding: '1.5rem 2rem' }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+
+          <Logo 
+            height="120px" 
+            style={{ marginBottom: '0.5rem' }}
+          />
 
           <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.75rem', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
             QAP
@@ -346,7 +352,7 @@ export default function Home() {
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label htmlFor="profession" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-              Profession *
+              Poste actuel *
             </label>
             <input
               type="text"
@@ -355,7 +361,7 @@ export default function Home() {
               onChange={(e) => setUserInfo(prev => ({ ...prev, profession: e.target.value }))}
               className="input-field"
               required
-              placeholder="Votre profession"
+              placeholder="Votre poste actuel"
             />
           </div>
 

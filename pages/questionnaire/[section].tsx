@@ -13,23 +13,46 @@ export default function QuestionnairePage() {
   
   const [responses, setResponses] = useState<QuestionnaireData>({});
   const [userInfo, setUserInfo] = useState<{firstName: string; lastName: string} | null>(null);
+  const [evaluationInfo, setEvaluationInfo] = useState<any>(null);
   const [error, setError] = useState<string>('');
+  const [isEvaluationMode, setIsEvaluationMode] = useState(false);
 
   const currentSection = sections.find(s => s.id === sectionId);
 
   useEffect(() => {
-    // Vérifier les informations utilisateur
-    const storedUserInfo = localStorage.getItem('user-info');
-    if (!storedUserInfo) {
-      router.push('/');
-      return;
-    }
-    setUserInfo(JSON.parse(storedUserInfo));
+    // Détecter le mode d'évaluation
+    const mode = router.query.mode;
+    const isEvaluation = mode === 'evaluation';
+    setIsEvaluationMode(isEvaluation);
 
-    // Charger les réponses existantes
-    const existingData = localStorage.getItem('questionnaire-data');
-    if (existingData) {
-      setResponses(JSON.parse(existingData));
+    if (isEvaluation) {
+      // Mode évaluation - vérifier les informations d'évaluation
+      const storedEvaluationInfo = localStorage.getItem('evaluation-info');
+      if (!storedEvaluationInfo) {
+        router.push('/evaluation');
+        return;
+      }
+      setEvaluationInfo(JSON.parse(storedEvaluationInfo));
+
+      // Charger les réponses d'évaluation existantes
+      const existingData = localStorage.getItem('evaluation-data');
+      if (existingData) {
+        setResponses(JSON.parse(existingData));
+      }
+    } else {
+      // Mode autodiagnostic - vérifier les informations utilisateur
+      const storedUserInfo = localStorage.getItem('user-info');
+      if (!storedUserInfo) {
+        router.push('/');
+        return;
+      }
+      setUserInfo(JSON.parse(storedUserInfo));
+
+      // Charger les réponses existantes
+      const existingData = localStorage.getItem('questionnaire-data');
+      if (existingData) {
+        setResponses(JSON.parse(existingData));
+      }
     }
   }, [router]);
 
@@ -39,7 +62,10 @@ export default function QuestionnairePage() {
       [`${sectionId}-${questionId}`]: value
     };
     setResponses(newResponses);
-    localStorage.setItem('questionnaire-data', JSON.stringify(newResponses));
+    
+    // Sauvegarder dans le bon localStorage selon le mode
+    const storageKey = isEvaluationMode ? 'evaluation-data' : 'questionnaire-data';
+    localStorage.setItem(storageKey, JSON.stringify(newResponses));
     setError('');
   };
 
@@ -61,17 +87,25 @@ export default function QuestionnairePage() {
     }
 
     if (sectionId === 8) {
-      router.push('/complete');
+      const completePath = isEvaluationMode ? '/complete?mode=evaluation' : '/complete';
+      router.push(completePath);
     } else {
-      router.push(`/questionnaire/${sectionId + 1}`);
+      const nextSectionPath = isEvaluationMode 
+        ? `/questionnaire/${sectionId + 1}?mode=evaluation`
+        : `/questionnaire/${sectionId + 1}`;
+      router.push(nextSectionPath);
     }
   };
 
   const handlePrevious = () => {
     if (sectionId === 1) {
-      router.push('/');
+      const homePath = isEvaluationMode ? '/evaluation' : '/';
+      router.push(homePath);
     } else {
-      router.push(`/questionnaire/${sectionId - 1}`);
+      const prevSectionPath = isEvaluationMode 
+        ? `/questionnaire/${sectionId - 1}?mode=evaluation`
+        : `/questionnaire/${sectionId - 1}`;
+      router.push(prevSectionPath);
     }
   };
 
@@ -79,7 +113,7 @@ export default function QuestionnairePage() {
     return (sectionId / 8) * 100;
   };
 
-  if (!currentSection || !userInfo) {
+  if (!currentSection || (!userInfo && !evaluationInfo)) {
     return <div>Chargement...</div>;
   }
 

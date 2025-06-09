@@ -9,54 +9,90 @@ interface UserInfo {
 export default function CompletePage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [evaluationInfo, setEvaluationInfo] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState<string>('');
+  const [isEvaluationMode, setIsEvaluationMode] = useState(false);
 
   useEffect(() => {
-    // Vérifier les informations utilisateur
-    const storedUserInfo = localStorage.getItem('user-info');
-    if (!storedUserInfo) {
-      router.push('/');
-      return;
-    }
-    setUserInfo(JSON.parse(storedUserInfo));
+    // Détecter le mode d'évaluation
+    const mode = router.query.mode;
+    const isEvaluation = mode === 'evaluation';
+    setIsEvaluationMode(isEvaluation);
 
-    // Vérifier que toutes les réponses sont complètes
-    const existingData = localStorage.getItem('questionnaire-data');
-    if (!existingData) {
-      router.push('/');
-      return;
-    }
+    if (isEvaluation) {
+      // Mode évaluation
+      const storedEvaluationInfo = localStorage.getItem('evaluation-info');
+      if (!storedEvaluationInfo) {
+        router.push('/evaluation');
+        return;
+      }
+      setEvaluationInfo(JSON.parse(storedEvaluationInfo));
 
-    const responses = JSON.parse(existingData);
-    const totalQuestions = 8 * 9; // 8 sections × 9 questions
-    const answeredQuestions = Object.keys(responses).length;
-    
-    if (answeredQuestions < totalQuestions) {
-      router.push('/questionnaire/1');
-      return;
+      // Vérifier que toutes les réponses sont complètes
+      const existingData = localStorage.getItem('evaluation-data');
+      if (!existingData) {
+        router.push('/evaluation');
+        return;
+      }
+
+      const responses = JSON.parse(existingData);
+      const totalQuestions = 8 * 9; // 8 sections × 9 questions
+      const answeredQuestions = Object.keys(responses).length;
+      
+      if (answeredQuestions < totalQuestions) {
+        router.push('/questionnaire/1?mode=evaluation');
+        return;
+      }
+    } else {
+      // Mode autodiagnostic
+      const storedUserInfo = localStorage.getItem('user-info');
+      if (!storedUserInfo) {
+        router.push('/');
+        return;
+      }
+      setUserInfo(JSON.parse(storedUserInfo));
+
+      // Vérifier que toutes les réponses sont complètes
+      const existingData = localStorage.getItem('questionnaire-data');
+      if (!existingData) {
+        router.push('/');
+        return;
+      }
+
+      const responses = JSON.parse(existingData);
+      const totalQuestions = 8 * 9; // 8 sections × 9 questions
+      const answeredQuestions = Object.keys(responses).length;
+      
+      if (answeredQuestions < totalQuestions) {
+        router.push('/questionnaire/1');
+        return;
+      }
     }
   }, [router]);
 
   const handleSubmit = async () => {
-    if (!userInfo) return;
+    if (!userInfo && !evaluationInfo) return;
 
     setIsSubmitting(true);
     setError('');
 
     try {
-      const responses = JSON.parse(localStorage.getItem('questionnaire-data') || '{}');
+      const storageKey = isEvaluationMode ? 'evaluation-data' : 'questionnaire-data';
+      const responses = JSON.parse(localStorage.getItem(storageKey) || '{}');
       
-      const response = await fetch('/api/submit-questionnaire', {
+      const apiEndpoint = isEvaluationMode ? '/api/submit-evaluation' : '/api/submit-questionnaire';
+      const requestBody = isEvaluationMode 
+        ? { evaluationInfo, responses }
+        : { userInfo, responses };
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          userInfo,
-          responses
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const result = await response.json();
@@ -64,8 +100,13 @@ export default function CompletePage() {
       if (response.ok) {
         setIsComplete(true);
         // Nettoyer les données locales après envoi réussi
-        localStorage.removeItem('questionnaire-data');
-        localStorage.removeItem('user-info');
+        if (isEvaluationMode) {
+          localStorage.removeItem('evaluation-data');
+          localStorage.removeItem('evaluation-info');
+        } else {
+          localStorage.removeItem('questionnaire-data');
+          localStorage.removeItem('user-info');
+        }
       } else {
         throw new Error(result.error || 'Erreur lors de l\'envoi');
       }
@@ -76,7 +117,7 @@ export default function CompletePage() {
     }
   };
 
-  if (!userInfo) {
+  if (!userInfo && !evaluationInfo) {
     return <div>Chargement...</div>;
   }
 
@@ -103,7 +144,10 @@ export default function CompletePage() {
           </div>
           
             <p style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '2rem' }}>
-              Merci {userInfo.firstName} {userInfo.lastName} d'avoir pris le temps de répondre à ce questionnaire.
+              {isEvaluationMode 
+                ? `Merci d'avoir évalué ${evaluationInfo?.evaluatedPerson?.firstName} ${evaluationInfo?.evaluatedPerson?.lastName}.`
+                : `Merci ${userInfo?.firstName} ${userInfo?.lastName} d'avoir pris le temps de répondre à ce questionnaire.`
+              }
             </p>
           </div>
         </div>
@@ -129,7 +173,12 @@ export default function CompletePage() {
         
         <div className="complete-info">
           <p className="complete-congratulations">
-            <strong>Félicitations {userInfo.firstName} {userInfo.lastName} !</strong>
+            <strong>
+              {isEvaluationMode 
+                ? `Félicitations ! Évaluation de ${evaluationInfo?.evaluatedPerson?.firstName} ${evaluationInfo?.evaluatedPerson?.lastName} terminée.`
+                : `Félicitations ${userInfo?.firstName} ${userInfo?.lastName} !`
+              }
+            </strong>
           </p>
           <p className="complete-description">
             Vous avez répondu aux 72 questions du questionnaire.
@@ -163,7 +212,7 @@ export default function CompletePage() {
         </button>
 
         <button 
-          onClick={() => router.push('/questionnaire/8')}
+          onClick={() => router.push(isEvaluationMode ? '/questionnaire/8?mode=evaluation' : '/questionnaire/8')}
           disabled={isSubmitting}
           className="secondary-button"
           style={{ 
