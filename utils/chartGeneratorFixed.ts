@@ -1,4 +1,6 @@
 import { ScoreDetails } from './scoreCalculator';
+import fs from 'fs';
+import path from 'path';
 
 export interface ChartData {
   critere: string;
@@ -12,6 +14,10 @@ const familyColors: { [key: string]: string } = {
   'AGIR': '#7f7f7f',     // gris
   'ENSEMBLE': '#2ca02c'  // vert
 };
+
+// Charger la police DejaVu Sans en base64 pour l'inclure dans le SVG
+const fontPath = path.resolve(__dirname, './fonts/DejaVuSans.ttf');
+const fontData = fs.readFileSync(fontPath).toString('base64');
 
 // Générer le graphique radar avec UTF-8 direct
 export function generateRadarChartFixed(scores: { [key: string]: ScoreDetails }): string {
@@ -52,8 +58,15 @@ export function generateRadarChartFixed(scores: { [key: string]: ScoreDetails })
   
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css"><![CDATA[
+      @font-face {
+        font-family: 'DejaVu Sans';
+        src: url("data:font/truetype;charset=utf-8;base64,${fontData}") format("truetype");
+      }
+    ]]></style>
+  </defs>
   <style>
-    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
     .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; font-weight: bold; }
@@ -128,8 +141,15 @@ export function generateSortedBarChartFixed(scores: { [key: string]: ScoreDetail
   
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css"><![CDATA[
+      @font-face {
+        font-family: 'DejaVu Sans';
+        src: url("data:font/truetype;charset=utf-8;base64,${fontData}") format("truetype");
+      }
+    ]]></style>
+  </defs>
   <style>
-    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
     .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; }
@@ -206,8 +226,15 @@ export function generateFamilyBarChartFixed(scores: { [key: string]: ScoreDetail
   
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css"><![CDATA[
+      @font-face {
+        font-family: 'DejaVu Sans';
+        src: url("data:font/truetype;charset=utf-8;base64,${fontData}") format("truetype");
+      }
+    ]]></style>
+  </defs>
   <style>
-    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
     .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; }
