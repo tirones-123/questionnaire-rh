@@ -127,7 +127,7 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
     console.log('Calling OpenAI API...');
     
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
