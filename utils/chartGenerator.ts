@@ -1,4 +1,6 @@
 import { ScoreDetails } from './scoreCalculator';
+import fs from 'fs';
+import path from 'path';
 
 export interface ChartData {
   critere: string;
@@ -12,6 +14,24 @@ const familyColors: { [key: string]: string } = {
   'AGIR': '#7f7f7f',     // gris
   'ENSEMBLE': '#2ca02c'  // vert
 };
+
+// Charger la police DejaVu Sans et l'encoder en base64 pour l'inclure dans les SVG
+let EMBEDDED_FONT_CSS = '';
+try {
+  const fontPath = path.join(process.cwd(), 'utils', 'fonts', 'DejaVuSans.ttf');
+  const fontBuffer = fs.readFileSync(fontPath);
+  const fontBase64 = fontBuffer.toString('base64');
+  // Crée les règles @font-face et définit DejaVu comme police par défaut
+  EMBEDDED_FONT_CSS = `@font-face { font-family: 'DejaVuEmbed'; src: url('data:font/ttf;base64,${fontBase64}') format('truetype'); font-weight: normal; font-style: normal; }
+  text, tspan { font-family: 'DejaVuEmbed', Arial, sans-serif; }`;
+} catch (err) {
+  console.warn('⚠️  Impossible de charger la police DejaVuSans.ttf, le texte des graphiques utilisera la police système.');
+}
+
+// Helper: injecte la feuille de style dans un <defs>
+function embedFontStyle(): string {
+  return EMBEDDED_FONT_CSS ? `<defs><style><![CDATA[${EMBEDDED_FONT_CSS}]]></style></defs>` : '';
+}
 
 // Générer le graphique radar (vision globale des compétences)
 export function generateRadarChart(scores: { [key: string]: ScoreDetails }): string {
@@ -119,6 +139,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
   // Titre
   svg += `<text x="${centerX}" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Vision globale des compétences</text>`;
   
+  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;
@@ -172,6 +193,7 @@ export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }):
   // Label de l'axe X
   svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Score (1-5)</text>`;
   
+  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;
@@ -254,6 +276,7 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
   // Label de l'axe X
   svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Score (1-5)</text>`;
   
+  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;
