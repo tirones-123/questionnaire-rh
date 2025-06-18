@@ -201,14 +201,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ]
     });
 
-    // GÉNÉRATION DU RAPPORT - avec timeout de sécurité
-    let reportSent = false;
-    
-    console.log('Starting report generation process...');
-    
-    // Créer une promesse avec timeout
-    const generateAndSendReport = async () => {
+    // Répondre IMMÉDIATEMENT au client pour libérer l'interface
+    res.status(200).json({ 
+      success: true, 
+      message: 'Questionnaire envoyé avec succès. Le rapport détaillé sera envoyé par email dans quelques minutes.' 
+    });
+
+    // GÉNÉRATION DU RAPPORT EN ARRIÈRE-PLAN (fire and forget)
+    // Cette partie s'exécute après la réponse au client
+    (async () => {
       try {
+        console.log('Starting background report generation...');
+        
         // Générer le contenu du rapport avec OpenAI
         const reportContent = await generateReportContent({
           type: 'autodiagnostic',
@@ -272,61 +276,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ]
         });
         
-        reportSent = true;
-        console.log('Report sent successfully');
+        console.log('Background report sent successfully');
       } catch (error) {
-        console.error('Erreur lors de la génération du rapport:', error);
+        console.error('Erreur lors de la génération du rapport en arrière-plan:', error);
         
         // Envoyer un email d'erreur si la génération échoue
-        await transporter.sendMail({
-          from: process.env.SMTP_FROM || process.env.SMTP_USER,
-          to: 'luc.marsal@auramanagement.fr',
-          subject: `ERREUR - Rapport non généré - ${userInfo.firstName} ${userInfo.lastName}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
-                <h1>Erreur de génération du rapport</h1>
-              </div>
-              
-              <div style="padding: 20px; background-color: #f8fafc;">
-                <p>Une erreur s'est produite lors de la génération du rapport pour :</p>
-                <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
-                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+        try {
+          await transporter.sendMail({
+            from: process.env.SMTP_FROM || process.env.SMTP_USER,
+            to: 'luc.marsal@auramanagement.fr',
+            subject: `ERREUR - Rapport non généré - ${userInfo.firstName} ${userInfo.lastName}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
+                  <h1>Erreur de génération du rapport</h1>
+                </div>
                 
-                <p><strong>Détails de l'erreur :</strong></p>
-                <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
-                
-                <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+                <div style="padding: 20px; background-color: #f8fafc;">
+                  <p>Une erreur s'est produite lors de la génération du rapport pour :</p>
+                  <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
+                  <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                  
+                  <p><strong>Détails de l'erreur :</strong></p>
+                  <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
+                  
+                  <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+                </div>
               </div>
-            </div>
-          `
-        });
+            `
+          });
+        } catch (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
+        }
       }
-    };
-
-    // Lancer la génération avec un timeout de 50 secondes (pour rester sous les 60s de Vercel)
-    const reportPromise = generateAndSendReport();
-    const timeoutPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(undefined);
-      }, 50000);
+    })().catch(err => {
+      // Catch any unhandled errors to prevent crashes
+      console.error('Unhandled error in background task:', err);
     });
-    
-    // Attendre soit la fin de la génération, soit le timeout
-    await Promise.race([reportPromise, timeoutPromise]);
-    
-    // Répondre au client
-    if (reportSent) {
-      res.status(200).json({ 
-        success: true, 
-        message: 'Questionnaire et rapport envoyés avec succès' 
-      });
-    } else {
-      res.status(200).json({ 
-        success: true, 
-        message: 'Questionnaire envoyé avec succès. Le rapport détaillé sera envoyé dans quelques minutes.' 
-      });
-    }
 
   } catch (error) {
     console.error('Erreur lors de l\'envoi du questionnaire:', error);

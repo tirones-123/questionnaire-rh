@@ -125,9 +125,6 @@ export default function CompletePage() {
   }
 
   if (isComplete) {
-    const completionMessage = localStorage.getItem('completion-message') || 'Vos réponses ont bien été transmises.';
-    const hasReportIncluded = completionMessage.includes('rapport envoyés avec succès');
-    
     return (
       <div style={{ minHeight: '100vh' }}>
         <div className="hero-section">
@@ -146,11 +143,11 @@ export default function CompletePage() {
           
           <div className="success-message">
             <p><strong>Vos réponses ont bien été transmises.</strong></p>
-            {hasReportIncluded ? (
-              <p>Vous allez recevoir deux emails avec le fichier Excel et le rapport d'analyse.</p>
-            ) : (
-              <p>Vous allez recevoir le fichier Excel, et le rapport d'analyse suivra dans quelques minutes.</p>
-            )}
+            <p>Vous allez recevoir par email :</p>
+            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
+              <li>📊 Le fichier Excel avec toutes vos réponses (immédiat)</li>
+              <li>📝 Le rapport d'analyse détaillé (dans quelques minutes)</li>
+            </ul>
           </div>
           
             <p style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '2rem' }}>
