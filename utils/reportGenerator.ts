@@ -1,11 +1,7 @@
 import OpenAI from 'openai';
 import { ScoreDetails } from './scoreCalculator';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-interface ReportData {
+interface GenerateReportParams {
   type: 'autodiagnostic' | 'evaluation';
   person: {
     firstName: string;
@@ -26,53 +22,58 @@ interface ReportData {
   }>;
 }
 
-export async function generateReportContent(data: ReportData): Promise<string> {
-  // Préparer le tableau de scores pour le prompt
-  const scoresTableText = data.scoresTable
+export async function generateReportContent(params: GenerateReportParams): Promise<string> {
+  const { type, person, evaluator, scores, scoresTable } = params;
+
+  // Vérifier la clé API
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    console.error('OPENAI_API_KEY is not defined in environment variables');
+    throw new Error('Configuration error: OpenAI API key is missing');
+  }
+
+  console.log('Starting report generation with OpenAI...');
+  console.log('Report type:', type);
+  console.log('Person:', person.firstName, person.lastName);
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
+  });
+
+  // Préparer le tableau des scores pour le prompt
+  const scoresTableText = scoresTable
     .map(row => `${row.critere}\t${row.question}\t${row.score}\t${row.sens}`)
     .join('\n');
-  
-  // Préparer le résumé des scores par critère
-  const scoresSummary = Object.values(data.scores)
-    .map(s => `${s.critere}: Score total = ${s.scoreTotal}, Note sur 5 = ${s.noteSur5}`)
+
+  // Préparer le tableau des scores globaux
+  const globalScoresText = Object.values(scores)
+    .map(score => `${score.critere}\t${score.noteSur5.toFixed(1)}`)
     .join('\n');
-  
-  const isEvaluation = data.type === 'evaluation';
-  const evaluatorName = data.evaluator?.firstName || '';
-  const evaluatedName = data.person.firstName;
-  
+
+  const promptType = type === 'evaluation' 
+    ? `Rapport d'évaluation du potentiel de : ${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}
+évalué par ${evaluator?.firstName || 'un évaluateur'} ${evaluator?.lastName || ''}`
+    : `Rapport d'autodiagnostic de ${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}`;
+
+  const evaluationInstructions = type === 'evaluation'
+    ? `IMPORTANT : Ce rapport est basé sur l'évaluation faite par ${evaluator?.firstName || 'l\'évaluateur'}. 
+Dans les parties 1 et 5 du rapport, variez les formulations pour rappeler que c'est le point de vue de l'évaluateur :
+- "Selon ${evaluator?.firstName || 'l\'évaluateur'}"
+- "D'après ${evaluator?.firstName || 'l\'évaluateur'}"
+- "Dans la perception de ${evaluator?.firstName || 'l\'évaluateur'}"
+- "${evaluator?.firstName || 'L\'évaluateur'} observe que"
+- "Du point de vue de ${evaluator?.firstName || 'l\'évaluateur'}"
+Utilisez uniquement le prénom de l'évaluateur, jamais le nom complet.`
+    : '';
+
   const systemPrompt = `Tu es consultant·e RH senior, expert·e de l'analyse du potentiel.
-Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapport structuré, nuancé et exploitable.
+Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapport structuré, nuancé et exploitable pour la personne évaluée et son/sa manager, en respectant scrupuleusement la mise en forme du modèle.
 
-📎 Sources disponibles
-- Tableau de scores globaux (1 – 5) pour chacun des 12 critères.
-- Tableau de réponses détaillées avec critère, texte de l'item, score (0-4), et valence (normal/inversé).
-- Référentiel officiel "12 critères 2025" : définitions, points d'attention, leviers de développement.
+${evaluationInstructions}
 
-📏 Barème d'interprétation
-Score ≥ 4,2 : Point fort
-Score 3,3 – 4,1 : Dimension solide
-Score 2,3 – 3,2 : Axe de progression
-Score < 2,3 : Point de vigilance
+STRUCTURE EXACTE À RESPECTER :
 
-⚠️ Traitement impératif des items inversés
-- Un score élevé doit toujours être interprété positivement, quelle que soit la valence.
-- Ne jamais révéler qu'un item est "inversé" ou "normal".
-- L'analyse reflète le sens réel de la réponse, jamais la forme de l'item.
-
-${isEvaluation ? `
-🔄 Mode évaluation
-- Le rapport présente le point de vue de ${evaluatorName} qui évalue ${evaluatedName}.
-- Varier les formulations : "selon ${evaluatorName}", "d'après ${evaluatorName}", "${evaluatorName} observe que", "${evaluatorName} note que", etc.
-- Utiliser uniquement les prénoms, jamais les noms de famille.
-` : ''}
-
-🧠 Structure du rapport à produire
-
-RAPPORT ${isEvaluation ? "D'ÉVALUATION DU POTENTIEL" : "D'AUTODIAGNOSTIC"}
-
-${data.person.firstName} ${data.person.lastName}, ${data.person.age} ans, ${data.person.profession}
-${isEvaluation ? `Évalué par ${data.evaluator?.firstName} ${data.evaluator?.lastName}` : ''}
+${promptType.toUpperCase()}
 
 1. Analyse critère par critère
 
@@ -80,61 +81,85 @@ FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 
 AMBITION
 Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
-Score : [x,x] – [Interprétation]
+Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
-[Répéter pour les 12 critères dans l'ordre]
+[Continuer pour les 12 critères dans l'ordre exact du modèle]
 
 2. Analyse du profil d'ensemble
 [Résumé transversal – 200 à 300 mots]
 
 3. Points de vigilance
-- 4 à 8 points, bullet liste
+- [4 à 8 points, format bullet]
 
 4. Recommandations de développement
-- 1 à 2 recommandations par point de vigilance
+- [1 à 2 recommandations par point de vigilance]
 
 5. Conclusion synthétique
 [80 à 120 mots]
 
-Règles :
-- Utiliser la virgule comme séparateur décimal (3,4 et non 3.4)
-- Ton professionnel, clair, bienveillant
-- Analyses de 120-180 mots par critère
-- Longueur totale : 1600-2300 mots`;
+BARÈME D'INTERPRÉTATION :
+≥ 4,2 : Point fort
+3,3 – 4,1 : Dimension solide  
+2,3 – 3,2 : Axe de progression
+< 2,3 : Point de vigilance
 
-  const userPrompt = `Génère le rapport complet basé sur ces résultats :
+RÈGLES CRITIQUES :
+- Utiliser EXACTEMENT les titres et sous-titres du modèle
+- Respecter l'ordre des 12 critères
+- Jamais mentionner "item", "score sur 4", "question inversée"
+- Virgule comme séparateur décimal (3,4 et non 3.4)
+- Analyses fluides et nuancées, pas de répétitions mécaniques`;
 
-Informations personnelles :
-- Prénom : ${data.person.firstName}
-- Nom : ${data.person.lastName}
-- Âge : ${data.person.age} ans
-- Profession : ${data.person.profession}
-${isEvaluation ? `- Évaluateur : ${data.evaluator?.firstName} ${data.evaluator?.lastName}` : ''}
+  const userPrompt = `Voici les données à analyser :
 
-Scores par critère :
-${scoresSummary}
+SCORES GLOBAUX PAR CRITÈRE :
+Critère\tNote sur 5
+${globalScoresText}
 
-Détail des réponses :
+DÉTAIL DES RÉPONSES :
 Critère\tQuestion\tScore\tValence
 ${scoresTableText}
 
-Génère le rapport en respectant EXACTEMENT la structure demandée.`;
+Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+    console.log('Calling OpenAI API...');
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
       messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
       max_tokens: 4000,
     });
 
-    return response.choices[0].message.content || '';
+    const content = completion.choices[0]?.message?.content;
+    
+    if (!content) {
+      console.error('OpenAI returned empty content');
+      throw new Error('La génération du rapport a échoué : contenu vide');
+    }
+
+    console.log('Report generated successfully, length:', content.length);
+    return content;
   } catch (error) {
-    console.error('Erreur lors de la génération du rapport:', error);
-    throw new Error('Impossible de générer le rapport');
+    console.error('Error calling OpenAI:', error);
+    
+    if (error instanceof Error) {
+      // Erreur spécifique OpenAI
+      if (error.message.includes('401')) {
+        throw new Error('Erreur d\'authentification OpenAI : vérifiez votre clé API');
+      }
+      if (error.message.includes('429')) {
+        throw new Error('Limite de taux OpenAI atteinte : réessayez dans quelques secondes');
+      }
+      if (error.message.includes('500') || error.message.includes('503')) {
+        throw new Error('Service OpenAI temporairement indisponible');
+      }
+    }
+    
+    throw new Error('Erreur lors de la génération du rapport : ' + (error instanceof Error ? error.message : 'Erreur inconnue'));
   }
 } 

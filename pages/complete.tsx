@@ -1,233 +1,195 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Logo from '../components/Logo';
 
-interface UserInfo {
-  firstName: string;
-  lastName: string;
-}
-
-export default function CompletePage() {
+export default function Complete() {
   const router = useRouter();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [evaluationInfo, setEvaluationInfo] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [isEvaluationMode, setIsEvaluationMode] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [evaluationMode, setEvaluationMode] = useState(false);
 
   useEffect(() => {
-    // Détecter le mode d'évaluation
-    const mode = router.query.mode;
-    const isEvaluation = mode === 'evaluation';
-    setIsEvaluationMode(isEvaluation);
-
-    if (isEvaluation) {
-      // Mode évaluation
-      const storedEvaluationInfo = localStorage.getItem('evaluation-info');
-      if (!storedEvaluationInfo) {
-        router.push('/evaluation');
-        return;
-      }
-      setEvaluationInfo(JSON.parse(storedEvaluationInfo));
-
-      // Vérifier que toutes les réponses sont complètes
-      const existingData = localStorage.getItem('evaluation-data');
-      if (!existingData) {
-        router.push('/evaluation');
-        return;
-      }
-
-      const responses = JSON.parse(existingData);
-      const totalQuestions = 8 * 9; // 8 sections × 9 questions
-      const answeredQuestions = Object.keys(responses).length;
-      
-      if (answeredQuestions < totalQuestions) {
-        router.push('/questionnaire/1?mode=evaluation');
-        return;
-      }
-    } else {
-      // Mode autodiagnostic
-      const storedUserInfo = localStorage.getItem('user-info');
-      if (!storedUserInfo) {
-        router.push('/');
-        return;
-      }
-      setUserInfo(JSON.parse(storedUserInfo));
-
-      // Vérifier que toutes les réponses sont complètes
-      const existingData = localStorage.getItem('questionnaire-data');
-      if (!existingData) {
-        router.push('/');
-        return;
-      }
-
-      const responses = JSON.parse(existingData);
-      const totalQuestions = 8 * 9; // 8 sections × 9 questions
-      const answeredQuestions = Object.keys(responses).length;
-      
-      if (answeredQuestions < totalQuestions) {
-        router.push('/questionnaire/1');
-        return;
-      }
-    }
-  }, [router]);
+    // Vérifier si on est en mode évaluation
+    const urlParams = new URLSearchParams(window.location.search);
+    setEvaluationMode(urlParams.get('mode') === 'evaluation');
+  }, []);
 
   const handleSubmit = async () => {
-    if (!userInfo && !evaluationInfo) return;
-
     setIsSubmitting(true);
     setError('');
 
     try {
-      const storageKey = isEvaluationMode ? 'evaluation-data' : 'questionnaire-data';
-      const responses = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      // Récupérer les données
+      const dataKey = evaluationMode ? 'evaluation-data' : 'questionnaire-data';
+      const infoKey = evaluationMode ? 'evaluation-info' : 'user-info';
       
-      const apiEndpoint = isEvaluationMode ? '/api/submit-evaluation' : '/api/submit-questionnaire';
-      const requestBody = isEvaluationMode 
-        ? { evaluationInfo, responses }
-        : { userInfo, responses };
-      
-      const response = await fetch(apiEndpoint, {
+      const responses = localStorage.getItem(dataKey);
+      const info = localStorage.getItem(infoKey);
+
+      if (!responses || !info) {
+        throw new Error('Données manquantes');
+      }
+
+      const endpoint = evaluationMode ? '/api/submit-evaluation' : '/api/submit-questionnaire';
+      const body = evaluationMode 
+        ? {
+            evaluationInfo: JSON.parse(info),
+            responses: JSON.parse(responses)
+          }
+        : {
+            userInfo: JSON.parse(info),
+            responses: JSON.parse(responses)
+          };
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(body)
       });
 
-      const result = await response.json();
+      const data = await response.json();
 
-      if (response.ok) {
-        setIsComplete(true);
-        // Nettoyer les données locales après envoi réussi
-        if (isEvaluationMode) {
-          localStorage.removeItem('evaluation-data');
-          localStorage.removeItem('evaluation-info');
-        } else {
-          localStorage.removeItem('questionnaire-data');
-          localStorage.removeItem('user-info');
-        }
-      } else {
-        throw new Error(result.error || 'Erreur lors de l\'envoi');
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi');
       }
+
+      setIsSubmitted(true);
+      
+      // Nettoyer le localStorage après envoi réussi
+      localStorage.removeItem(dataKey);
+      localStorage.removeItem(infoKey);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de l\'envoi des réponses');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
       setIsSubmitting(false);
     }
   };
 
-  if (!userInfo && !evaluationInfo) {
-    return <div>Chargement...</div>;
-  }
+  const handleRestart = () => {
+    const dataKey = evaluationMode ? 'evaluation-data' : 'questionnaire-data';
+    const infoKey = evaluationMode ? 'evaluation-info' : 'user-info';
+    
+    localStorage.removeItem(dataKey);
+    localStorage.removeItem(infoKey);
+    
+    if (evaluationMode) {
+      router.push('/evaluation');
+    } else {
+      router.push('/');
+    }
+  };
 
-  if (isComplete) {
+  if (isSubmitted) {
     return (
-      <div style={{ minHeight: '100vh' }}>
-        <div className="hero-section">
-          <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-              Mission accomplie !
-            </h1>
-            <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>
-              Questionnaire envoyé avec succès
-            </p>
+      <div className="container">
+        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+          <Logo />
+          <div style={{ 
+            backgroundColor: '#10b981', 
+            color: 'white', 
+            padding: '1rem', 
+            borderRadius: '50%', 
+            width: '80px', 
+            height: '80px', 
+            margin: '2rem auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '3rem'
+          }}>
+            ✓
           </div>
-        </div>
-        
-        <div className="container" style={{ marginTop: '-2rem', position: 'relative', zIndex: 2, paddingBottom: '4rem' }}>
-          <div className="glass-card" style={{ maxWidth: '600px', margin: '0 auto', padding: '3rem', textAlign: 'center' }}>
-          
-          <div className="success-message">
-            <p><strong>Vos réponses ont bien été transmises.</strong></p>
-            <p>Vous pouvez fermer cette page.</p>
-          </div>
-          
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '2rem' }}>
-              {isEvaluationMode 
-                ? `Merci d'avoir évalué ${evaluationInfo?.evaluatedPerson?.firstName} ${evaluationInfo?.evaluatedPerson?.lastName}.`
-                : `Merci ${userInfo?.firstName} ${userInfo?.lastName} d'avoir pris le temps de répondre à ce questionnaire.`
-              }
-            </p>
-          </div>
+          <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>
+            {evaluationMode ? 'Évaluation envoyée avec succès !' : 'Questionnaire envoyé avec succès !'}
+          </h1>
+          <p style={{ fontSize: '1.1rem', color: '#6b7280', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto' }}>
+            📊 Le fichier Excel avec toutes les réponses a été envoyé.<br/><br/>
+            📝 <strong>Le rapport d'analyse détaillé sera généré et envoyé dans un second email d'ici quelques minutes.</strong>
+          </p>
+          <p style={{ fontSize: '0.95rem', color: '#6b7280', marginTop: '2rem' }}>
+            Les documents seront envoyés à : <strong>luc.marsal@auramanagement.fr</strong>
+          </p>
+          <button 
+            onClick={handleRestart}
+            className="primary-button"
+            style={{ marginTop: '2rem' }}
+          >
+            {evaluationMode ? 'Nouvelle évaluation' : 'Nouveau questionnaire'}
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      <div className="hero-section">
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-            Questionnaire terminé !
-          </h1>
-          <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>
-            Dernière étape : envoi de vos réponses
-          </p>
-        </div>
-      </div>
-      
-      <div className="container" style={{ marginTop: '-2rem', position: 'relative', zIndex: 2, paddingBottom: '4rem' }}>
-        <div className="glass-card complete-card">
+    <div className="container">
+      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '4rem 2rem' }}>
+        <Logo />
+        <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          {evaluationMode ? 'Évaluation terminée' : 'Questionnaire terminé'}
+        </h1>
         
-        <div className="complete-info">
-          <p className="complete-congratulations">
-            <strong>
-              {isEvaluationMode 
-                ? `Félicitations ! Évaluation de ${evaluationInfo?.evaluatedPerson?.firstName} ${evaluationInfo?.evaluatedPerson?.lastName} terminée.`
-                : `Félicitations ${userInfo?.firstName} ${userInfo?.lastName} !`
-              }
-            </strong>
+        <div style={{ 
+          backgroundColor: '#f8fafc', 
+          padding: '2rem', 
+          borderRadius: '8px',
+          marginBottom: '2rem'
+        }}>
+          <h2 style={{ marginBottom: '1rem' }}>Félicitations !</h2>
+          <p style={{ marginBottom: '1rem' }}>
+            {evaluationMode 
+              ? 'Vous avez répondu à toutes les questions de l\'évaluation.'
+              : 'Vous avez répondu à toutes les questions du questionnaire.'}
           </p>
-          <p className="complete-description">
-            Vous avez répondu aux 72 questions du questionnaire.
+          <p>
+            Cliquez sur le bouton ci-dessous pour envoyer vos réponses. 
+            Vous recevrez :
           </p>
-          <p className="complete-instruction">
-            Cliquez sur le bouton ci-dessous pour envoyer vos réponses.
-          </p>
+          <ul style={{ marginTop: '1rem', marginLeft: '2rem' }}>
+            <li>Un <strong>email immédiat</strong> avec le fichier Excel contenant toutes les réponses</li>
+            <li>Un <strong>second email</strong> (sous quelques minutes) avec le rapport d'analyse complet</li>
+          </ul>
         </div>
 
         {error && (
-          <div className="error-message">
-            <p><strong>Erreur :</strong> {error}</p>
-            <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
+          <div style={{ 
+            backgroundColor: '#fee', 
+            color: '#dc2626', 
+            padding: '1rem', 
+            borderRadius: '4px',
+            marginBottom: '1rem'
+          }}>
+            <strong>Erreur :</strong> {error}
+            <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
               Veuillez réessayer ou contacter le support si le problème persiste.
             </p>
           </div>
         )}
 
-        <button 
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="primary-button"
-          style={{ 
-            fontSize: '1.125rem', 
-            padding: '1rem 2rem',
-            width: '100%',
-            marginBottom: '1rem'
-          }}
-        >
-          {isSubmitting ? 'Envoi en cours...' : 'Envoyer mes réponses'}
-        </button>
-
-        <button 
-          onClick={() => router.push(isEvaluationMode ? '/questionnaire/8?mode=evaluation' : '/questionnaire/8')}
-          disabled={isSubmitting}
-          className="secondary-button"
-          style={{ 
-            fontSize: '1rem', 
-            padding: '0.75rem 2rem',
-            width: '100%',
-            marginBottom: '1rem'
-          }}
-        >
-          ← Précédent
-        </button>
-
-        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-          Vos réponses seront envoyées directement.
-        </p>
+        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+          <button 
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="primary-button"
+            style={{ 
+              width: '100%',
+              opacity: isSubmitting ? 0.7 : 1,
+              cursor: isSubmitting ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {isSubmitting ? 'Envoi en cours...' : 'Envoyer les réponses'}
+          </button>
+          
+          <button 
+            onClick={handleRestart}
+            className="secondary-button"
+            disabled={isSubmitting}
+            style={{ width: '100%' }}
+          >
+            Recommencer
+          </button>
         </div>
       </div>
     </div>

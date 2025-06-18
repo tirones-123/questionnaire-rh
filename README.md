@@ -246,4 +246,34 @@ Les styles sont dans `styles/globals.css`. La palette de couleurs principale uti
 - Bordures : `#e5e7eb`
 
 ### Adapter l'analyse
-Le prompt d'analyse est dans `utils/reportGenerator.ts`. Vous pouvez le modifier pour adapter le style et le contenu des rapports générés. 
+Le prompt d'analyse est dans `utils/reportGenerator.ts`. Vous pouvez le modifier pour adapter le style et le contenu des rapports générés.
+
+## Génération automatique du rapport
+
+Le système génère automatiquement un rapport Word complet comprenant :
+- **Analyse détaillée** des 12 critères de potentiel
+- **Graphiques visuels** (radar, barres triées, barres par famille)
+- **Points de vigilance** et **recommandations de développement**
+- **Format professionnel** avec police Avenir
+
+Le rapport est généré par GPT-4 (OpenAI) et envoyé par email avec le fichier Excel des réponses.
+
+## Architecture de l'envoi en deux temps
+
+Pour éviter les problèmes de timeout (>60 secondes) sur Vercel, le système envoie les résultats en deux emails :
+
+1. **Email immédiat** (< 5 secondes) :
+   - Fichier Excel avec toutes les réponses
+   - Scores calculés par critère
+   - Confirmation de réception
+
+2. **Email différé** (quelques minutes après) :
+   - Rapport Word complet avec analyse GPT-4
+   - Graphiques SVG intégrés
+   - Si erreur : email d'alerte avec détails
+
+Cette approche garantit que l'utilisateur reçoit toujours au minimum ses données, même si la génération du rapport échoue.
+
+## Configuration
+
+// ... existing code ... 
