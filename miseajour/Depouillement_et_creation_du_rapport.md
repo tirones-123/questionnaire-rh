@@ -22,10 +22,4 @@ Barres triées par score
 Barres par famille  à la fin du chapitre 1 (Analyse critère par critère)
 Radar des compétences   à la fin du chapitre 2 (Analyse du profil d’ensemble)
 Barres triées par score  à la fin du chapitre 3 (Point de vigilance)
-Résumé : je veux arriver directement à un rapport comme celui d’Olivier H. sans avoir de travail de mise en forme (par ailleurs il est arrivé une fois que des titres n’apparaissent pas sur le rapport  existe-t-il une fonction : merci de tout vérifier avant de balancer !?)
-
-
-Accès Chat GPT :          LCuTyT7rapple!
-Accès WIX.                 LCuTyT7rwix!
-Mais va envoyer un code sur mon téléphone
-Accès Nordnet      Id : aura             LCuTyT7rnordnet!
+Résumé : je veux arriver directement à un rapport comme celui d’Olivier H. sans avoir de travail de mise en forme.
