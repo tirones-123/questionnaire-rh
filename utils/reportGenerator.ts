@@ -125,15 +125,27 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
 
   try {
     console.log('Calling OpenAI API...');
+    console.log('Model: gpt-3.5-turbo');
+    console.log('Max tokens: 4000');
+    console.log('API Key first 10 chars:', apiKey.substring(0, 10));
+    
+    // Créer l'appel OpenAI avec un timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 secondes timeout
+    
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-3.5-turbo", // Temporairement changé pour tester
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
       max_tokens: 4000,
+    }, {
+      signal: controller.signal as any
     });
+    
+    clearTimeout(timeoutId);
 
     const content = completion.choices[0]?.message?.content;
     
@@ -143,13 +155,19 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
     }
 
     console.log('Report generated successfully, length:', content.length);
+    console.log('First 100 chars:', content.substring(0, 100));
     return content;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
+    console.error('Error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     
     if (error instanceof Error) {
       // Erreur spécifique OpenAI
-      if (error.message.includes('401')) {
+      if (error.message.includes('401') || error.message.includes('Incorrect API key')) {
         throw new Error('Erreur d\'authentification OpenAI : vérifiez votre clé API');
       }
       if (error.message.includes('429')) {
@@ -157,6 +175,9 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
       }
       if (error.message.includes('500') || error.message.includes('503')) {
         throw new Error('Service OpenAI temporairement indisponible');
+      }
+      if (error.name === 'AbortError' || error.message.includes('aborted')) {
+        throw new Error('Timeout OpenAI : la génération a pris trop de temps (>30s)');
       }
     }
     

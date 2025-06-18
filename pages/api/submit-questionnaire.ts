@@ -204,9 +204,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // GÉNÉRATION DU RAPPORT - avec timeout de sécurité
     let reportSent = false;
     
+    console.log('Starting report generation process...');
+    console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
+    console.log('OpenAI API Key length:', process.env.OPENAI_API_KEY?.length || 0);
+    
     // Créer une promesse avec timeout
     const generateAndSendReport = async () => {
       try {
+        console.log('generateAndSendReport: Starting...');
+        
         // Générer le contenu du rapport avec OpenAI
         const reportContent = await generateReportContent({
           type: 'autodiagnostic',
@@ -214,13 +220,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           scores,
           scoresTable
         });
+        
+        console.log('generateAndSendReport: Report content generated');
 
         // Générer les graphiques
+        console.log('generateAndSendReport: Generating charts...');
         const radarChart = generateRadarChart(scores);
         const sortedChart = generateSortedBarChart(scores);
         const familyChart = generateFamilyBarChart(scores);
+        console.log('generateAndSendReport: Charts generated');
 
         // Générer le document Word
+        console.log('generateAndSendReport: Generating Word document...');
         const wordBuffer = await generateWordDocument({
           type: 'autodiagnostic',
           person: userInfo,
@@ -231,10 +242,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             family: familyChart
           }
         });
+        console.log('generateAndSendReport: Word document generated');
 
         const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
         // SECOND EMAIL : Envoyer le rapport Word
+        console.log('generateAndSendReport: Sending second email...');
         await transporter.sendMail({
           from: process.env.SMTP_FROM || process.env.SMTP_USER,
           to: 'luc.marsal@auramanagement.fr',
@@ -274,6 +287,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log('Report sent successfully');
       } catch (error) {
         console.error('Erreur lors de la génération du rapport:', error);
+        console.error('Error type:', error instanceof Error ? error.constructor.name : 'Unknown');
+        
         // Envoyer un email d'erreur si la génération échoue
         await transporter.sendMail({
           from: process.env.SMTP_FROM || process.env.SMTP_USER,
@@ -302,11 +317,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Lancer la génération avec un timeout de 50 secondes (pour rester sous les 60s de Vercel)
+    console.log('Launching report generation with 50s timeout...');
     const reportPromise = generateAndSendReport();
-    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 50000));
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Report generation timeout reached (50s)');
+        resolve(undefined);
+      }, 50000);
+    });
     
     // Attendre soit la fin de la génération, soit le timeout
     await Promise.race([reportPromise, timeoutPromise]);
+    
+    console.log('Report generation completed or timed out. reportSent:', reportSent);
     
     // Répondre au client
     if (reportSent) {
