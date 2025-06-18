@@ -53,7 +53,8 @@ export function generateRadarChartFixed(scores: { [key: string]: ScoreDetails })
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <style>
-    .chart-text { font-family: Arial, sans-serif; fill: black; }
+    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
+    .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; font-weight: bold; }
     .chart-value { font-size: 12px; }
@@ -128,7 +129,8 @@ export function generateSortedBarChartFixed(scores: { [key: string]: ScoreDetail
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <style>
-    .chart-text { font-family: Arial, sans-serif; fill: black; }
+    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
+    .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; }
     .chart-value { font-size: 14px; font-weight: bold; }
@@ -205,7 +207,8 @@ export function generateFamilyBarChartFixed(scores: { [key: string]: ScoreDetail
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <style>
-    .chart-text { font-family: Arial, sans-serif; fill: black; }
+    /* Utiliser une pile de polices présente sur la plupart des systèmes Linux (Vercel/Sharp) */
+    .chart-text { font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif; fill: black; }
     .chart-title { font-size: 20px; font-weight: bold; }
     .chart-label { font-size: 14px; }
     .chart-value { font-size: 14px; font-weight: bold; }
