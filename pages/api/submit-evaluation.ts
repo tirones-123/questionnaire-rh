@@ -269,29 +269,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let familyChart: string;
       
       try {
-        // Utiliser les nouvelles fonctions améliorées avec entités HTML
-        const { generateRadarChartImproved, generateSortedBarChartImproved, generateFamilyBarChartImproved } = await import('../../utils/chartGeneratorImproved');
+        // Utiliser les nouvelles fonctions avec UTF-8 direct (pas d'entités HTML)
+        const { generateRadarChartFixed, generateSortedBarChartFixed, generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
         
-        radarChart = generateRadarChartImproved(scores);
-        console.log('Radar chart SVG generated with improved encoding, length:', radarChart.length);
+        radarChart = generateRadarChartFixed(scores);
+        console.log('Radar chart SVG generated with UTF-8 encoding, length:', radarChart.length);
       } catch (chartError) {
         console.error('Error generating radar chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateSortedBarChartImproved } = await import('../../utils/chartGeneratorImproved');
-        sortedChart = generateSortedBarChartImproved(scores);
-        console.log('Sorted chart SVG generated with improved encoding, length:', sortedChart.length);
+        const { generateSortedBarChartFixed } = await import('../../utils/chartGeneratorFixed');
+        sortedChart = generateSortedBarChartFixed(scores);
+        console.log('Sorted chart SVG generated with UTF-8 encoding, length:', sortedChart.length);
       } catch (chartError) {
         console.error('Error generating sorted chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateFamilyBarChartImproved } = await import('../../utils/chartGeneratorImproved');
-        familyChart = generateFamilyBarChartImproved(scores);
-        console.log('Family chart SVG generated with improved encoding, length:', familyChart.length);
+        const { generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
+        familyChart = generateFamilyBarChartFixed(scores);
+        console.log('Family chart SVG generated with UTF-8 encoding, length:', familyChart.length);
       } catch (chartError) {
         console.error('Error generating family chart:', chartError);
         throw chartError;
