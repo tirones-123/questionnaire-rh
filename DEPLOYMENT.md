@@ -219,3 +219,37 @@ Report generation and sending completed successfully
    - Vérifiez les spams
    - Vérifiez les logs d'erreur
    - Testez les credentials SMTP 
+
+## Installation des dépendances
+
+### Canvas (pour les graphiques avec accents français)
+
+Canvas est utilisé pour générer des graphiques PNG de haute qualité avec support natif des caractères UTF-8.
+
+**Installation locale :**
+```bash
+npm install canvas @types/canvas
+```
+
+**Installation sur Vercel :**
+Canvas nécessite des librairies système. Ajoutez à votre `vercel.json` :
+
+```json
+{
+  "functions": {
+    "pages/api/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "build": {
+    "env": {
+      "CANVAS_PREBUILT": "1"
+    }
+  }
+}
+```
+
+**Si Canvas ne fonctionne pas sur Vercel :**
+Le système utilise automatiquement Sharp comme fallback.
+
+## Variables d'environnement requises 

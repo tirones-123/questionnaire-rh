@@ -269,24 +269,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let familyChart: string;
       
       try {
-        radarChart = generateRadarChart(scores);
-        console.log('Radar chart SVG generated, length:', radarChart.length);
+        // Utiliser les nouvelles fonctions améliorées avec entités HTML
+        const { generateRadarChartImproved, generateSortedBarChartImproved, generateFamilyBarChartImproved } = await import('../../utils/chartGeneratorImproved');
+        
+        radarChart = generateRadarChartImproved(scores);
+        console.log('Radar chart SVG generated with improved encoding, length:', radarChart.length);
       } catch (chartError) {
         console.error('Error generating radar chart:', chartError);
         throw chartError;
       }
       
       try {
-        sortedChart = generateSortedBarChart(scores);
-        console.log('Sorted chart SVG generated, length:', sortedChart.length);
+        const { generateSortedBarChartImproved } = await import('../../utils/chartGeneratorImproved');
+        sortedChart = generateSortedBarChartImproved(scores);
+        console.log('Sorted chart SVG generated with improved encoding, length:', sortedChart.length);
       } catch (chartError) {
         console.error('Error generating sorted chart:', chartError);
         throw chartError;
       }
       
       try {
-        familyChart = generateFamilyBarChart(scores);
-        console.log('Family chart SVG generated, length:', familyChart.length);
+        const { generateFamilyBarChartImproved } = await import('../../utils/chartGeneratorImproved');
+        familyChart = generateFamilyBarChartImproved(scores);
+        console.log('Family chart SVG generated with improved encoding, length:', familyChart.length);
       } catch (chartError) {
         console.error('Error generating family chart:', chartError);
         throw chartError;
@@ -296,27 +301,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // Réactiver la version avec images
-        wordBuffer = await generateWordDocument({
-          type: 'evaluation',
-          person: {
-            firstName: evaluationInfo.evaluatedPerson.firstName,
-            lastName: evaluationInfo.evaluatedPerson.lastName,
-            age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0],
-            profession: evaluationInfo.evaluatedPerson.position
-          },
-          evaluator: {
-            firstName: evaluatorFirstName,
-            lastName: evaluatorLastName
-          },
-          reportContent,
-          charts: {
-            radar: radarChart,
-            sorted: sortedChart,
-            family: familyChart
-          }
-        });
-        console.log('Word document generated successfully, buffer size:', wordBuffer.length);
+        // Essayer d'abord Canvas (meilleure gestion des accents)
+        try {
+          const { generateWordDocumentWithCanvas } = await import('../../utils/wordGeneratorWithCanvas');
+          console.log('Using Canvas generator (with proper French accents)');
+          
+          wordBuffer = await generateWordDocumentWithCanvas({
+            type: 'evaluation',
+            person: {
+              firstName: evaluationInfo.evaluatedPerson.firstName,
+              lastName: evaluationInfo.evaluatedPerson.lastName,
+              age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0],
+              profession: evaluationInfo.evaluatedPerson.position
+            },
+            evaluator: {
+              firstName: evaluatorFirstName,
+              lastName: evaluatorLastName
+            },
+            reportContent,
+            scores // Passer les scores pour générer les graphiques
+          });
+          console.log('Word document generated successfully with Canvas, buffer size:', wordBuffer.length);
+        } catch (canvasError) {
+          console.warn('Canvas generation failed, falling back to Sharp:', canvasError);
+          
+          // Fallback vers Sharp
+          wordBuffer = await generateWordDocument({
+            type: 'evaluation',
+            person: {
+              firstName: evaluationInfo.evaluatedPerson.firstName,
+              lastName: evaluationInfo.evaluatedPerson.lastName,
+              age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0],
+              profession: evaluationInfo.evaluatedPerson.position
+            },
+            evaluator: {
+              firstName: evaluatorFirstName,
+              lastName: evaluatorLastName
+            },
+            reportContent,
+            charts: {
+              radar: radarChart,
+              sorted: sortedChart,
+              family: familyChart
+            }
+          });
+          console.log('Word document generated successfully with Sharp fallback, buffer size:', wordBuffer.length);
+        }
       } catch (wordError) {
         console.error('Error generating Word document:', wordError);
         console.error('Error stack:', wordError instanceof Error ? wordError.stack : 'No stack');

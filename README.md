@@ -96,3 +96,52 @@ Voir [TROUBLESHOOTING.md](TROUBLESHOOTING.md) pour les problèmes courants.
 - [Guide de déploiement](DEPLOYMENT.md)
 - [Architecture technique](docs/architecture.md)
 - [Format des rapports](docs/rapports.md)
+
+## Gestion des caractères français dans les graphiques
+
+### Problème résolu
+
+Les graphiques générés affichent maintenant correctement les caractères français :
+- **Résilience** (au lieu de Resilience)
+- **Décision** (au lieu de Decision)
+- **Sens du résultat** (au lieu de Sens du resultat)
+- **Esprit d'équipe** (au lieu de Esprit d equipe)
+- **Vision globale des compétences** (avec tous les accents)
+
+### Solution technique
+
+Le système utilise un encodage en entités HTML dans les SVG :
+- `é` → `&#233;`
+- `è` → `&#232;`
+- `ê` → `&#234;`
+- `'` → `&#39;`
+- etc.
+
+### Test du système
+
+Pour vérifier que les accents fonctionnent :
+
+```bash
+curl http://localhost:3000/api/test-accents
+```
+
+### Fallback système
+
+1. **Méthode principale** : SVG avec entités HTML (via `chartGeneratorImproved.ts`)
+2. **Fallback automatique** : Sharp si erreur (via `chartGenerator.ts`)
+
+### Canvas (optionnel)
+
+Le système peut utiliser Canvas pour une qualité optimale :
+
+```bash
+# Installation Canvas (optionnelle)
+npm install canvas@^2.11.2
+
+# Prérequis système sur macOS
+brew install pkg-config cairo pango libpng jpeg giflib librsvg
+```
+
+Si Canvas est disponible, il sera utilisé automatiquement.
+
+## Structure du questionnaire
