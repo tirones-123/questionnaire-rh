@@ -125,13 +125,9 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
 
   try {
     console.log('Calling OpenAI API...');
-    console.log('Model: gpt-3.5-turbo');
-    console.log('Max tokens: 4000');
-    console.log('API Key first 10 chars:', apiKey.substring(0, 10));
     
-    // Appel OpenAI sans AbortController pour le moment
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // Temporairement changé pour tester
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -147,16 +143,10 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
       throw new Error('La génération du rapport a échoué : contenu vide');
     }
 
-    console.log('Report generated successfully, length:', content.length);
-    console.log('First 100 chars:', content.substring(0, 100));
+    console.log('Report generated successfully');
     return content;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
-    console.error('Error details:', {
-      name: error instanceof Error ? error.name : 'Unknown',
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
-    });
     
     if (error instanceof Error) {
       // Erreur spécifique OpenAI
