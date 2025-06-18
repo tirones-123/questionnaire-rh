@@ -296,7 +296,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 
                 <div style="background-color: #e6f3ff; border: 1px solid #1d4e89; padding: 15px; border-radius: 5px; margin-top: 20px;">
                   <p><strong>📄 Document Word joint</strong></p>
-                  <p>Le rapport complet d'analyse du potentiel avec graphiques et recommandations personnalisées.</p>
+                  <p>Le rapport complet d'analyse du potentiel avec recommandations personnalisées.</p>
+                  <p><strong>📊 Graphiques SVG joints</strong></p>
+                  <p>3 graphiques haute qualité (radar, trié, famille) - Ouvrez les fichiers .svg dans votre navigateur ou importez-les dans Word.</p>
                 </div>
               </div>
               
@@ -310,6 +312,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               filename: wordFileName,
               content: wordBuffer,
               contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            },
+            {
+              filename: `Radar_${userInfo.firstName}_${userInfo.lastName}.svg`,
+              content: Buffer.from(radarChart, 'utf-8'),
+              contentType: 'image/svg+xml'
+            },
+            {
+              filename: `Competences_triees_${userInfo.firstName}_${userInfo.lastName}.svg`,
+              content: Buffer.from(sortedChart, 'utf-8'),
+              contentType: 'image/svg+xml'
+            },
+            {
+              filename: `Familles_${userInfo.firstName}_${userInfo.lastName}.svg`,
+              content: Buffer.from(familyChart, 'utf-8'),
+              contentType: 'image/svg+xml'
             }
           ]
         });
