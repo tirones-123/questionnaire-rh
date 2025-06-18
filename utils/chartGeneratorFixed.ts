@@ -16,7 +16,7 @@ const familyColors: { [key: string]: string } = {
 };
 
 // Charger la police DejaVu Sans en base64 pour l'inclure dans le SVG
-const fontPath = path.resolve(__dirname, './fonts/DejaVuSans.ttf');
+const fontPath = path.join(process.cwd(), 'utils', 'fonts', 'DejaVuSans.ttf');
 const fontData = fs.readFileSync(fontPath).toString('base64');
 
 // Générer le graphique radar avec UTF-8 direct
