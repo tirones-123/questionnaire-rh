@@ -1,13 +1,15 @@
 {
   "functions": {
     "pages/api/*.ts": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "pages/api/submit-questionnaire.ts": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "includeFiles": "utils/fonts/DejaVuSans.ttf"
     },
     "pages/api/submit-evaluation.ts": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "includeFiles": "utils/fonts/DejaVuSans.ttf"
     }
   },
   "headers": [

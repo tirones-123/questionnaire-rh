@@ -18,7 +18,7 @@ const familyColors: { [key: string]: string } = {
 // Charger et encoder la police DejaVu Sans (une seule fois)
 let EMBEDDED_FONT_CSS = '';
 try {
-  const fontPath = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
+  const fontPath = path.join(process.cwd(), 'utils', 'fonts', 'DejaVuSans.ttf');
   const fontBuffer = fs.readFileSync(fontPath);
   const fontBase64 = fontBuffer.toString('base64');
   EMBEDDED_FONT_CSS = `@font-face { font-family: 'DejaVuSansEmbed'; src: url('data:font/ttf;base64,${fontBase64}') format('truetype'); font-weight: normal; font-style: normal; } text { font-family: 'DejaVuSansEmbed', sans-serif; }`;
