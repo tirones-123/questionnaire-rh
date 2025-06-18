@@ -2,6 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import ExcelJS from 'exceljs';
 import { sections, responseOptions } from '../../data/questions';
+import { calculateScores, generateScoresTable } from '../../utils/scoreCalculator';
+import { generateReportContent } from '../../utils/reportGenerator';
+import { generateRadarChart, generateSortedBarChart, generateFamilyBarChart } from '../../utils/chartGenerator';
+import { generateWordDocument } from '../../utils/wordGenerator';
 
 interface UserInfo {
   firstName: string;
@@ -27,6 +31,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!userInfo || !responses) {
       return res.status(400).json({ error: 'Données manquantes' });
     }
+
+    // Calculer les scores
+    const scores = calculateScores(responses);
+    const scoresTable = generateScoresTable(scores);
 
     // Créer le fichier Excel
     const workbook = new ExcelJS.Workbook();
@@ -99,8 +107,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // Ajouter une feuille avec les scores par catégorie
+    const scoresWorksheet = workbook.addWorksheet('Scores par catégorie');
+    scoresWorksheet.columns = [
+      { header: 'Critères', key: 'critere', width: 20 },
+      { header: 'Score Total', key: 'scoreTotal', width: 15 },
+      { header: 'Note sur 5', key: 'noteSur5', width: 15 }
+    ];
+
+    // Style des en-têtes
+    scoresWorksheet.getRow(1).eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1D4E89' }
+      };
+      cell.font = { color: { argb: 'FFFFFFFF' }, bold: true };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+
+    // Ajouter les scores
+    Object.values(scores).forEach(score => {
+      scoresWorksheet.addRow({
+        critere: score.critere,
+        scoreTotal: score.scoreTotal,
+        noteSur5: score.noteSur5
+      });
+    });
+
     // Créer le buffer Excel
-    const buffer = await workbook.xlsx.writeBuffer();
+    const excelBuffer = await workbook.xlsx.writeBuffer();
+
+    // Générer le contenu du rapport avec OpenAI
+    const reportContent = await generateReportContent({
+      type: 'autodiagnostic',
+      person: userInfo,
+      scores,
+      scoresTable
+    });
+
+    // Générer les graphiques
+    const radarChart = generateRadarChart(scores);
+    const sortedChart = generateSortedBarChart(scores);
+    const familyChart = generateFamilyBarChart(scores);
+
+    // Générer le document Word
+    const wordBuffer = await generateWordDocument({
+      type: 'autodiagnostic',
+      person: userInfo,
+      reportContent,
+      charts: {
+        radar: radarChart,
+        sorted: sortedChart,
+        family: familyChart
+      }
+    });
 
     // Configuration de l'email
     const transporter = nodemailer.createTransport({
@@ -113,9 +174,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    const fileName = `Questionnaire_RH_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    const excelFileName = `Questionnaire_RH_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
-    // Envoyer l'email
+    // Envoyer l'email avec les deux pièces jointes
     await transporter.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: 'luc.marsal@auramanagement.fr',
@@ -145,7 +207,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }).join('')}
             </ul>
             
-            <p>Vous trouverez toutes les réponses détaillées dans le fichier Excel en pièce jointe.</p>
+            <h2>Documents joints</h2>
+            <p>Vous trouverez en pièces jointes :</p>
+            <ul>
+              <li><strong>${excelFileName}</strong> : Toutes les réponses détaillées au format Excel</li>
+              <li><strong>${wordFileName}</strong> : Rapport d'autodiagnostic complet avec analyses et graphiques</li>
+            </ul>
           </div>
           
           <div style="padding: 20px; text-align: center; color: #6b7280; font-size: 12px;">
@@ -155,16 +222,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `,
       attachments: [
         {
-          filename: fileName,
-          content: buffer as Buffer,
+          filename: excelFileName,
+          content: excelBuffer as Buffer,
           contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        },
+        {
+          filename: wordFileName,
+          content: wordBuffer,
+          contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         }
       ]
     });
 
     res.status(200).json({ 
       success: true, 
-      message: 'Questionnaire envoyé avec succès' 
+      message: 'Questionnaire et rapport envoyés avec succès' 
     });
 
   } catch (error) {

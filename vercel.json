@@ -1,7 +1,10 @@
 {
   "functions": {
     "pages/api/submit-questionnaire.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
+    },
+    "pages/api/submit-evaluation.ts": {
+      "maxDuration": 60
     }
   },
   "headers": [

@@ -9,6 +9,9 @@ Application web pour faire passer un questionnaire RH de 72 questions au format 
 - ✅ Sauvegarde automatique de la progression (localStorage)
 - ✅ Validation des réponses avant passage à la section suivante
 - ✅ Export automatique en Excel et envoi par email
+- ✅ **Génération automatique du rapport d'analyse avec GPT-4o**
+- ✅ **Graphiques de visualisation des résultats (radar, barres)**
+- ✅ **Document Word formaté avec analyses et recommandations**
 - ✅ Design responsive et accessible (WCAG AA)
 - ✅ Compatible Vercel pour déploiement facile
 
@@ -17,6 +20,8 @@ Application web pour faire passer un questionnaire RH de 72 questions au format 
 - **Next.js 14** - Framework React avec rendu côté serveur
 - **TypeScript** - Typage statique
 - **ExcelJS** - Génération de fichiers Excel
+- **Docx** - Génération de documents Word
+- **OpenAI API** - Analyse et génération de contenu avec GPT-4o
 - **Nodemailer** - Envoi d'emails
 - **CSS moderne** - Styles responsives sans framework
 
@@ -43,14 +48,18 @@ Copiez le fichier `env.example` vers `.env.local` :
 cp env.example .env.local
 ```
 
-Éditez `.env.local` avec vos paramètres SMTP :
+Éditez `.env.local` avec vos paramètres :
 
 ```env
+# Configuration SMTP
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=votre-email@gmail.com
 SMTP_PASS=votre-mot-de-passe-app
 SMTP_FROM=votre-email@gmail.com
+
+# Configuration OpenAI
+OPENAI_API_KEY=sk-votre-cle-api-openai
 ```
 
 #### Configuration Gmail
@@ -61,23 +70,11 @@ SMTP_FROM=votre-email@gmail.com
    - Sélectionnez "Autre" et donnez un nom (ex: "Questionnaire RH")
    - Utilisez le mot de passe généré dans `SMTP_PASS`
 
-#### Alternatives SMTP
+#### Configuration OpenAI
 
-**SendGrid :**
-```env
-SMTP_HOST=smtp.sendgrid.net
-SMTP_PORT=587
-SMTP_USER=apikey
-SMTP_PASS=votre-clé-api-sendgrid
-```
-
-**Outlook/Hotmail :**
-```env
-SMTP_HOST=smtp-mail.outlook.com
-SMTP_PORT=587
-SMTP_USER=votre-email@outlook.com
-SMTP_PASS=votre-mot-de-passe
-```
+1. Créez un compte sur [OpenAI Platform](https://platform.openai.com)
+2. Générez une clé API dans les paramètres
+3. Assurez-vous d'avoir des crédits disponibles pour GPT-4o
 
 ### 4. Lancer en développement
 
@@ -115,6 +112,7 @@ vercel env add SMTP_PORT
 vercel env add SMTP_USER
 vercel env add SMTP_PASS
 vercel env add SMTP_FROM
+vercel env add OPENAI_API_KEY
 
 # Redéployer avec les nouvelles variables
 vercel --prod
@@ -126,19 +124,27 @@ vercel --prod
 questionnaire-rh/
 ├── data/
 │   └── questions.ts          # Questions du questionnaire
+├── utils/
+│   ├── scoreCalculator.ts    # Calcul des scores par critère
+│   ├── reportGenerator.ts    # Génération du rapport avec OpenAI
+│   ├── chartGenerator.ts     # Génération des graphiques
+│   └── wordGenerator.ts      # Création du document Word
 ├── pages/
 │   ├── api/
-│   │   └── submit-questionnaire.ts  # API envoi email + Excel
+│   │   ├── submit-questionnaire.ts  # API autodiagnostic
+│   │   └── submit-evaluation.ts     # API évaluation
 │   ├── questionnaire/
 │   │   └── [section].tsx     # Pages de questionnaire dynamiques
 │   ├── _app.tsx              # Configuration App
-│   ├── index.tsx             # Page d'accueil
+│   ├── index.tsx             # Page d'accueil autodiagnostic
+│   ├── evaluation.tsx        # Page d'accueil évaluation
 │   └── complete.tsx          # Page de fin
 ├── styles/
 │   └── globals.css           # Styles globaux
 ├── package.json
 ├── next.config.js
 ├── tsconfig.json
+├── vercel.json               # Configuration Vercel
 ├── env.example               # Exemple variables d'environnement
 └── README.md
 ```
@@ -149,6 +155,7 @@ questionnaire-rh/
 - Saisie obligatoire du prénom et nom
 - Détection automatique d'une session en cours
 - Option "Reprendre" ou "Recommencer"
+- Deux modes : autodiagnostic ou évaluation d'un tiers
 
 ### 2. Questionnaire
 - 8 sections de 9 questions chacune
@@ -158,31 +165,68 @@ questionnaire-rh/
 - Barre de progression
 - Navigation précédent/suivant
 
-### 3. Finalisation
-- Page de confirmation après la 8e section
-- Bouton d'envoi par email
-- Génération automatique d'un fichier Excel
-- Envoi à l'adresse configurée : `luc.marsal@auramanagement.fr`
+### 3. Analyse automatique
+- **Calcul des scores** sur 12 critères de potentiel
+- **Analyse par l'IA** : GPT-4o génère une analyse personnalisée
+- **Identification** des points forts et axes de progression
+- **Recommandations** concrètes et actionnables
 
-### 4. Format Excel
-Le fichier Excel généré contient :
-- Informations du participant (prénom, nom, date)
-- Liste des 72 questions avec réponses
-- Format : | Numéro | Question | Réponse |
+### 4. Documents générés
+
+#### Fichier Excel
+- Feuille 1 : Toutes les réponses détaillées
+- Feuille 2 : Scores par critère (sur 5)
+- Format professionnel avec mise en forme
+
+#### Rapport Word
+- **Analyse critère par critère** (12 critères répartis en 4 familles)
+- **Graphique radar** : vision globale des compétences
+- **Graphique en barres** : forces triées par score
+- **Graphique par famille** : vue d'ensemble structurée
+- **Points de vigilance** et recommandations personnalisées
+- **Mise en forme professionnelle** avec police Avenir
+
+### 5. Envoi automatique
+- Email envoyé à l'adresse configurée
+- Deux pièces jointes : Excel + Word
+- Temps de traitement : environ 30-45 secondes
+
+## Les 12 critères analysés
+
+### Famille "VOULOIR" (Forces motrices)
+- **Ambition** : Volonté de progresser dans sa carrière
+- **Initiative** : Dynamisme et prise d'initiatives
+- **Résilience** : Persévérance face aux difficultés
+
+### Famille "PENSER" (Intelligence des situations)
+- **Vision** : Intuition et capacité à imaginer l'avenir
+- **Recul** : Analyse objective et synthétique
+- **Pertinence** : Compréhension instantanée des situations
+
+### Famille "AGIR" (Capacités de réalisation)
+- **Organisation** : Structuration efficace du travail
+- **Décision** : Capacité à trancher rapidement
+- **Sens du résultat** : Attention aux résultats concrets
+
+### Famille "ENSEMBLE" (Aptitudes relationnelles)
+- **Communication** : Écoute et dialogue ouvert
+- **Esprit d'équipe** : Inscription dans un projet collectif
+- **Leadership** : Capacité à mobiliser un groupe
 
 ## Sécurité et confidentialité
 
 - ❌ **Aucune base de données** - Pas de stockage serveur
 - ✅ **Stockage local uniquement** - Les réponses restent dans le navigateur
 - ✅ **Nettoyage automatique** - Données supprimées après envoi réussi
-- ✅ **Envoi sécurisé** - Email chiffré avec pièce jointe Excel
+- ✅ **Envoi sécurisé** - Email chiffré avec pièces jointes
 
 ## Support
 
 Pour toute question technique :
 1. Vérifiez que toutes les variables d'environnement sont correctement configurées
 2. Consultez les logs Vercel en cas d'erreur de déploiement
-3. Testez l'envoi d'email avec vos paramètres SMTP
+3. Vérifiez vos crédits OpenAI si le rapport ne se génère pas
+4. Testez l'envoi d'email avec vos paramètres SMTP
 
 ## Personnalisation
 
@@ -190,7 +234,7 @@ Pour toute question technique :
 Éditez le fichier `data/questions.ts` pour adapter les questions à vos besoins.
 
 ### Changer l'email de destination
-Modifiez la ligne dans `pages/api/submit-questionnaire.ts` :
+Modifiez la ligne dans `pages/api/submit-questionnaire.ts` et `pages/api/submit-evaluation.ts` :
 ```typescript
 to: 'votre-nouvelle-adresse@exemple.com',
 ```
@@ -199,4 +243,7 @@ to: 'votre-nouvelle-adresse@exemple.com',
 Les styles sont dans `styles/globals.css`. La palette de couleurs principale utilise :
 - Bleu principal : `#1d4e89`
 - Fond : `#ffffff`
-- Bordures : `#e5e7eb` 
+- Bordures : `#e5e7eb`
+
+### Adapter l'analyse
+Le prompt d'analyse est dans `utils/reportGenerator.ts`. Vous pouvez le modifier pour adapter le style et le contenu des rapports générés. 
