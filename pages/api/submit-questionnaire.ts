@@ -257,34 +257,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // Essayer d'abord Canvas (meilleure gestion des accents)
-        try {
-          const { generateWordDocumentWithCanvas } = await import('../../utils/wordGeneratorWithCanvas');
-          console.log('Using Canvas generator (with proper French accents)');
-          
-          wordBuffer = await generateWordDocumentWithCanvas({
-            type: 'autodiagnostic',
-            person: userInfo,
-            reportContent,
-            scores // Passer les scores pour générer les graphiques
-          });
-          console.log('Word document generated successfully with Canvas, buffer size:', wordBuffer.length);
-        } catch (canvasError) {
-          console.warn('Canvas generation failed, falling back to Sharp:', canvasError);
-          
-          // Fallback vers Sharp
-          wordBuffer = await generateWordDocument({
-            type: 'autodiagnostic',
-            person: userInfo,
-            reportContent,
-            charts: {
-              radar: radarChart,
-              sorted: sortedChart,
-              family: familyChart
-            }
-          });
-          console.log('Word document generated successfully with Sharp fallback, buffer size:', wordBuffer.length);
-        }
+        // Utiliser la version standard avec Sharp (compatible build)
+        wordBuffer = await generateWordDocument({
+          type: 'autodiagnostic',
+          person: userInfo,
+          reportContent,
+          charts: {
+            radar: radarChart,
+            sorted: sortedChart,
+            family: familyChart
+          }
+        });
+        console.log('Word document generated successfully, buffer size:', wordBuffer.length);
       } catch (wordError) {
         console.error('Error generating Word document:', wordError);
         console.error('Error stack:', wordError instanceof Error ? wordError.stack : 'No stack');
