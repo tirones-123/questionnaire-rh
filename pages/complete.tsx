@@ -143,10 +143,8 @@ export default function CompletePage() {
           
           <div className="success-message">
             <p><strong>Vos réponses ont bien été transmises.</strong></p>
-            <p>Vous allez recevoir par email :</p>
             <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              <li>📊 Le fichier Excel avec toutes vos réponses (immédiat)</li>
-              <li>📝 Le rapport d'analyse détaillé (dans quelques minutes)</li>
+              <li>Merci d'avoir répondu à ce questionnaire.</li>
             </ul>
           </div>
           
