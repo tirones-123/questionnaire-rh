@@ -1,6 +1,4 @@
 import { ScoreDetails } from './scoreCalculator';
-import fs from 'fs';
-import path from 'path';
 
 export interface ChartData {
   critere: string;
@@ -15,22 +13,19 @@ const familyColors: { [key: string]: string } = {
   'ENSEMBLE': '#2ca02c'  // vert
 };
 
-// Charger la police DejaVu Sans et l'encoder en base64 pour l'inclure dans les SVG
-let EMBEDDED_FONT_CSS = '';
-try {
-  const fontPath = path.join(process.cwd(), 'utils', 'fonts', 'DejaVuSans.ttf');
-  const fontBuffer = fs.readFileSync(fontPath);
-  const fontBase64 = fontBuffer.toString('base64');
-  // Crée les règles @font-face et définit DejaVu comme police par défaut
-  EMBEDDED_FONT_CSS = `@font-face { font-family: 'DejaVuEmbed'; src: url('data:font/ttf;base64,${fontBase64}') format('truetype'); font-weight: normal; font-style: normal; }
-  text, tspan { font-family: 'DejaVuEmbed', Arial, sans-serif; }`;
-} catch (err) {
-  console.warn('⚠️  Impossible de charger la police DejaVuSans.ttf, le texte des graphiques utilisera la police système.');
-}
-
-// Helper: injecte la feuille de style dans un <defs>
-function embedFontStyle(): string {
-  return EMBEDDED_FONT_CSS ? `<defs><style><![CDATA[${EMBEDDED_FONT_CSS}]]></style></defs>` : '';
+// Génération SVG plus robuste pour environnements serverless
+function createSVGHeader(width: number, height: number): string {
+  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
+    <defs>
+      <style>
+        <![CDATA[
+          .chart-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #333; }
+          .chart-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 12px; font-weight: bold; fill: #333; }
+          .chart-value { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #000; }
+          .chart-axis { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 11px; fill: #666; }
+        ]]>
+      </style>
+    </defs>`;
 }
 
 // Générer le graphique radar (vision globale des compétences)
@@ -56,7 +51,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
     if (scores[originalCritere] || scores[critere]) {
       const scoreData = scores[originalCritere] || scores[critere];
       data.push({
-        critere: critere.replace(/'/g, "'"), // Remplacer les apostrophes spéciales
+        critere: critere.replace(/'/g, "'").replace(/è/g, 'e').replace(/é/g, 'e'), // Simplifier les caractères
         score: scoreData.noteSur5,
         famille: scoreData.famille
       });
@@ -80,7 +75,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
     return { x, y, data: d, angle };
   });
   
-  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+  let svg = createSVGHeader(width, height);
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
@@ -130,16 +125,15 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
     const valueY = centerY + valueR * Math.sin(angle);
     
     // Label du critère
-    svg += `<text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">${point.data.critere}</text>`;
+    svg += `<text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" class="chart-label">${point.data.critere}</text>`;
     
     // Valeur
-    svg += `<text x="${valueX}" y="${valueY}" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="black">${point.data.score.toFixed(1)}</text>`;
+    svg += `<text x="${valueX}" y="${valueY}" text-anchor="middle" dominant-baseline="middle" class="chart-value">${point.data.score.toFixed(1)}</text>`;
   });
   
   // Titre
-  svg += `<text x="${centerX}" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Vision globale des compétences</text>`;
+  svg += `<text x="${centerX}" y="30" text-anchor="middle" class="chart-title">Vision globale des competences</text>`;
   
-  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;
@@ -148,7 +142,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
 // Générer l'histogramme horizontal trié par score
 export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }): string {
   const data: ChartData[] = Object.values(scores).map(s => ({
-    critere: s.critere.replace(/'/g, "'"),
+    critere: s.critere.replace(/'/g, "'").replace(/è/g, 'e').replace(/é/g, 'e'),
     score: s.noteSur5,
     famille: s.famille
   })).sort((a, b) => b.score - a.score);
@@ -160,19 +154,19 @@ export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }):
   const chartHeight = height - margin.top - margin.bottom;
   const barHeight = Math.max(20, (chartHeight / data.length) - 5);
   
-  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+  let svg = createSVGHeader(width, height);
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre
-  svg += `<text x="${width / 2}" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Forces et axes de progression - Triés par score</text>`;
+  svg += `<text x="${width / 2}" y="30" text-anchor="middle" class="chart-title">Forces et axes de progression - Tries par score</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {
     const x = margin.left + (i / 5) * chartWidth;
     svg += `<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" stroke="#e0e0e0" stroke-width="1" opacity="0.5"/>`;
-    svg += `<text x="${x}" y="${height - margin.bottom + 20}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">${i}</text>`;
+    svg += `<text x="${x}" y="${height - margin.bottom + 20}" text-anchor="middle" class="chart-axis">${i}</text>`;
   }
   
   // Barres et labels
@@ -184,16 +178,15 @@ export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }):
     svg += `<rect x="${margin.left}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${familyColors[d.famille]}" fill-opacity="0.8"/>`;
     
     // Label du critère
-    svg += `<text x="${margin.left - 10}" y="${y + barHeight / 2}" text-anchor="end" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">${d.critere}</text>`;
+    svg += `<text x="${margin.left - 10}" y="${y + barHeight / 2}" text-anchor="end" dominant-baseline="middle" class="chart-label">${d.critere}</text>`;
     
     // Valeur
-    svg += `<text x="${margin.left + barWidth + 10}" y="${y + barHeight / 2}" text-anchor="start" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">${d.score.toFixed(1)}</text>`;
+    svg += `<text x="${margin.left + barWidth + 10}" y="${y + barHeight / 2}" text-anchor="start" dominant-baseline="middle" class="chart-value">${d.score.toFixed(1)}</text>`;
   });
   
   // Label de l'axe X
-  svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Score (1-5)</text>`;
+  svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" class="chart-axis">Score (1-5)</text>`;
   
-  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;
@@ -216,7 +209,7 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
       if (scores[critere]) {
         const scoreData = scores[critere];
         data.push({
-          critere: critere.replace(/'/g, "'"),
+          critere: critere.replace(/'/g, "'").replace(/è/g, 'e').replace(/é/g, 'e'),
           score: scoreData.noteSur5,
           famille: family
         });
@@ -231,19 +224,19 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
   const chartHeight = height - margin.top - margin.bottom;
   const barHeight = Math.max(20, (chartHeight / data.length) - 5);
   
-  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+  let svg = createSVGHeader(width, height);
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre
-  svg += `<text x="${width / 2}" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Forces par famille de compétences</text>`;
+  svg += `<text x="${width / 2}" y="30" text-anchor="middle" class="chart-title">Forces par famille de competences</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {
     const x = margin.left + (i / 5) * chartWidth;
     svg += `<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" stroke="#e0e0e0" stroke-width="1" opacity="0.5"/>`;
-    svg += `<text x="${x}" y="${height - margin.bottom + 20}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">${i}</text>`;
+    svg += `<text x="${x}" y="${height - margin.bottom + 20}" text-anchor="middle" class="chart-axis">${i}</text>`;
   }
   
   // Barres et labels
@@ -260,23 +253,22 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
       const familyCenterY = familyStartY + (familyCount * (barHeight + 5)) / 2 - 2.5;
       
       // Label de famille (vertical)
-      svg += `<text x="40" y="${familyCenterY}" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="${familyColors[d.famille]}" transform="rotate(-90, 40, ${familyCenterY})">${d.famille}</text>`;
+      svg += `<text x="40" y="${familyCenterY}" text-anchor="middle" class="chart-label" fill="${familyColors[d.famille]}" transform="rotate(-90, 40, ${familyCenterY})">${d.famille}</text>`;
     }
     
     // Barre
     svg += `<rect x="${margin.left}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${familyColors[d.famille]}" fill-opacity="0.8"/>`;
     
     // Label du critère
-    svg += `<text x="${margin.left - 10}" y="${y + barHeight / 2}" text-anchor="end" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">${d.critere}</text>`;
+    svg += `<text x="${margin.left - 10}" y="${y + barHeight / 2}" text-anchor="end" dominant-baseline="middle" class="chart-label">${d.critere}</text>`;
     
     // Valeur
-    svg += `<text x="${margin.left + barWidth + 10}" y="${y + barHeight / 2}" text-anchor="start" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">${d.score.toFixed(1)}</text>`;
+    svg += `<text x="${margin.left + barWidth + 10}" y="${y + barHeight / 2}" text-anchor="start" dominant-baseline="middle" class="chart-value">${d.score.toFixed(1)}</text>`;
   });
   
   // Label de l'axe X
-  svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Score (1-5)</text>`;
+  svg += `<text x="${width / 2}" y="${height - 10}" text-anchor="middle" class="chart-axis">Score (1-5)</text>`;
   
-  svg += embedFontStyle();
   svg += '</svg>';
   
   return svg;

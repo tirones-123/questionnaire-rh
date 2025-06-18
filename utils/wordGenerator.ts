@@ -27,22 +27,31 @@ async function svgToPng(svg: string, width: number = 800, height: number = 600):
   try {
     console.log(`Converting SVG to PNG (${width}x${height}), SVG length: ${svg.length}`);
     
-    // Nettoyer le SVG pour Sharp
+    // Nettoyer le SVG pour Sharp et environnements serverless
     const cleanSvg = svg
       .replace(/encoding="UTF-8"/g, '')
       .replace(/\s+/g, ' ')
+      .replace(/font-family="[^"]*"/g, 'font-family="Arial, sans-serif"') // Forcer Arial
       .trim();
     
     // Créer un buffer depuis le SVG nettoyé
     const svgBuffer = Buffer.from(cleanSvg, 'utf-8');
     
-    const buffer = await sharp(svgBuffer)
+    // Configuration optimisée pour environnements serverless
+    const buffer = await sharp(svgBuffer, {
+      density: 150, // Réduire la densité pour éviter les problèmes de mémoire
+    })
       .resize(width, height, { 
         fit: 'inside', 
         withoutEnlargement: false,
         background: { r: 255, g: 255, b: 255, alpha: 1 } 
       })
-      .png({ quality: 90, compressionLevel: 6 })
+      .png({ 
+        quality: 80, // Réduire la qualité pour des fichiers plus légers
+        compressionLevel: 9,
+        progressive: false, // Éviter les problèmes sur serverless
+        force: true // Forcer le format PNG
+      })
       .toBuffer();
       
     console.log(`PNG conversion successful, buffer size: ${buffer.length}`);
@@ -51,29 +60,38 @@ async function svgToPng(svg: string, width: number = 800, height: number = 600):
     console.error('Erreur lors de la conversion SVG vers PNG:', error);
     console.error('SVG content (first 500 chars):', svg.substring(0, 500));
     
-    // Créer une image de fallback simple
-    return createFallbackImage(width, height, 'Graphique non disponible');
+    // Créer une image de fallback simple SANS polices complexes
+    return createSimpleFallbackImage(width, height, 'Graphique');
   }
 }
 
-// Créer une image de fallback en cas d'erreur
-async function createFallbackImage(width: number, height: number, text: string): Promise<Buffer> {
+// Créer une image de fallback ultra-simple
+async function createSimpleFallbackImage(width: number, height: number, text: string): Promise<Buffer> {
   try {
-    const fallbackSvg = `
-      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="${width}" height="${height}" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
-        <text x="${width/2}" y="${height/2}" text-anchor="middle" dominant-baseline="middle" 
-              font-family="Arial, sans-serif" font-size="16" fill="#6c757d">${text}</text>
-      </svg>
-    `;
+    // SVG ultra-simple sans polices externes
+    const fallbackSvg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${width}" height="${height}" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+      <text x="${width/2}" y="${height/2}" text-anchor="middle" dominant-baseline="middle" 
+            font-family="Arial" font-size="16" fill="#6c757d">${text}</text>
+    </svg>`;
     
-    return await sharp(Buffer.from(fallbackSvg))
-      .png()
+    return await sharp(Buffer.from(fallbackSvg), { density: 72 })
+      .png({ quality: 50, force: true })
       .toBuffer();
   } catch (error) {
     console.error('Impossible de créer l\'image de fallback:', error);
-    // Retourner un buffer vide
-    return Buffer.alloc(0);
+    
+    // Dernier recours : créer un rectangle coloré simple
+    return await sharp({
+      create: {
+        width: width,
+        height: height,
+        channels: 4,
+        background: { r: 248, g: 249, b: 250, alpha: 1 }
+      }
+    })
+    .png()
+    .toBuffer();
   }
 }
 
@@ -107,9 +125,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     
     // Créer des images de fallback
     try {
-      chartBuffers.family = await createFallbackImage(600, 400, 'Graphique par famille');
-      chartBuffers.radar = await createFallbackImage(600, 600, 'Graphique radar');
-      chartBuffers.sorted = await createFallbackImage(600, 400, 'Graphique trié');
+      chartBuffers.family = await createSimpleFallbackImage(600, 400, 'Graphique par famille');
+      chartBuffers.radar = await createSimpleFallbackImage(600, 600, 'Graphique radar');
+      chartBuffers.sorted = await createSimpleFallbackImage(600, 400, 'Graphique trié');
     } catch (fallbackError) {
       console.error('Impossible de créer les images de fallback:', fallbackError);
     }
