@@ -179,7 +179,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       relationshipText += ` (${evaluationInfo.evaluator.hierarchyLevel})`;
     }
 
-    // PREMIER EMAIL : Envoyer immédiatement l'Excel
+    // Envoyer le premier email avec Excel
     await transporter.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: 'luc.marsal@auramanagement.fr',
@@ -232,52 +232,75 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ]
     });
 
-    // Répondre IMMÉDIATEMENT au client pour libérer l'interface
-    res.status(200).json({ 
-      success: true, 
-      message: 'Évaluation envoyée avec succès. Le rapport détaillé sera envoyé par email dans quelques minutes.' 
-    });
+    console.log('First email sent successfully');
 
-    // GÉNÉRATION DU RAPPORT EN ARRIÈRE-PLAN (fire and forget)
-    // Cette partie s'exécute après la réponse au client
-    (async () => {
+    // GÉNÉRATION DU RAPPORT - En mode synchrone
+    try {
+      console.log('Starting report generation process...');
+      
+      // Extraire prénom et nom de l'évaluateur depuis l'email si possible
+      const evaluatorFirstName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[0] || 'L\'évaluateur';
+      const evaluatorLastName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[1] || '';
+
+      // Générer le contenu du rapport avec OpenAI
+      console.log('Calling OpenAI for report generation...');
+      const reportContent = await generateReportContent({
+        type: 'evaluation',
+        person: {
+          firstName: evaluationInfo.evaluatedPerson.firstName,
+          lastName: evaluationInfo.evaluatedPerson.lastName,
+          age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0], // Prendre le début de la tranche
+          profession: evaluationInfo.evaluatedPerson.position
+        },
+        evaluator: {
+          firstName: evaluatorFirstName,
+          lastName: evaluatorLastName
+        },
+        scores,
+        scoresTable
+      });
+      console.log('Report content generated successfully');
+      console.log('Report content length:', reportContent.length);
+
+      // Générer les graphiques
+      console.log('Starting chart generation...');
+      let radarChart: string;
+      let sortedChart: string;
+      let familyChart: string;
+      
       try {
-        console.log('Starting background report generation...');
+        radarChart = generateRadarChart(scores);
+        console.log('Radar chart SVG generated, length:', radarChart.length);
+      } catch (chartError) {
+        console.error('Error generating radar chart:', chartError);
+        throw chartError;
+      }
+      
+      try {
+        sortedChart = generateSortedBarChart(scores);
+        console.log('Sorted chart SVG generated, length:', sortedChart.length);
+      } catch (chartError) {
+        console.error('Error generating sorted chart:', chartError);
+        throw chartError;
+      }
+      
+      try {
+        familyChart = generateFamilyBarChart(scores);
+        console.log('Family chart SVG generated, length:', familyChart.length);
+      } catch (chartError) {
+        console.error('Error generating family chart:', chartError);
+        throw chartError;
+      }
+
+      // Générer le document Word
+      console.log('Starting Word document generation...');
+      let wordBuffer: Buffer;
+      try {
+        // TEST: Utiliser temporairement la version sans images pour voir si le problème vient de Sharp
+        const { generateWordDocumentWithoutImages } = await import('../../utils/wordGeneratorWithoutSharp');
+        console.log('Using Word generator WITHOUT images (test mode)');
         
-        // Extraire prénom et nom de l'évaluateur depuis l'email si possible
-        const evaluatorFirstName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[0] || 'L\'évaluateur';
-        const evaluatorLastName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[1] || '';
-
-        // Générer le contenu du rapport avec OpenAI
-        const reportContent = await generateReportContent({
-          type: 'evaluation',
-          person: {
-            firstName: evaluationInfo.evaluatedPerson.firstName,
-            lastName: evaluationInfo.evaluatedPerson.lastName,
-            age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0], // Prendre le début de la tranche
-            profession: evaluationInfo.evaluatedPerson.position
-          },
-          evaluator: {
-            firstName: evaluatorFirstName,
-            lastName: evaluatorLastName
-          },
-          scores,
-          scoresTable
-        });
-        console.log('Report content generated successfully');
-
-        // Générer les graphiques
-        console.log('Generating charts...');
-        const radarChart = generateRadarChart(scores);
-        console.log('Radar chart generated');
-        const sortedChart = generateSortedBarChart(scores);
-        console.log('Sorted chart generated');
-        const familyChart = generateFamilyBarChart(scores);
-        console.log('Family chart generated');
-
-        // Générer le document Word
-        console.log('Generating Word document...');
-        const wordBuffer = await generateWordDocument({
+        wordBuffer = await generateWordDocumentWithoutImages({
           type: 'evaluation',
           person: {
             firstName: evaluationInfo.evaluatedPerson.firstName,
@@ -296,13 +319,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             family: familyChart
           }
         });
-        console.log('Word document generated successfully');
+        console.log('Word document generated successfully (without images), buffer size:', wordBuffer.length);
+      } catch (wordError) {
+        console.error('Error generating Word document:', wordError);
+        console.error('Error stack:', wordError instanceof Error ? wordError.stack : 'No stack');
+        throw wordError;
+      }
 
-        const wordFileName = `Rapport_Evaluation_${evaluationInfo.evaluatedPerson.firstName}_${evaluationInfo.evaluatedPerson.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
+      const wordFileName = `Rapport_Evaluation_${evaluationInfo.evaluatedPerson.firstName}_${evaluationInfo.evaluatedPerson.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
-        // SECOND EMAIL : Envoyer le rapport Word
-        console.log('Sending report email...');
-        await transporter.sendMail({
+      // SECOND EMAIL : Envoyer le rapport Word
+      console.log('Preparing to send report email...');
+      console.log('Email to:', 'luc.marsal@auramanagement.fr');
+      console.log('Attachment filename:', wordFileName);
+      console.log('Attachment size:', wordBuffer.length, 'bytes');
+      
+      try {
+        const emailResult = await transporter.sendMail({
           from: process.env.SMTP_FROM || process.env.SMTP_USER,
           to: 'luc.marsal@auramanagement.fr',
           subject: `Rapport d'évaluation - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
@@ -338,45 +371,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ]
         });
         
-        console.log('Background report sent successfully');
-      } catch (error) {
-        console.error('Erreur lors de la génération du rapport en arrière-plan:', error);
-        console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
+        console.log('Email sent successfully:', emailResult.messageId);
+        console.log('Report generation and sending completed successfully');
         
-        // Envoyer un email d'erreur si la génération échoue
-        try {
-          await transporter.sendMail({
-            from: process.env.SMTP_FROM || process.env.SMTP_USER,
-            to: 'luc.marsal@auramanagement.fr',
-            subject: `ERREUR - Rapport non généré - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
-            html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
-                  <h1>Erreur de génération du rapport</h1>
-                </div>
-                
-                <div style="padding: 20px; background-color: #f8fafc;">
-                  <p>Une erreur s'est produite lors de la génération du rapport d'évaluation pour :</p>
-                  <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
-                  <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
-                  <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
-                  
-                  <p><strong>Détails de l'erreur :</strong></p>
-                  <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
-                  
-                  <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
-                </div>
-              </div>
-            `
-          });
-        } catch (emailError) {
-          console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
-        }
+        // Répondre au client
+        res.status(200).json({ 
+          success: true, 
+          message: 'Évaluation et rapport envoyés avec succès.' 
+        });
+        
+      } catch (emailError) {
+        console.error('Error sending report email:', emailError);
+        console.error('Email error details:', emailError instanceof Error ? emailError.stack : 'No stack');
+        throw emailError;
       }
-    })().catch(err => {
-      // Catch any unhandled errors to prevent crashes
-      console.error('Unhandled error in background task:', err);
-    });
+      
+    } catch (error) {
+      console.error('Erreur lors de la génération du rapport:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack');
+      
+      // Envoyer un email d'erreur
+      try {
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM || process.env.SMTP_USER,
+          to: 'luc.marsal@auramanagement.fr',
+          subject: `ERREUR - Rapport non généré - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
+                <h1>Erreur de génération du rapport</h1>
+              </div>
+              
+              <div style="padding: 20px; background-color: #f8fafc;">
+                <p>Une erreur s'est produite lors de la génération du rapport d'évaluation pour :</p>
+                <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
+                <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <p><strong>Détails de l'erreur :</strong></p>
+                <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
+                
+                <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+              </div>
+            </div>
+          `
+        });
+      } catch (emailError) {
+        console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
+      }
+      
+      // Répondre au client avec l'erreur
+      res.status(500).json({ 
+        error: 'L\'évaluation a été enregistrée mais une erreur est survenue lors de la génération du rapport.',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
+    }
 
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'évaluation:', error);

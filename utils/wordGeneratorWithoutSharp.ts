@@ -1,6 +1,4 @@
-import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun, PageBreak, Packer } from 'docx';
-import { svgToBase64 } from './chartGenerator';
-import sharp from 'sharp';
+import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, PageBreak, Packer } from 'docx';
 
 interface WordReportData {
   type: 'autodiagnostic' | 'evaluation';
@@ -22,54 +20,13 @@ interface WordReportData {
   };
 }
 
-// Convertir SVG en PNG via sharp
-async function svgToPng(svg: string, width: number = 800, height: number = 600): Promise<Buffer> {
-  try {
-    console.log(`Converting SVG to PNG (${width}x${height}), SVG length: ${svg.length}`);
-    const buffer = await sharp(Buffer.from(svg))
-      .resize(width, height, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
-      .png()
-      .toBuffer();
-    console.log(`PNG conversion successful, buffer size: ${buffer.length}`);
-    return buffer;
-  } catch (error) {
-    console.error('Erreur lors de la conversion SVG vers PNG:', error);
-    console.error('SVG content (first 200 chars):', svg.substring(0, 200));
-    throw error;
-  }
-}
-
-export async function generateWordDocument(data: WordReportData): Promise<Buffer> {
-  console.log('Starting Word document generation...');
-  console.log('Report type:', data.type);
-  console.log('Person:', data.person.firstName, data.person.lastName);
-  console.log('Report content length:', data.reportContent.length);
-  
+export async function generateWordDocumentWithoutImages(data: WordReportData): Promise<Buffer> {
+  console.log('Generating Word document without images...');
   const children: Paragraph[] = [];
-
-  // Convertir les graphiques SVG en PNG
-  let chartBuffers: { [key: string]: Buffer } = {};
-  try {
-    console.log('Converting charts to PNG...');
-    chartBuffers.family = await svgToPng(data.charts.family, 600, 450);
-    console.log('Family chart converted');
-    chartBuffers.radar = await svgToPng(data.charts.radar, 600, 600);
-    console.log('Radar chart converted');
-    chartBuffers.sorted = await svgToPng(data.charts.sorted, 600, 450);
-    console.log('Sorted chart converted');
-    console.log('All charts converted successfully');
-  } catch (error) {
-    console.error('Erreur lors de la conversion des graphiques:', error);
-    console.error('Error details:', error instanceof Error ? error.stack : 'No stack');
-    // Continuer sans les graphiques si erreur
-  }
 
   // Parser le contenu du rapport
   const lines = data.reportContent.split('\n');
   let currentSection = 0;
-  let inSection1 = false;
-  let inSection2 = false;
-  let inSection3 = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -112,63 +69,53 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     if (/^[1-5]\.\s/.test(line)) {
       currentSection = parseInt(line[0]);
       
-      // Insérer les graphiques à la fin des sections précédentes
-      if (currentSection === 2 && inSection1 && chartBuffers.family) {
-        // Insérer le graphique des familles à la fin de la section 1
+      // Insérer des espaces réservés pour les graphiques
+      if (currentSection === 2) {
         children.push(
           new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.family,
-                transformation: {
-                  width: 450,
-                  height: 338,
-                },
-              }),
-            ],
+            text: '[Graphique : Forces par famille de compétences]',
             alignment: AlignmentType.CENTER,
             spacing: { before: 240, after: 240 },
+            children: [
+              new TextRun({
+                text: '[Graphique : Forces par famille de compétences]',
+                italics: true,
+                color: '666666',
+              }),
+            ],
           })
         );
-      } else if (currentSection === 3 && inSection2 && chartBuffers.radar) {
-        // Insérer le graphique radar à la fin de la section 2
+      } else if (currentSection === 3) {
         children.push(
           new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.radar,
-                transformation: {
-                  width: 450,
-                  height: 450,
-                },
-              }),
-            ],
+            text: '[Graphique : Vision globale des compétences]',
             alignment: AlignmentType.CENTER,
             spacing: { before: 240, after: 240 },
+            children: [
+              new TextRun({
+                text: '[Graphique : Vision globale des compétences]',
+                italics: true,
+                color: '666666',
+              }),
+            ],
           })
         );
-      } else if (currentSection === 4 && inSection3 && chartBuffers.sorted) {
-        // Insérer le graphique trié à la fin de la section 3
+      } else if (currentSection === 4) {
         children.push(
           new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.sorted,
-                transformation: {
-                  width: 450,
-                  height: 338,
-                },
-              }),
-            ],
+            text: '[Graphique : Forces et axes de progression]',
             alignment: AlignmentType.CENTER,
             spacing: { before: 240, after: 240 },
+            children: [
+              new TextRun({
+                text: '[Graphique : Forces et axes de progression]',
+                italics: true,
+                color: '666666',
+              }),
+            ],
           })
         );
       }
-      
-      inSection1 = (currentSection === 1);
-      inSection2 = (currentSection === 2);
-      inSection3 = (currentSection === 3);
       
       children.push(
         new Paragraph({
@@ -276,27 +223,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     );
   }
 
-  // Ajouter le dernier graphique si on était dans la section 3
-  if (inSection3 && chartBuffers.sorted) {
-    children.push(
-      new Paragraph({
-        children: [
-          new ImageRun({
-            data: chartBuffers.sorted,
-            transformation: {
-              width: 450,
-              height: 338,
-            },
-          }),
-        ],
-        alignment: AlignmentType.CENTER,
-        spacing: { before: 240, after: 240 },
-      })
-    );
-  }
-
   // Créer le document avec les styles
-  console.log('Creating Word document with', children.length, 'paragraphs...');
   const doc = new Document({
     styles: {
       default: {
@@ -321,19 +248,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           paragraph: {
             spacing: {
               before: 360,
-              after: 120,
-            },
-          },
-        },
-        heading3: {
-          run: {
-            font: 'Avenir',
-            size: 24,
-            bold: true,
-          },
-          paragraph: {
-            spacing: {
-              before: 240,
               after: 120,
             },
           },
@@ -374,8 +288,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   });
 
   // Générer le document
-  console.log('Packing Word document...');
+  console.log('Packing Word document without images...');
   const buffer = await Packer.toBuffer(doc);
-  console.log('Word document packed successfully, final buffer size:', buffer.length);
+  console.log('Word document packed successfully (without images), buffer size:', buffer.length);
   return buffer;
 } 
