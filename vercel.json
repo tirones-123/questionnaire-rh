@@ -1,5 +1,8 @@
 {
   "functions": {
+    "pages/api/*.ts": {
+      "maxDuration": 60
+    },
     "pages/api/submit-questionnaire.ts": {
       "maxDuration": 300
     },
@@ -25,5 +28,13 @@
         }
       ]
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
+    }
+  },
+  "env": {
+    "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
+  }
 } 
