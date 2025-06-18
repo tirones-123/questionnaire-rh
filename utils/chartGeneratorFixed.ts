@@ -97,10 +97,10 @@ export function generateRadarChartFixed(scores: { [key: string]: ScoreDetails })
     const valueY = centerY + valueR * Math.sin(angle);
     
     // Label du critère (UTF-8 direct)
-    svg += `<text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" class="chart-text chart-label">${point.data.critere}</text>`;
+    svg += `<text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" font-family="'DejaVu Sans','Liberation Sans',sans-serif" font-size="14" font-weight="bold">${point.data.critere}</text>`;
     
     // Valeur
-    svg += `<text x="${valueX}" y="${valueY}" text-anchor="middle" dominant-baseline="middle" class="chart-text chart-value">${point.data.score.toFixed(1)}</text>`;
+    svg += `<text x="${valueX}" y="${valueY}" text-anchor="middle" dominant-baseline="middle" font-family="'DejaVu Sans','Liberation Sans',sans-serif" font-size="12">${point.data.score.toFixed(1)}</text>`;
   });
   
   // Titre
@@ -141,7 +141,7 @@ export function generateSortedBarChartFixed(scores: { [key: string]: ScoreDetail
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre
-  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" class="chart-text chart-title">Forces et axes de progression – Triés par score</text>`;
+  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans',sans-serif" font-size="20" font-weight="bold">Forces et axes de progression – Triés par score</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {
@@ -220,7 +220,7 @@ export function generateFamilyBarChartFixed(scores: { [key: string]: ScoreDetail
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre
-  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" class="chart-text chart-title">Forces par famille de compétences</text>`;
+  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans',sans-serif" font-size="20" font-weight="bold">Forces par famille de compétences</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {
