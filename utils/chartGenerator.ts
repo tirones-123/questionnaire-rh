@@ -1,4 +1,6 @@
 import { ScoreDetails } from './scoreCalculator';
+import fs from 'fs';
+import path from 'path';
 
 export interface ChartData {
   critere: string;
@@ -13,14 +15,30 @@ const familyColors: { [key: string]: string } = {
   'ENSEMBLE': '#2ca02c'  // vert
 };
 
+// Charger et encoder la police DejaVu Sans (une seule fois)
+let EMBEDDED_FONT_CSS = '';
+try {
+  const fontPath = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
+  const fontBuffer = fs.readFileSync(fontPath);
+  const fontBase64 = fontBuffer.toString('base64');
+  EMBEDDED_FONT_CSS = `@font-face { font-family: 'DejaVuSansEmbed'; src: url('data:font/ttf;base64,${fontBase64}') format('truetype'); font-weight: normal; font-style: normal; } text { font-family: 'DejaVuSansEmbed', sans-serif; }`;
+} catch (err) {
+  console.error('Unable to load embedded font:', err);
+}
+
+// helper to wrap style
+function embedFontStyle(): string {
+  return `<defs><style><![CDATA[${EMBEDDED_FONT_CSS}]]></style></defs>`;
+}
+
 // Générer le graphique radar (vision globale des compétences)
 export function generateRadarChart(scores: { [key: string]: ScoreDetails }): string {
   const data: ChartData[] = [];
   const order = [
-    'Ambition', 'Initiative', 'Resilience',  // VOULOIR - Remplacé Résilience
-    'Vision', 'Recul', 'Pertinence',        // PENSER
-    'Organisation', 'Decision', 'Sens du resultat',  // AGIR - Remplacé Décision et résultat
-    'Communication', 'Esprit d equipe', 'Leadership'  // ENSEMBLE - Remplacé l'apostrophe
+    'Ambition', 'Initiative', 'Résilience',
+    'Vision', 'Recul', 'Pertinence',
+    'Organisation', 'Décision', 'Sens du résultat',
+    'Communication', "Esprit d'équipe", 'Leadership'
   ];
   
   const criteriaMapping: { [key: string]: string } = {
@@ -61,6 +79,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
   });
   
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" encoding="UTF-8">`;
+  svg += embedFontStyle();
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
@@ -106,7 +125,7 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
   });
   
   // Titre (sans caractères spéciaux)
-  svg += `<text x="${centerX}" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Vision globale des competences</text>`;
+  svg += `<text x="${centerX}" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Vision globale des compétences</text>`;
   
   svg += '</svg>';
   
@@ -115,15 +134,8 @@ export function generateRadarChart(scores: { [key: string]: ScoreDetails }): str
 
 // Générer l'histogramme horizontal trié par score
 export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }): string {
-  const criteriaMapping: { [key: string]: string } = {
-    'Résilience': 'Resilience',
-    'Décision': 'Decision', 
-    'Sens du résultat': 'Sens du resultat',
-    'Esprit d\'équipe': 'Esprit d equipe'
-  };
-
   const data: ChartData[] = Object.values(scores).map(s => ({
-    critere: criteriaMapping[s.critere] || s.critere, // Mapper les noms si nécessaire
+    critere: s.critere,
     score: s.noteSur5,
     famille: s.famille
   })).sort((a, b) => b.score - a.score);
@@ -136,12 +148,13 @@ export function generateSortedBarChart(scores: { [key: string]: ScoreDetails }):
   const barHeight = chartHeight / data.length - 5;
   
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" encoding="UTF-8">`;
+  svg += embedFontStyle();
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre (sans caractères spéciaux)
-  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Forces et axes de progression - Tries par score</text>`;
+  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Forces et axes de progression – Triés par score</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {
@@ -178,26 +191,18 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
   // Ordonner les critères par famille
   const families = ['VOULOIR', 'PENSER', 'AGIR', 'ENSEMBLE'];
   const criteriaByFamily: { [key: string]: string[] } = {
-    'VOULOIR': ['Ambition', 'Initiative', 'Resilience'],
+    'VOULOIR': ['Ambition', 'Initiative', 'Résilience'],
     'PENSER': ['Vision', 'Recul', 'Pertinence'],
-    'AGIR': ['Organisation', 'Decision', 'Sens du resultat'],
-    'ENSEMBLE': ['Communication', 'Esprit d equipe', 'Leadership']
-  };
-  
-  const criteriaMapping: { [key: string]: string } = {
-    'Résilience': 'Resilience',
-    'Décision': 'Decision', 
-    'Sens du résultat': 'Sens du resultat',
-    'Esprit d\'équipe': 'Esprit d equipe'
+    'AGIR': ['Organisation', 'Décision', 'Sens du résultat'],
+    'ENSEMBLE': ['Communication', "Esprit d'équipe", 'Leadership']
   };
   
   const data: ChartData[] = [];
   families.forEach(family => {
     criteriaByFamily[family].forEach(critere => {
       // Chercher avec le nom original d'abord
-      const originalCritere = Object.keys(criteriaMapping).find(key => criteriaMapping[key] === critere) || critere;
-      if (scores[originalCritere] || scores[critere]) {
-        const scoreData = scores[originalCritere] || scores[critere];
+      if (scores[critere] || scores[critere]) {
+        const scoreData = scores[critere] || scores[critere];
         data.push({
           critere: critere, // Utiliser le nom sans caractères spéciaux
           score: scoreData.noteSur5,
@@ -215,12 +220,13 @@ export function generateFamilyBarChart(scores: { [key: string]: ScoreDetails }):
   const barHeight = chartHeight / data.length - 5;
   
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" encoding="UTF-8">`;
+  svg += embedFontStyle();
   
   // Fond blanc
   svg += `<rect width="${width}" height="${height}" fill="white"/>`;
   
   // Titre (sans caractères spéciaux)
-  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Forces par famille de competences</text>`;
+  svg += `<text x="${width / 2}" y="${margin.top / 2}" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">Forces par famille de compétences</text>`;
   
   // Grille verticale
   for (let i = 0; i <= 5; i++) {

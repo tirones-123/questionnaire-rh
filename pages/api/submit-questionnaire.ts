@@ -204,60 +204,55 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('First email sent successfully');
 
     // GÉNÉRATION DU RAPPORT - Maintenant en mode synchrone pour s'assurer qu'il s'exécute
-    try {
+      try {
       console.log('Starting report generation process...');
-      
-      // Générer le contenu du rapport avec OpenAI
+        
+        // Générer le contenu du rapport avec OpenAI
       console.log('Calling OpenAI for report generation...');
-      const reportContent = await generateReportContent({
-        type: 'autodiagnostic',
-        person: userInfo,
-        scores,
-        scoresTable
-      });
-      console.log('Report content generated successfully');
+        const reportContent = await generateReportContent({
+          type: 'autodiagnostic',
+          person: userInfo,
+          scores,
+          scoresTable
+        });
+        console.log('Report content generated successfully');
       console.log('Report content length:', reportContent.length);
 
-      // Générer les graphiques
+        // Générer les graphiques
       console.log('Starting chart generation...');
       let radarChart: string;
       let sortedChart: string;
       let familyChart: string;
       
       try {
-        // Utiliser les nouvelles fonctions avec UTF-8 direct (pas d'entités HTML)
-        const { generateRadarChartFixed, generateSortedBarChartFixed, generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        
-        radarChart = generateRadarChartFixed(scores);
-        console.log('Radar chart SVG generated with UTF-8 encoding, length:', radarChart.length);
+        radarChart = generateRadarChart(scores);
+        console.log('Radar chart SVG generated, length:', radarChart.length);
       } catch (chartError) {
         console.error('Error generating radar chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateSortedBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        sortedChart = generateSortedBarChartFixed(scores);
-        console.log('Sorted chart SVG generated with UTF-8 encoding, length:', sortedChart.length);
+        sortedChart = generateSortedBarChart(scores);
+        console.log('Sorted chart SVG generated, length:', sortedChart.length);
       } catch (chartError) {
         console.error('Error generating sorted chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        familyChart = generateFamilyBarChartFixed(scores);
-        console.log('Family chart SVG generated with UTF-8 encoding, length:', familyChart.length);
+        familyChart = generateFamilyBarChart(scores);
+        console.log('Family chart SVG generated, length:', familyChart.length);
       } catch (chartError) {
         console.error('Error generating family chart:', chartError);
         throw chartError;
       }
 
-      // Générer le document Word
+        // Générer le document Word
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // Utiliser la version standard avec Sharp (compatible build)
+        // Réactiver la version avec images
         wordBuffer = await generateWordDocument({
           type: 'autodiagnostic',
           person: userInfo,
@@ -275,9 +270,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw wordError;
       }
 
-      const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
+        const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
-      // SECOND EMAIL : Envoyer le rapport Word
+        // SECOND EMAIL : Envoyer le rapport Word
       console.log('Preparing to send report email...');
       console.log('Email to:', 'luc.marsal@auramanagement.fr');
       console.log('Attachment filename:', wordFileName);
@@ -337,35 +332,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error('Erreur lors de la génération du rapport:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack');
-      
+        
       // Envoyer un email d'erreur
-      try {
-        await transporter.sendMail({
-          from: process.env.SMTP_FROM || process.env.SMTP_USER,
-          to: 'luc.marsal@auramanagement.fr',
-          subject: `ERREUR - Rapport non généré - ${userInfo.firstName} ${userInfo.lastName}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
-                <h1>Erreur de génération du rapport</h1>
-              </div>
-              
-              <div style="padding: 20px; background-color: #f8fafc;">
-                <p>Une erreur s'est produite lors de la génération du rapport pour :</p>
-                <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
-                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+        try {
+          await transporter.sendMail({
+            from: process.env.SMTP_FROM || process.env.SMTP_USER,
+            to: 'luc.marsal@auramanagement.fr',
+            subject: `ERREUR - Rapport non généré - ${userInfo.firstName} ${userInfo.lastName}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
+                  <h1>Erreur de génération du rapport</h1>
+                </div>
                 
-                <p><strong>Détails de l'erreur :</strong></p>
-                <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
-                
-                <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+                <div style="padding: 20px; background-color: #f8fafc;">
+                  <p>Une erreur s'est produite lors de la génération du rapport pour :</p>
+                  <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
+                  <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                  
+                  <p><strong>Détails de l'erreur :</strong></p>
+                  <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
+                  
+                  <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+                </div>
               </div>
-            </div>
-          `
-        });
-      } catch (emailError) {
-        console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
-      }
+            `
+          });
+        } catch (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
+        }
       
       // Répondre au client avec l'erreur
       res.status(500).json({ 

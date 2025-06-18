@@ -269,29 +269,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let familyChart: string;
       
       try {
-        // Utiliser les nouvelles fonctions avec UTF-8 direct (pas d'entités HTML)
-        const { generateRadarChartFixed, generateSortedBarChartFixed, generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        
-        radarChart = generateRadarChartFixed(scores);
-        console.log('Radar chart SVG generated with UTF-8 encoding, length:', radarChart.length);
+        radarChart = generateRadarChart(scores);
+        console.log('Radar chart SVG generated, length:', radarChart.length);
       } catch (chartError) {
         console.error('Error generating radar chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateSortedBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        sortedChart = generateSortedBarChartFixed(scores);
-        console.log('Sorted chart SVG generated with UTF-8 encoding, length:', sortedChart.length);
+        sortedChart = generateSortedBarChart(scores);
+        console.log('Sorted chart SVG generated, length:', sortedChart.length);
       } catch (chartError) {
         console.error('Error generating sorted chart:', chartError);
         throw chartError;
       }
       
       try {
-        const { generateFamilyBarChartFixed } = await import('../../utils/chartGeneratorFixed');
-        familyChart = generateFamilyBarChartFixed(scores);
-        console.log('Family chart SVG generated with UTF-8 encoding, length:', familyChart.length);
+        familyChart = generateFamilyBarChart(scores);
+        console.log('Family chart SVG generated, length:', familyChart.length);
       } catch (chartError) {
         console.error('Error generating family chart:', chartError);
         throw chartError;
@@ -301,7 +296,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // Utiliser la version standard avec Sharp (compatible build)
+        // Réactiver la version avec images
         wordBuffer = await generateWordDocument({
           type: 'evaluation',
           person: {
