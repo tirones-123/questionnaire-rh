@@ -220,13 +220,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           scores,
           scoresTable
         });
+        console.log('Report content generated successfully');
 
         // Générer les graphiques
+        console.log('Generating charts...');
         const radarChart = generateRadarChart(scores);
+        console.log('Radar chart generated');
         const sortedChart = generateSortedBarChart(scores);
+        console.log('Sorted chart generated');
         const familyChart = generateFamilyBarChart(scores);
+        console.log('Family chart generated');
 
         // Générer le document Word
+        console.log('Generating Word document...');
         const wordBuffer = await generateWordDocument({
           type: 'autodiagnostic',
           person: userInfo,
@@ -237,10 +243,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             family: familyChart
           }
         });
+        console.log('Word document generated successfully');
 
         const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
         // SECOND EMAIL : Envoyer le rapport Word
+        console.log('Sending report email...');
         await transporter.sendMail({
           from: process.env.SMTP_FROM || process.env.SMTP_USER,
           to: 'luc.marsal@auramanagement.fr',
@@ -279,6 +287,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log('Background report sent successfully');
       } catch (error) {
         console.error('Erreur lors de la génération du rapport en arrière-plan:', error);
+        console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
         
         // Envoyer un email d'erreur si la génération échoue
         try {

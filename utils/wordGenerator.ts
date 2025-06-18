@@ -1,5 +1,6 @@
 import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun, PageBreak, Packer } from 'docx';
 import { svgToBase64 } from './chartGenerator';
+import sharp from 'sharp';
 
 interface WordReportData {
   type: 'autodiagnostic' | 'evaluation';
@@ -21,23 +22,39 @@ interface WordReportData {
   };
 }
 
-// Convertir SVG en PNG via sharp (à installer)
-async function svgToPng(svg: string): Promise<Buffer> {
-  // Pour l'instant, on va garder le SVG
-  // Dans une version complète, on utiliserait sharp ou un service de conversion
-  return Buffer.from(svg);
+// Convertir SVG en PNG via sharp
+async function svgToPng(svg: string, width: number = 800, height: number = 600): Promise<Buffer> {
+  try {
+    return await sharp(Buffer.from(svg))
+      .resize(width, height, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+      .png()
+      .toBuffer();
+  } catch (error) {
+    console.error('Erreur lors de la conversion SVG vers PNG:', error);
+    throw error;
+  }
 }
 
 export async function generateWordDocument(data: WordReportData): Promise<Buffer> {
   const children: Paragraph[] = [];
 
+  // Convertir les graphiques SVG en PNG
+  let chartBuffers: { [key: string]: Buffer } = {};
+  try {
+    chartBuffers.family = await svgToPng(data.charts.family, 600, 450);
+    chartBuffers.radar = await svgToPng(data.charts.radar, 600, 600);
+    chartBuffers.sorted = await svgToPng(data.charts.sorted, 600, 450);
+  } catch (error) {
+    console.error('Erreur lors de la conversion des graphiques:', error);
+    // Continuer sans les graphiques si erreur
+  }
+
   // Parser le contenu du rapport
   const lines = data.reportContent.split('\n');
-  let chartPositions = {
-    family: -1,
-    radar: -1,
-    sorted: -1
-  };
+  let currentSection = 0;
+  let inSection1 = false;
+  let inSection2 = false;
+  let inSection3 = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -78,7 +95,65 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
 
     // Sections numérotées
     if (/^[1-5]\.\s/.test(line)) {
-      const sectionNumber = parseInt(line[0]);
+      currentSection = parseInt(line[0]);
+      
+      // Insérer les graphiques à la fin des sections précédentes
+      if (currentSection === 2 && inSection1 && chartBuffers.family) {
+        // Insérer le graphique des familles à la fin de la section 1
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.family,
+                transformation: {
+                  width: 450,
+                  height: 338,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 3 && inSection2 && chartBuffers.radar) {
+        // Insérer le graphique radar à la fin de la section 2
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.radar,
+                transformation: {
+                  width: 450,
+                  height: 450,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 4 && inSection3 && chartBuffers.sorted) {
+        // Insérer le graphique trié à la fin de la section 3
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.sorted,
+                transformation: {
+                  width: 450,
+                  height: 338,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      }
+      
+      inSection1 = (currentSection === 1);
+      inSection2 = (currentSection === 2);
+      inSection3 = (currentSection === 3);
       
       children.push(
         new Paragraph({
@@ -87,31 +162,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           spacing: { before: 480, after: 240 },
         })
       );
-
-      // Marquer les positions pour les graphiques
-      if (sectionNumber === 1) {
-        // Le graphique family ira après la fin de la section 1
-        let j = i + 1;
-        while (j < lines.length && !lines[j].trim().match(/^2\.\s/)) {
-          j++;
-        }
-        chartPositions.family = children.length + (j - i - 1);
-      } else if (sectionNumber === 2) {
-        // Le graphique radar ira après la fin de la section 2
-        let j = i + 1;
-        while (j < lines.length && !lines[j].trim().match(/^3\.\s/)) {
-          j++;
-        }
-        chartPositions.radar = children.length + (j - i - 1);
-      } else if (sectionNumber === 3) {
-        // Le graphique sorted ira après la fin de la section 3
-        let j = i + 1;
-        while (j < lines.length && !lines[j].trim().match(/^4\.\s/)) {
-          j++;
-        }
-        chartPositions.sorted = children.length + (j - i - 1);
-      }
-      
       continue;
     }
 
@@ -207,6 +257,25 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             size: 22,
           }),
         ],
+      })
+    );
+  }
+
+  // Ajouter le dernier graphique si on était dans la section 3
+  if (inSection3 && chartBuffers.sorted) {
+    children.push(
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: chartBuffers.sorted,
+            transformation: {
+              width: 450,
+              height: 338,
+            },
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 240, after: 240 },
       })
     );
   }
