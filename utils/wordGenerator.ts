@@ -1,4 +1,6 @@
 import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun, PageBreak, Packer } from 'docx';
+import { svgToBase64 } from './chartGenerator';
+import sharp from 'sharp';
 
 interface WordReportData {
   type: 'autodiagnostic' | 'evaluation';
@@ -20,82 +22,116 @@ interface WordReportData {
   };
 }
 
-// Convertir SVG directement en base64 pour Word (sans Sharp)
-function svgToBase64ForWord(svg: string): Buffer {
+// Convertir SVG en PNG via sharp
+async function svgToPng(svg: string, width: number = 800, height: number = 600): Promise<Buffer> {
   try {
-    console.log(`Converting SVG directly to base64, SVG length: ${svg.length}`);
+    console.log(`Converting SVG to PNG (${width}x${height}), SVG length: ${svg.length}`);
     
-    // Nettoyer le SVG pour Word
+    // Nettoyer le SVG pour Sharp et environnements serverless
     const cleanSvg = svg
+      .replace(/encoding="UTF-8"/g, '')
       .replace(/\s+/g, ' ')
+      .replace(/font-family="[^"]*"/g, 'font-family="Arial, sans-serif"') // Forcer Arial
       .trim();
     
-    // Word peut accepter les SVG directement en base64
-    const base64 = Buffer.from(cleanSvg, 'utf-8').toString('base64');
-    return Buffer.from(base64, 'base64');
+    // Créer un buffer depuis le SVG nettoyé
+    const svgBuffer = Buffer.from(cleanSvg, 'utf-8');
+    
+    // Configuration optimisée pour environnements serverless
+    const buffer = await sharp(svgBuffer, {
+      density: 150, // Réduire la densité pour éviter les problèmes de mémoire
+    })
+      .resize(width, height, { 
+        fit: 'inside', 
+        withoutEnlargement: false,
+        background: { r: 255, g: 255, b: 255, alpha: 1 } 
+      })
+      .png({ 
+        quality: 80, // Réduire la qualité pour des fichiers plus légers
+        compressionLevel: 9,
+        progressive: false, // Éviter les problèmes sur serverless
+        force: true // Forcer le format PNG
+      })
+      .toBuffer();
+      
+    console.log(`PNG conversion successful, buffer size: ${buffer.length}`);
+    return buffer;
   } catch (error) {
-    console.error('Erreur lors de la conversion SVG:', error);
-    // Fallback : créer une image de remplacement simple
-    return createFallbackImage();
+    console.error('Erreur lors de la conversion SVG vers PNG:', error);
+    console.error('SVG content (first 500 chars):', svg.substring(0, 500));
+    
+    // Créer une image de fallback simple SANS polices complexes
+    return createSimpleFallbackImage(width, height, 'Graphique');
   }
 }
 
-// Créer une image de fallback très simple (1x1 pixel transparent)
-function createFallbackImage(): Buffer {
-  // PNG 1x1 transparent en base64
-  const transparentPng = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-  return Buffer.from(transparentPng, 'base64');
-}
-
-// Créer un graphique de remplacement en texte
-function createTextChart(chartType: string, data: any): Paragraph[] {
-  const paragraphs: Paragraph[] = [];
-  
-  paragraphs.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: `[${chartType}]`,
-          font: 'Avenir',
-          size: 24,
-          bold: true,
-          color: '1d4e89',
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { before: 240, after: 240 },
+// Créer une image de fallback ultra-simple
+async function createSimpleFallbackImage(width: number, height: number, text: string): Promise<Buffer> {
+  try {
+    // SVG ultra-simple sans polices externes
+    const fallbackSvg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${width}" height="${height}" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+      <text x="${width/2}" y="${height/2}" text-anchor="middle" dominant-baseline="middle" 
+            font-family="Arial" font-size="16" fill="#6c757d">${text}</text>
+    </svg>`;
+    
+    return await sharp(Buffer.from(fallbackSvg), { density: 72 })
+      .png({ quality: 50, force: true })
+      .toBuffer();
+  } catch (error) {
+    console.error('Impossible de créer l\'image de fallback:', error);
+    
+    // Dernier recours : créer un rectangle coloré simple
+    return await sharp({
+      create: {
+        width: width,
+        height: height,
+        channels: 4,
+        background: { r: 248, g: 249, b: 250, alpha: 1 }
+      }
     })
-  );
-  
-  paragraphs.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: 'Graphique non disponible - Contactez le support technique',
-          font: 'Avenir',
-          size: 16,
-          italics: true,
-          color: '666666',
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 240 },
-    })
-  );
-  
-  return paragraphs;
+    .png()
+    .toBuffer();
+  }
 }
 
 export async function generateWordDocument(data: WordReportData): Promise<Buffer> {
-  console.log('Starting Word document generation WITHOUT Sharp conversion...');
+  console.log('Starting Word document generation...');
   console.log('Report type:', data.type);
   console.log('Person:', data.person.firstName, data.person.lastName);
   console.log('Report content length:', data.reportContent.length);
   
   const children: Paragraph[] = [];
 
-  // Version sans conversion PNG - on va insérer des textes de remplacement
-  console.log('Using text-based charts instead of images for better compatibility...');
+  // Convertir les graphiques SVG en PNG avec dimensions optimisées
+  let chartBuffers: { [key: string]: Buffer } = {};
+  try {
+    console.log('Converting charts to PNG...');
+    
+    // Convertir chaque graphique avec une taille appropriée
+    chartBuffers.family = await svgToPng(data.charts.family, 600, 400);
+    console.log('Family chart converted');
+    
+    chartBuffers.radar = await svgToPng(data.charts.radar, 600, 600);
+    console.log('Radar chart converted'); 
+    
+    chartBuffers.sorted = await svgToPng(data.charts.sorted, 600, 400);
+    console.log('Sorted chart converted');
+    
+    console.log('All charts converted successfully');
+  } catch (error) {
+    console.error('Erreur lors de la conversion des graphiques:', error);
+    console.error('Error details:', error instanceof Error ? error.stack : 'No stack');
+    
+    // Créer des images de fallback
+    try {
+      chartBuffers.family = await createSimpleFallbackImage(600, 400, 'Graphique par famille');
+      chartBuffers.radar = await createSimpleFallbackImage(600, 600, 'Graphique radar');
+      chartBuffers.sorted = await createSimpleFallbackImage(600, 400, 'Graphique trié');
+    } catch (fallbackError) {
+      console.error('Impossible de créer les images de fallback:', fallbackError);
+    }
+  }
 
   // Parser le contenu du rapport
   const lines = data.reportContent.split('\n');
@@ -145,16 +181,58 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     if (/^[1-5]\.\s/.test(line)) {
       currentSection = parseInt(line[0]);
       
-      // Insérer les graphiques en mode texte à la fin des sections précédentes
-      if (currentSection === 2 && inSection1) {
-        // Graphique des familles à la fin de la section 1
-        children.push(...createTextChart('Graphique par famille de compétences', null));
-      } else if (currentSection === 3 && inSection2) {
-        // Graphique radar à la fin de la section 2
-        children.push(...createTextChart('Radar des compétences', null));
-      } else if (currentSection === 4 && inSection3) {
-        // Graphique trié à la fin de la section 3
-        children.push(...createTextChart('Compétences triées par score', null));
+      // Insérer les graphiques à la fin des sections précédentes
+      if (currentSection === 2 && inSection1 && chartBuffers.family && chartBuffers.family.length > 0) {
+        // Insérer le graphique des familles à la fin de la section 1
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.family,
+                transformation: {
+                  width: 450,
+                  height: 300,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 3 && inSection2 && chartBuffers.radar && chartBuffers.radar.length > 0) {
+        // Insérer le graphique radar à la fin de la section 2
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.radar,
+                transformation: {
+                  width: 450,
+                  height: 450,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 4 && inSection3 && chartBuffers.sorted && chartBuffers.sorted.length > 0) {
+        // Insérer le graphique trié à la fin de la section 3
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.sorted,
+                transformation: {
+                  width: 450,
+                  height: 300,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
       }
       
       inSection1 = (currentSection === 1);
@@ -285,30 +363,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       })
     );
   }
-
-  // Ajouter une note sur les graphiques à la fin
-  children.push(
-    new Paragraph({
-      text: '',
-      spacing: { before: 480 },
-    })
-  );
-  
-  children.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: 'Note technique : Les graphiques seront transmis séparément par email.',
-          font: 'Avenir',
-          size: 16,
-          italics: true,
-          color: '888888',
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 240 },
-    })
-  );
 
   // Créer le document Word
   const doc = new Document({
