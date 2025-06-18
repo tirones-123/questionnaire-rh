@@ -129,10 +129,7 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
     console.log('Max tokens: 4000');
     console.log('API Key first 10 chars:', apiKey.substring(0, 10));
     
-    // Créer l'appel OpenAI avec un timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 secondes timeout
-    
+    // Appel OpenAI sans AbortController pour le moment
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo", // Temporairement changé pour tester
       messages: [
@@ -141,11 +138,7 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
       ],
       temperature: 0.7,
       max_tokens: 4000,
-    }, {
-      signal: controller.signal as any
     });
-    
-    clearTimeout(timeoutId);
 
     const content = completion.choices[0]?.message?.content;
     
@@ -175,9 +168,6 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
       }
       if (error.message.includes('500') || error.message.includes('503')) {
         throw new Error('Service OpenAI temporairement indisponible');
-      }
-      if (error.name === 'AbortError' || error.message.includes('aborted')) {
-        throw new Error('Timeout OpenAI : la génération a pris trop de temps (>30s)');
       }
     }
     
