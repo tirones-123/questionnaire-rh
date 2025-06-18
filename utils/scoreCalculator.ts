@@ -1,6 +1,6 @@
 // Utilitaire pour calculer les scores du questionnaire
 
-import { questions } from '../data/questions';
+import { sections } from '../data/questions';
 
 // Mapping des valeurs pour les questions normales et inversées
 const scoreMapping = {
@@ -175,7 +175,7 @@ export function calculateScores(responses: { [key: string]: string }): { [key: s
 
 function getQuestionText(questionNum: number): string {
   // Parcourir toutes les sections pour trouver la question
-  for (const section of questions) {
+  for (const section of sections) {
     const question = section.questions.find(q => q.id === questionNum);
     if (question) {
       return question.text;
