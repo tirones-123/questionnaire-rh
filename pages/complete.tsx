@@ -95,20 +95,23 @@ export default function CompletePage() {
         body: JSON.stringify(requestBody),
       });
 
-      const result = await response.json();
+      const data = await response.json();
 
-      if (response.ok) {
-        setIsComplete(true);
-        // Nettoyer les données locales après envoi réussi
-        if (isEvaluationMode) {
-          localStorage.removeItem('evaluation-data');
-          localStorage.removeItem('evaluation-info');
-        } else {
-          localStorage.removeItem('questionnaire-data');
-          localStorage.removeItem('user-info');
-        }
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi');
+      }
+
+      setIsComplete(true);
+      // Stocker le message du serveur pour l'afficher
+      localStorage.setItem('completion-message', data.message || 'Vos réponses ont bien été transmises.');
+      
+      // Nettoyer les données locales après envoi réussi
+      if (isEvaluationMode) {
+        localStorage.removeItem('evaluation-data');
+        localStorage.removeItem('evaluation-info');
       } else {
-        throw new Error(result.error || 'Erreur lors de l\'envoi');
+        localStorage.removeItem('questionnaire-data');
+        localStorage.removeItem('user-info');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de l\'envoi des réponses');
@@ -122,6 +125,9 @@ export default function CompletePage() {
   }
 
   if (isComplete) {
+    const completionMessage = localStorage.getItem('completion-message') || 'Vos réponses ont bien été transmises.';
+    const hasReportIncluded = completionMessage.includes('rapport envoyés avec succès');
+    
     return (
       <div style={{ minHeight: '100vh' }}>
         <div className="hero-section">
@@ -140,7 +146,11 @@ export default function CompletePage() {
           
           <div className="success-message">
             <p><strong>Vos réponses ont bien été transmises.</strong></p>
-            <p>Vous pouvez fermer cette page.</p>
+            {hasReportIncluded ? (
+              <p>Vous allez recevoir deux emails avec le fichier Excel et le rapport d'analyse.</p>
+            ) : (
+              <p>Vous allez recevoir le fichier Excel, et le rapport d'analyse suivra dans quelques minutes.</p>
+            )}
           </div>
           
             <p style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '2rem' }}>

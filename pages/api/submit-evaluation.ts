@@ -232,125 +232,147 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ]
     });
 
-    // Répondre immédiatement au client pour éviter le timeout
-    res.status(200).json({ 
-      success: true, 
-      message: 'Évaluation envoyée avec succès. Le rapport détaillé sera envoyé dans quelques minutes.' 
-    });
+    // GÉNÉRATION DU RAPPORT - avec timeout de sécurité
+    let reportSent = false;
+    
+    // Créer une promesse avec timeout
+    const generateAndSendReport = async () => {
+      try {
+        // Extraire prénom et nom de l'évaluateur depuis l'email si possible
+        const evaluatorFirstName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[0] || 'L\'évaluateur';
+        const evaluatorLastName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[1] || '';
 
-    // GÉNÉRATION DU RAPPORT EN ARRIÈRE-PLAN
-    try {
-      // Extraire prénom et nom de l'évaluateur depuis l'email si possible
-      const evaluatorFirstName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[0] || 'L\'évaluateur';
-      const evaluatorLastName = evaluationInfo.evaluatorEmail.split('@')[0].split('.')[1] || '';
+        // Générer le contenu du rapport avec OpenAI
+        const reportContent = await generateReportContent({
+          type: 'evaluation',
+          person: {
+            firstName: evaluationInfo.evaluatedPerson.firstName,
+            lastName: evaluationInfo.evaluatedPerson.lastName,
+            age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0], // Prendre le début de la tranche
+            profession: evaluationInfo.evaluatedPerson.position
+          },
+          evaluator: {
+            firstName: evaluatorFirstName,
+            lastName: evaluatorLastName
+          },
+          scores,
+          scoresTable
+        });
 
-      // Générer le contenu du rapport avec OpenAI
-      const reportContent = await generateReportContent({
-        type: 'evaluation',
-        person: {
-          firstName: evaluationInfo.evaluatedPerson.firstName,
-          lastName: evaluationInfo.evaluatedPerson.lastName,
-          age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0], // Prendre le début de la tranche
-          profession: evaluationInfo.evaluatedPerson.position
-        },
-        evaluator: {
-          firstName: evaluatorFirstName,
-          lastName: evaluatorLastName
-        },
-        scores,
-        scoresTable
-      });
+        // Générer les graphiques
+        const radarChart = generateRadarChart(scores);
+        const sortedChart = generateSortedBarChart(scores);
+        const familyChart = generateFamilyBarChart(scores);
 
-      // Générer les graphiques
-      const radarChart = generateRadarChart(scores);
-      const sortedChart = generateSortedBarChart(scores);
-      const familyChart = generateFamilyBarChart(scores);
+        // Générer le document Word
+        const wordBuffer = await generateWordDocument({
+          type: 'evaluation',
+          person: {
+            firstName: evaluationInfo.evaluatedPerson.firstName,
+            lastName: evaluationInfo.evaluatedPerson.lastName,
+            age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0],
+            profession: evaluationInfo.evaluatedPerson.position
+          },
+          evaluator: {
+            firstName: evaluatorFirstName,
+            lastName: evaluatorLastName
+          },
+          reportContent,
+          charts: {
+            radar: radarChart,
+            sorted: sortedChart,
+            family: familyChart
+          }
+        });
 
-      // Générer le document Word
-      const wordBuffer = await generateWordDocument({
-        type: 'evaluation',
-        person: {
-          firstName: evaluationInfo.evaluatedPerson.firstName,
-          lastName: evaluationInfo.evaluatedPerson.lastName,
-          age: evaluationInfo.evaluatedPerson.ageRange.split('-')[0],
-          profession: evaluationInfo.evaluatedPerson.position
-        },
-        evaluator: {
-          firstName: evaluatorFirstName,
-          lastName: evaluatorLastName
-        },
-        reportContent,
-        charts: {
-          radar: radarChart,
-          sorted: sortedChart,
-          family: familyChart
-        }
-      });
+        const wordFileName = `Rapport_Evaluation_${evaluationInfo.evaluatedPerson.firstName}_${evaluationInfo.evaluatedPerson.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
 
-      const wordFileName = `Rapport_Evaluation_${evaluationInfo.evaluatedPerson.firstName}_${evaluationInfo.evaluatedPerson.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
-
-      // SECOND EMAIL : Envoyer le rapport Word
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
-        to: 'luc.marsal@auramanagement.fr',
-        subject: `Rapport d'évaluation - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background-color: #1d4e89; color: white; padding: 20px; text-align: center;">
-              <h1>Rapport d'évaluation du potentiel</h1>
-            </div>
-            
-            <div style="padding: 20px; background-color: #f8fafc;">
-              <h2>Rapport généré pour :</h2>
-              <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
-              <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
-              <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+        // SECOND EMAIL : Envoyer le rapport Word
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM || process.env.SMTP_USER,
+          to: 'luc.marsal@auramanagement.fr',
+          subject: `Rapport d'évaluation - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background-color: #1d4e89; color: white; padding: 20px; text-align: center;">
+                <h1>Rapport d'évaluation du potentiel</h1>
+              </div>
               
-              <div style="background-color: #e6f3ff; border: 1px solid #1d4e89; padding: 15px; border-radius: 5px; margin-top: 20px;">
-                <p><strong>📄 Document Word joint</strong></p>
-                <p>Le rapport complet d'évaluation du potentiel avec graphiques et recommandations personnalisées.</p>
+              <div style="padding: 20px; background-color: #f8fafc;">
+                <h2>Rapport généré pour :</h2>
+                <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
+                <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <div style="background-color: #e6f3ff; border: 1px solid #1d4e89; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                  <p><strong>📄 Document Word joint</strong></p>
+                  <p>Le rapport complet d'évaluation du potentiel avec graphiques et recommandations personnalisées.</p>
+                </div>
+              </div>
+              
+              <div style="padding: 20px; text-align: center; color: #6b7280; font-size: 12px;">
+                <p>Email généré automatiquement par le système d'évaluation QAP</p>
               </div>
             </div>
-            
-            <div style="padding: 20px; text-align: center; color: #6b7280; font-size: 12px;">
-              <p>Email généré automatiquement par le système d'évaluation QAP</p>
+          `,
+          attachments: [
+            {
+              filename: wordFileName,
+              content: wordBuffer,
+              contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            }
+          ]
+        });
+        
+        reportSent = true;
+        console.log('Report sent successfully');
+      } catch (error) {
+        console.error('Erreur lors de la génération du rapport:', error);
+        // Envoyer un email d'erreur si la génération échoue
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM || process.env.SMTP_USER,
+          to: 'luc.marsal@auramanagement.fr',
+          subject: `ERREUR - Rapport non généré - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
+                <h1>Erreur de génération du rapport</h1>
+              </div>
+              
+              <div style="padding: 20px; background-color: #f8fafc;">
+                <p>Une erreur s'est produite lors de la génération du rapport d'évaluation pour :</p>
+                <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
+                <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <p><strong>Détails de l'erreur :</strong></p>
+                <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
+                
+                <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
+              </div>
             </div>
-          </div>
-        `,
-        attachments: [
-          {
-            filename: wordFileName,
-            content: wordBuffer,
-            contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-          }
-        ]
+          `
+        });
+      }
+    };
+
+    // Lancer la génération avec un timeout de 50 secondes (pour rester sous les 60s de Vercel)
+    const reportPromise = generateAndSendReport();
+    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 50000));
+    
+    // Attendre soit la fin de la génération, soit le timeout
+    await Promise.race([reportPromise, timeoutPromise]);
+    
+    // Répondre au client
+    if (reportSent) {
+      res.status(200).json({ 
+        success: true, 
+        message: 'Évaluation et rapport envoyés avec succès' 
       });
-    } catch (error) {
-      console.error('Erreur lors de la génération du rapport:', error);
-      // Envoyer un email d'erreur si la génération échoue
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
-        to: 'luc.marsal@auramanagement.fr',
-        subject: `ERREUR - Rapport non généré - ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
-              <h1>Erreur de génération du rapport</h1>
-            </div>
-            
-            <div style="padding: 20px; background-color: #f8fafc;">
-              <p>Une erreur s'est produite lors de la génération du rapport d'évaluation pour :</p>
-              <p><strong>Personne évaluée :</strong> ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}</p>
-              <p><strong>Évaluateur :</strong> ${evaluationInfo.evaluatorEmail}</p>
-              <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
-              
-              <p><strong>Détails de l'erreur :</strong></p>
-              <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
-              
-              <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
-            </div>
-          </div>
-        `
+    } else {
+      res.status(200).json({ 
+        success: true, 
+        message: 'Évaluation envoyée avec succès. Le rapport détaillé sera envoyé dans quelques minutes.' 
       });
     }
 
