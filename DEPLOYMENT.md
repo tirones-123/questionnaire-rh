@@ -128,3 +128,94 @@ Si vous rencontrez des problèmes :
 2. Vérifiez que toutes les variables sont bien liées
 3. Testez avec un questionnaire court d'abord
 4. Contactez le support avec les logs d'erreur 
+
+## Tests de fonctionnement
+
+### 1. Test des dépendances
+Visitez : `https://votre-app.vercel.app/api/test-dependencies`
+
+Vous devriez voir :
+- nodemailer: OK
+- exceljs: OK
+- docx: OK
+- sharp: OK ou ERROR (voir ci-dessous)
+- openai: OK
+
+### 2. Test spécifique de Sharp
+Visitez : `https://votre-app.vercel.app/api/test-sharp`
+
+Si Sharp ne fonctionne pas sur Vercel, le rapport sera généré sans images.
+
+### 3. Test complet avec un questionnaire
+
+1. Remplissez un questionnaire sur `/`
+2. Vérifiez les logs Vercel : `vercel logs --follow`
+3. Vous devriez recevoir 2 emails :
+   - Email 1 : Immédiat avec Excel
+   - Email 2 : Après 30-60 secondes avec le rapport Word
+
+## Changements récents (Décembre 2024)
+
+### Architecture modifiée
+
+**Avant :** Exécution asynchrone (fire-and-forget)
+- Problème : Les logs n'apparaissaient pas sur Vercel
+- Le code après `res.json()` ne s'exécutait pas
+
+**Maintenant :** Exécution synchrone
+1. Envoi du premier email (Excel)
+2. Génération du rapport (OpenAI + graphiques + Word)
+3. Envoi du deuxième email (Word)
+4. PUIS réponse au client
+
+### Impact
+- L'utilisateur attend 1-2 minutes pour la confirmation
+- Tous les logs sont visibles
+- Les deux emails sont envoyés de manière fiable
+
+### Si Sharp pose problème
+
+Le système détecte automatiquement si Sharp fonctionne. Si non :
+- Le rapport Word est généré sans images
+- Des placeholders texte remplacent les graphiques
+- Les graphiques peuvent être ajoutés manuellement
+
+### Logs attendus
+
+```
+First email sent successfully
+Starting report generation process...
+Calling OpenAI for report generation...
+Report content generated successfully
+Report content length: [nombre]
+Starting chart generation...
+Radar chart SVG generated, length: [nombre]
+Sorted chart SVG generated, length: [nombre]
+Family chart SVG generated, length: [nombre]
+Starting Word document generation...
+Converting charts to PNG... (si Sharp fonctionne)
+Word document generated successfully, buffer size: [nombre]
+Preparing to send report email...
+Email sent successfully: [messageId]
+Report generation and sending completed successfully
+```
+
+## En cas de problème
+
+1. **Timeout côté client**
+   - Normal si > 30 secondes
+   - Vérifiez les logs Vercel
+   - Les emails devraient quand même partir
+
+2. **Sharp ne fonctionne pas**
+   - Le rapport sera généré sans images
+   - Testez avec `/api/test-sharp`
+
+3. **Erreur OpenAI**
+   - Vérifiez la clé API
+   - Vérifiez les limites de taux
+
+4. **Emails non reçus**
+   - Vérifiez les spams
+   - Vérifiez les logs d'erreur
+   - Testez les credentials SMTP 

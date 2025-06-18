@@ -296,11 +296,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // TEST: Utiliser temporairement la version sans images pour voir si le problème vient de Sharp
-        const { generateWordDocumentWithoutImages } = await import('../../utils/wordGeneratorWithoutSharp');
-        console.log('Using Word generator WITHOUT images (test mode)');
-        
-        wordBuffer = await generateWordDocumentWithoutImages({
+        // Réactiver la version avec images
+        wordBuffer = await generateWordDocument({
           type: 'evaluation',
           person: {
             firstName: evaluationInfo.evaluatedPerson.firstName,
@@ -319,7 +316,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             family: familyChart
           }
         });
-        console.log('Word document generated successfully (without images), buffer size:', wordBuffer.length);
+        console.log('Word document generated successfully, buffer size:', wordBuffer.length);
       } catch (wordError) {
         console.error('Error generating Word document:', wordError);
         console.error('Error stack:', wordError instanceof Error ? wordError.stack : 'No stack');
