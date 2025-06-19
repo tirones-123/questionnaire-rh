@@ -221,7 +221,9 @@ DÉTAIL DES RÉPONSES :
 Critère\tQuestion\tScore\tValence
 ${scoresTableText}
 
-Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
+Génère le rapport complet en respectant EXACTEMENT la structure demandée.
+
+IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.`;
 
   try {
     console.log('Calling OpenAI API...');

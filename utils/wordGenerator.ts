@@ -150,98 +150,87 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       console.log(`Found section: "${line}"`);
       const newSection = parseInt(line[0]);
       
-      // Ajouter un saut de page avant chaque nouvelle section (sauf la première)
-      if (!isFirstSection) {
-        // Insérer les graphiques avant le saut de page
-        if (currentSection === 1 && chartBuffers.family) {
-          children.push(
-            new Paragraph({
-              children: [
-                new ImageRun({
-                  data: chartBuffers.family,
-                  transformation: {
-                    width: 450,
-                    height: 300,
-                  },
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-              spacing: { before: 240, after: 240 },
-            })
-          );
-        } else if (currentSection === 2 && chartBuffers.radar) {
-          children.push(
-            new Paragraph({
-              children: [
-                new ImageRun({
-                  data: chartBuffers.radar,
-                  transformation: {
-                    width: 450,
-                    height: 450,
-                  },
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-              spacing: { before: 240, after: 240 },
-            })
-          );
-        } else if (currentSection === 3 && chartBuffers.sorted) {
-          children.push(
-            new Paragraph({
-              children: [
-                new ImageRun({
-                  data: chartBuffers.sorted,
-                  transformation: {
-                    width: 450,
-                    height: 300,
-                  },
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-              spacing: { before: 240, after: 240 },
-            })
-          );
-        }
-        
-        // Ajouter le saut de page
+      // Insérer les graphiques à la fin de la section précédente
+      if (currentSection === 1 && chartBuffers.family && newSection > 1) {
+        console.log('Inserting family chart at end of section 1');
         children.push(
           new Paragraph({
-            children: [new PageBreak()],
+            children: [
+              new ImageRun({
+                data: chartBuffers.family,
+                transformation: {
+                  width: 450,
+                  height: 300,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2) {
+        console.log('Inserting radar chart at end of section 2');
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.radar,
+                transformation: {
+                  width: 450,
+                  height: 450,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
+          })
+        );
+      } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3) {
+        console.log('Inserting sorted chart at end of section 3');
+        children.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: chartBuffers.sorted,
+                transformation: {
+                  width: 450,
+                  height: 300,
+                },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 240, after: 240 },
           })
         );
       }
       
-      isFirstSection = false;
       currentSection = newSection;
       inSection1 = (currentSection === 1);
       inSection2 = (currentSection === 2);
       inSection3 = (currentSection === 3);
       
-      // Ajouter le titre de section sur fond gris
+      console.log(`Adding section title: "${line}"`);
+      
+      // Ajouter le titre de section aligné à gauche sans fond gris
       children.push(
         new Paragraph({
           children: [
             new TextRun({
               text: line,
               font: 'Avenir Book',
-              size: 36, // 18pt comme le titre principal
+              size: 22, // 11pt comme le texte normal
               bold: true,
             }),
           ],
-          alignment: AlignmentType.CENTER,
-          spacing: { before: 0, after: 300 },
-          shading: {
-            type: ShadingType.SOLID,
-            color: 'DDDDDD',
-            fill: 'DDDDDD',
-          },
+          alignment: AlignmentType.LEFT, // Aligné à gauche
+          spacing: { before: 300, after: 200 },
         })
       );
       lastWasCriterion = false;
       continue;
     }
 
-    // Familles en majuscules
+    // Familles en majuscules avec fond gris
     if (line.startsWith('FAMILLE')) {
       console.log(`Found family: "${line}"`);
       children.push(
@@ -256,6 +245,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           ],
           alignment: AlignmentType.JUSTIFIED,
           spacing: { before: 360, after: 200 },
+          shading: {
+            type: ShadingType.SOLID,
+            color: 'DDDDDD',
+            fill: 'DDDDDD',
+          },
         })
       );
       lastWasCriterion = false;
@@ -367,8 +361,43 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     lastWasCriterion = false;
   }
 
-  // Insérer le dernier graphique si nécessaire
-  if (currentSection === 3 && chartBuffers.sorted) {
+  // Insérer les graphiques restants à la fin du document
+  if (currentSection === 1 && chartBuffers.family) {
+    console.log('Inserting family chart at end of document (section 1)');
+    children.push(
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: chartBuffers.family,
+            transformation: {
+              width: 450,
+              height: 300,
+            },
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 240, after: 240 },
+      })
+    );
+  } else if (currentSection === 2 && chartBuffers.radar) {
+    console.log('Inserting radar chart at end of document (section 2)');
+    children.push(
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: chartBuffers.radar,
+            transformation: {
+              width: 450,
+              height: 450,
+            },
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 240, after: 240 },
+      })
+    );
+  } else if (currentSection === 3 && chartBuffers.sorted) {
+    console.log('Inserting sorted chart at end of document (section 3)');
     children.push(
       new Paragraph({
         children: [
