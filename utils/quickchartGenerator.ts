@@ -42,28 +42,49 @@ export async function generateRadarChartBuffer(scores: { [key: string]: ScoreDet
     'Leadership': 'ENSEMBLE'
   };
   
-  const data: number[] = [];
   const labels: string[] = [];
-  const colors: string[] = [];
+  const familyData: { [key: string]: number[] } = {
+    'VOULOIR': [],
+    'PENSER': [],
+    'AGIR': [],
+    'ENSEMBLE': []
+  };
   
+  // Créer les labels et préparer les données par famille
   order.forEach(critere => {
     if (scores[critere]) {
-      data.push(scores[critere].noteSur5);
       labels.push(critere);
-      colors.push(familyColors[criteriaToFamily[critere]]);
+      const famille = criteriaToFamily[critere];
+      
+      // Pour chaque famille, ajouter le score du critère ou 0 si ce n'est pas sa famille
+      Object.keys(familyData).forEach(fam => {
+        if (fam === famille) {
+          familyData[fam].push(scores[critere].noteSur5);
+        } else {
+          familyData[fam].push(0);
+        }
+      });
     }
   });
 
+  // Créer les datasets pour chaque famille
+  const datasets = Object.keys(familyData).map(famille => ({
+    label: famille,
+    data: familyData[famille],
+    backgroundColor: familyColors[famille] + '40', // Transparence 40
+    borderColor: familyColors[famille],
+    borderWidth: 2,
+    pointBackgroundColor: familyColors[famille],
+    pointBorderColor: '#fff',
+    pointBorderWidth: 2,
+    pointRadius: 4
+  }));
+
   const chartConfig = {
-    type: 'polarArea',
+    type: 'radar',
     data: {
       labels: labels,
-      datasets: [{
-        label: 'Compétences',
-        data: data,
-        backgroundColor: colors,
-        borderWidth: 0
-      }]
+      datasets: datasets
     },
     options: {
       title: {
@@ -79,7 +100,8 @@ export async function generateRadarChartBuffer(scores: { [key: string]: ScoreDet
         }
       },
       legend: {
-        display: false
+        display: true,
+        position: 'bottom'
       },
       maintainAspectRatio: true
     }
