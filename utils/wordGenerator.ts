@@ -68,7 +68,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   let lastWasCriterion = false;
   let isFirstSection = true;
   let inBulletSection = false; // Pour savoir si on est dans une section avec bullets
-  let expectingDescription = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -345,31 +344,28 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         })
       );
       lastWasCriterion = false;
-      // Signaler que la prochaine ligne non vide est la description du score
-      expectingDescription = true;
-      // Important: ne pas sauter la ligne suivante qui contient la description
+      // Ajouter directement la description située juste après la ligne "Score :" si elle existe
+      const descriptionLine = (i + 1 < lines.length) ? lines[i + 1].trim() : '';
+      if (descriptionLine && !descriptionLine.startsWith('• ') && !descriptionLine.startsWith('FAMILLE') && !descriptionLine.match(/^[1-5]\./) && !descriptionLine.startsWith('Score :')) {
+        console.log(`Adding inline description for score at line ${i + 1}: "${descriptionLine.substring(0, Math.min(80, descriptionLine.length))}..."`);
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: descriptionLine,
+                font: 'Avenir Book',
+                size: 22, // 11pt
+              }),
+            ],
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 40 },
+          })
+        );
+        // Sauter la ligne de description dans la boucle
+        i++;
+      }
+      // Important : réinitialiser skipNextLine
       skipNextLine = false;
-      continue;
-    }
-
-    // Si on attend une description juste après un "Score :"
-    if (expectingDescription) {
-      console.log(`Adding expected description at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: line,
-              font: 'Avenir Book',
-              size: 22, // 11pt
-            }),
-          ],
-          alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 40 },
-        })
-      );
-      expectingDescription = false;
-      lastWasCriterion = false;
       continue;
     }
 
