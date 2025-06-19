@@ -26,30 +26,43 @@ export async function generateRadarChartBuffer(scores: { [key: string]: ScoreDet
     'Communication', "Esprit d'équipe", 'Leadership'
   ];
   
+  // Mapping des critères vers leurs familles
+  const criteriaToFamily: { [key: string]: string } = {
+    'Ambition': 'VOULOIR',
+    'Initiative': 'VOULOIR', 
+    'Résilience': 'VOULOIR',
+    'Vision': 'PENSER',
+    'Recul': 'PENSER',
+    'Pertinence': 'PENSER',
+    'Organisation': 'AGIR',
+    'Décision': 'AGIR',
+    'Sens du résultat': 'AGIR',
+    'Communication': 'ENSEMBLE',
+    "Esprit d'équipe": 'ENSEMBLE',
+    'Leadership': 'ENSEMBLE'
+  };
+  
   const data: number[] = [];
   const labels: string[] = [];
+  const colors: string[] = [];
   
   order.forEach(critere => {
     if (scores[critere]) {
       data.push(scores[critere].noteSur5);
       labels.push(critere);
+      colors.push(familyColors[criteriaToFamily[critere]]);
     }
   });
 
   const chartConfig = {
-    type: 'radar',
+    type: 'polarArea',
     data: {
       labels: labels,
       datasets: [{
         label: 'Compétences',
         data: data,
-        backgroundColor: 'rgba(74, 144, 226, 0.3)',
-        borderColor: 'rgba(74, 144, 226, 1)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(74, 144, 226, 1)',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 4
+        backgroundColor: colors,
+        borderWidth: 0
       }]
     },
     options: {
@@ -64,6 +77,9 @@ export async function generateRadarChartBuffer(scores: { [key: string]: ScoreDet
           max: 5,
           stepSize: 1
         }
+      },
+      legend: {
+        display: false
       },
       maintainAspectRatio: true
     }
