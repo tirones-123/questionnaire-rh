@@ -463,6 +463,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       })
     );
     
+    console.log('>>> Section 2 paragraph added length=', line.length);
     lastWasCriterion = false;
   }
 
