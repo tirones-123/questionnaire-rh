@@ -1,4 +1,4 @@
-import { Document, Paragraph, TextRun, AlignmentType, ImageRun, Packer, Header, Footer, convertInchesToTwip, ShadingType } from 'docx';
+import { Document, Paragraph, TextRun, AlignmentType, ImageRun, Packer, Header, Footer, convertInchesToTwip, ShadingType, PageNumber } from 'docx';
 import { generateRadarChartBuffer, generateSortedBarChartBuffer, generateFamilyBarChartBuffer } from './quickchartGenerator';
 import fs from 'fs';
 import path from 'path';
@@ -90,7 +90,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.CENTER,
-          spacing: { before: 0, after: 0 },
+          spacing: { before: 300, after: 0 }, // Espace avant le titre pour le séparer du logo
           shading: {
             type: ShadingType.SOLID,
             color: 'DDDDDD', // Fond gris clair
@@ -112,7 +112,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { before: 0, after: 100 }, // 5pt après
+            spacing: { before: 0, after: 400 }, // Plus d'espace après l'identité
             shading: {
               type: ShadingType.SOLID,
               color: 'DDDDDD', // Fond gris clair
@@ -202,7 +202,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 100, after: 100 }, // 5pt
+          spacing: { before: 300, after: 200 }, // Plus d'espace autour des sections
         })
       );
       lastWasCriterion = false;
@@ -222,7 +222,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 240, after: 240 }, // 12pt
+          spacing: { before: 360, after: 300 }, // Plus d'espace autour des familles
         })
       );
       lastWasCriterion = false;
@@ -248,7 +248,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 0 },
+          spacing: { before: 200, after: 0 }, // Espace avant chaque critère
         })
       );
       
@@ -265,7 +265,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               }),
             ],
             alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 0, after: 0 },
+            spacing: { before: 0, after: 40 }, // Petit espace après la définition
           })
         );
         skipNextLine = true;
@@ -288,7 +288,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 0 },
+          spacing: { before: 0, after: 60 }, // Espacement après le score avant l'analyse
         })
       );
       lastWasCriterion = false;
@@ -307,7 +307,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 0 },
+          spacing: { before: 60, after: 60 }, // Espacement entre les points
         })
       );
       lastWasCriterion = false;
@@ -325,7 +325,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           }),
         ],
         alignment: AlignmentType.JUSTIFIED,
-        spacing: { before: 0, after: 0 },
+        spacing: { before: 0, after: 40 }, // Petit espace entre les paragraphes
       })
     );
     lastWasCriterion = false;
@@ -364,6 +364,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           }),
         ],
         alignment: AlignmentType.LEFT,
+        spacing: { after: 200 }, // Espace après le logo
       }),
     ],
   }) : undefined;
@@ -380,7 +381,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             size: 20, // 10pt
           }),
           new TextRun({
-            children: ["PAGE_NUMBER"],
+            children: [PageNumber.CURRENT],
             font: 'Avenir Book',
             size: 20, // 10pt
           }),
@@ -414,7 +415,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             size: 20, // 10pt
           }),
           new TextRun({
-            children: ["PAGE_NUMBER"],
+            children: [PageNumber.CURRENT],
             font: 'Avenir Book',
             size: 20, // 10pt
           }),
