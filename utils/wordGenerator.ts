@@ -68,6 +68,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   let lastWasCriterion = false;
   let isFirstSection = true;
   let inBulletSection = false; // Pour savoir si on est dans une section avec bullets
+  let expectingDescription = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -342,8 +343,31 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         })
       );
       lastWasCriterion = false;
+      // Signaler que la prochaine ligne non vide est la description du score
+      expectingDescription = true;
       // Important: ne pas sauter la ligne suivante qui contient la description
       skipNextLine = false;
+      continue;
+    }
+
+    // Si on attend une description juste après un "Score :"
+    if (expectingDescription) {
+      console.log(`Adding expected description at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: line,
+              font: 'Avenir Book',
+              size: 22, // 11pt
+            }),
+          ],
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { before: 0, after: 40 },
+        })
+      );
+      expectingDescription = false;
+      lastWasCriterion = false;
       continue;
     }
 
