@@ -71,6 +71,32 @@ Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapp
 
 ${evaluationInstructions}
 
+CONTEXTE DES CRITÈRES - Base tes analyses sur ces définitions et principes :
+
+AMBITION : Volonté de progresser en élargissant ses responsabilités. Peut être ancienne/récente, managériale/expertise/entrepreneuriale. Mesure la force motrice, l'implication et la capacité à affronter les obstacles.
+
+INITIATIVE : Dynamisme et besoin d'agir sans attendre. Énergie interne constante, autonomie. Trois niveaux : suiveur/réactif/entrepreneur.
+
+RÉSILIENCE : Persévérance dans les tensions. Dimensions physiologique (résistance à l'effort) et psychologique (face aux conflits). Force de continuité dans la durée.
+
+VISION : Intuition pour imaginer l'avenir. Repose sur curiosité, intuition et imagination. Démarche proactive tournée vers le changement.
+
+RECUL : Analyse objective et rationnelle. Distance par rapport aux événements et à soi. Approche analytique et synthétique complémentaires.
+
+PERTINENCE : Compréhension instantanée par intuition. Diagnostic rapide, bon sens, esprit critique. Lecture fine et instinctive des enjeux.
+
+ORGANISATION : Structuration permettant l'efficacité. Hiérarchiser, planifier, déléguer. Clarté et respect des délais avec souplesse.
+
+DÉCISION : Trancher rapidement dans l'incertitude. Indépendance d'esprit, intégration de données nouvelles, positionnement clair.
+
+SENS DU RÉSULTAT : Attention aux résultats concrets. Pragmatisme et efficacité. Actions utiles et adaptées aux besoins du terrain.
+
+COMMUNICATION : Écoute et dialogue ouvert. Authenticité, clarté, fluidité du contenu. Empathie et création d'un espace de confiance.
+
+ESPRIT D'ÉQUIPE : Action dans un projet collectif. Communique sur son travail, s'intéresse aux autres, partage compétences. Maintient la cohésion.
+
+LEADERSHIP : Susciter l'adhésion par sa personnalité. Conviction, engagement, séduction. Effet d'entraînement vers un but commun.
+
 STRUCTURE EXACTE À RESPECTER :
 
 ${promptType.toUpperCase()}
@@ -80,20 +106,89 @@ ${promptType.toUpperCase()}
 FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 
 AMBITION
-Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
+La volonté de progresser dans sa carrière en élargissant le champ de ses responsabilités et en construisant un parcours porteur de sens
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
-[Continuer pour les 12 critères dans l'ordre exact du modèle]
+INITIATIVE
+Le dynamisme d'une personne, le besoin de prendre des initiatives et d'impulser des projets sans attendre l'évolution des événements
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+RÉSILIENCE
+Faire preuve de persévérance et d'opiniâtreté dans les situations de tensions psychologiques et physiologiques
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
+
+VISION
+Faire preuve d'intuition pour imaginer l'avenir afin de mieux gérer l'instant présent en préparant et anticipant le futur avec des idées novatrices
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+RECUL
+Prendre du recul sur les événements et sur les hommes pour étudier avec objectivité et rationalité une situation avec un esprit analytique et synthétique à la fois
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+PERTINENCE
+La compréhension instantanée d'une situation par l'intuition et la perspicacité
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+FAMILLE « AGIR » (EFFICACITÉ DANS L'ACTION)
+
+ORGANISATION
+L'attachement à une structuration du travail permettant une efficacité collective et individuelle
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+DÉCISION
+La capacité à trancher et agir rapidement face à l'urgence et aux changements de l'environnement
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+SENS DU RÉSULTAT
+L'attention portée aux résultats concrets, avec une action ancrée dans les réalités opérationnelles
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+FAMILLE « ENSEMBLE » (POSTURE RELATIONNELLE)
+
+COMMUNICATION
+Être à l'écoute et favoriser un dialogue ouvert où chacun peut s'exprimer librement
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+ESPRIT D'ÉQUIPE
+L'aptitude à inscrire son action dans un projet collectif, en valorisant la cohésion du groupe
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
+
+LEADERSHIP
+La faculté de susciter l'adhésion et de mobiliser un groupe autour d'un projet par sa personnalité
+Score : X,X – [Interprétation selon barème]
+[Analyse qualitative – 120 à 180 mots]
 
 2. Analyse du profil d'ensemble
 [Résumé transversal – 200 à 300 mots]
 
 3. Points de vigilance
 - [4 à 8 points, format bullet]
+Exemples de vigilances à considérer selon les profils :
+- Forte ambition + faible esprit d'équipe = risque pour l'harmonie collective
+- Forte initiative + faible recul = risque d'imprudence
+- Fort sens du résultat + faible vision = risque de ne pas innover
+- Forte communication + faible résilience = risque d'évitement du conflit
 
 4. Recommandations de développement
 - [1 à 2 recommandations par point de vigilance]
+Exemples d'actions concrètes :
+- Coaching sur projet professionnel, prise de décision, leadership
+- Missions transverses pour développer la vision systémique
+- Contextes permettant l'erreur comme apprentissage
+- Indicateurs clairs et bilans d'action réguliers
 
 5. Conclusion synthétique
 [80 à 120 mots]
@@ -106,10 +201,15 @@ BARÈME D'INTERPRÉTATION :
 
 RÈGLES CRITIQUES :
 - Utiliser EXACTEMENT les titres et sous-titres du modèle
+- TOUJOURS commencer par le titre "1. Analyse critère par critère" avant la première famille
+- Inclure TOUTES les 4 familles avec leurs 3 critères chacune (12 critères au total)
 - Respecter l'ordre des 12 critères
 - Jamais mentionner "item", "score sur 4", "question inversée"
 - Virgule comme séparateur décimal (3,4 et non 3.4)
-- Analyses fluides et nuancées, pas de répétitions mécaniques`;
+- Analyses fluides et nuancées, pas de répétitions mécaniques
+- S'inspirer des principes et mécanismes décrits pour chaque critère
+- Intégrer les dimensions spécifiques (ex: ambition managériale/expertise/entrepreneuriale)
+- Utiliser les niveaux de développement quand pertinent (ex: suiveur/réactif/entrepreneur pour l'initiative)`;
 
   const userPrompt = `Voici les données à analyser :
 
@@ -133,7 +233,7 @@ Génère le rapport complet en respectant EXACTEMENT la structure demandée.`;
         { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
-      max_tokens: 5000,
+      max_tokens: 8000,
     });
 
     const content = completion.choices[0]?.message?.content;

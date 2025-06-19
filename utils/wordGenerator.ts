@@ -1,4 +1,4 @@
-import { Document, Paragraph, TextRun, AlignmentType, ImageRun, Packer, Header, Footer, convertInchesToTwip, ShadingType, PageNumber } from 'docx';
+import { Document, Paragraph, TextRun, AlignmentType, ImageRun, Packer, Header, Footer, convertInchesToTwip, ShadingType, PageNumber, PageBreak } from 'docx';
 import { generateRadarChartBuffer, generateSortedBarChartBuffer, generateFamilyBarChartBuffer } from './quickchartGenerator';
 import fs from 'fs';
 import path from 'path';
@@ -66,14 +66,25 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   let skipNextLine = false;
   let lastWasTitle = false;
   let lastWasCriterion = false;
+  let isFirstSection = true;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
-    if (!line) continue;
+    // Gestion des lignes vides
+    if (!line) {
+      // Ne pas ignorer les lignes vides car elles peuvent être importantes pour la structure
+      continue;
+    }
+    
     if (skipNextLine) {
       skipNextLine = false;
       continue;
+    }
+
+    // Log pour debug
+    if (line.length > 0) {
+      console.log(`Processing line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
     }
 
     // Titre principal et identité sur fond gris
@@ -90,10 +101,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.CENTER,
-          spacing: { before: 300, after: 0 }, // Espace avant le titre pour le séparer du logo
+          spacing: { before: 0, after: 0 },
           shading: {
             type: ShadingType.SOLID,
-            color: 'DDDDDD', // Fond gris clair
+            color: 'DDDDDD',
+            fill: 'DDDDDD',
           },
         })
       );
@@ -112,10 +124,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { before: 0, after: 400 }, // Plus d'espace après l'identité
+            spacing: { before: 0, after: 400 },
             shading: {
               type: ShadingType.SOLID,
-              color: 'DDDDDD', // Fond gris clair
+              color: 'DDDDDD',
+              fill: 'DDDDDD',
             },
           })
         );
@@ -134,75 +147,94 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
 
     // Sections numérotées
     if (/^[1-5]\.\s/.test(line)) {
-      currentSection = parseInt(line[0]);
+      console.log(`Found section: "${line}"`);
+      const newSection = parseInt(line[0]);
       
-      // Insérer les graphiques à la fin des sections précédentes
-      if (currentSection === 2 && inSection1 && chartBuffers.family) {
+      // Ajouter un saut de page avant chaque nouvelle section (sauf la première)
+      if (!isFirstSection) {
+        // Insérer les graphiques avant le saut de page
+        if (currentSection === 1 && chartBuffers.family) {
+          children.push(
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: chartBuffers.family,
+                  transformation: {
+                    width: 450,
+                    height: 300,
+                  },
+                }),
+              ],
+              alignment: AlignmentType.CENTER,
+              spacing: { before: 240, after: 240 },
+            })
+          );
+        } else if (currentSection === 2 && chartBuffers.radar) {
+          children.push(
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: chartBuffers.radar,
+                  transformation: {
+                    width: 450,
+                    height: 450,
+                  },
+                }),
+              ],
+              alignment: AlignmentType.CENTER,
+              spacing: { before: 240, after: 240 },
+            })
+          );
+        } else if (currentSection === 3 && chartBuffers.sorted) {
+          children.push(
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: chartBuffers.sorted,
+                  transformation: {
+                    width: 450,
+                    height: 300,
+                  },
+                }),
+              ],
+              alignment: AlignmentType.CENTER,
+              spacing: { before: 240, after: 240 },
+            })
+          );
+        }
+        
+        // Ajouter le saut de page
         children.push(
           new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.family,
-                transformation: {
-                  width: 450,
-                  height: 300,
-                },
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spacing: { before: 240, after: 240 },
-          })
-        );
-      } else if (currentSection === 3 && inSection2 && chartBuffers.radar) {
-        children.push(
-          new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.radar,
-                transformation: {
-                  width: 450,
-                  height: 450,
-                },
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spacing: { before: 240, after: 240 },
-          })
-        );
-      } else if (currentSection === 4 && inSection3 && chartBuffers.sorted) {
-        children.push(
-          new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.sorted,
-                transformation: {
-                  width: 450,
-                  height: 300,
-                },
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spacing: { before: 240, after: 240 },
+            children: [new PageBreak()],
           })
         );
       }
       
+      isFirstSection = false;
+      currentSection = newSection;
       inSection1 = (currentSection === 1);
       inSection2 = (currentSection === 2);
       inSection3 = (currentSection === 3);
       
+      // Ajouter le titre de section sur fond gris
       children.push(
         new Paragraph({
           children: [
             new TextRun({
               text: line,
               font: 'Avenir Book',
-              size: 22, // 11pt
+              size: 36, // 18pt comme le titre principal
               bold: true,
             }),
           ],
-          alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 300, after: 200 }, // Plus d'espace autour des sections
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 0, after: 300 },
+          shading: {
+            type: ShadingType.SOLID,
+            color: 'DDDDDD',
+            fill: 'DDDDDD',
+          },
         })
       );
       lastWasCriterion = false;
@@ -211,6 +243,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
 
     // Familles en majuscules
     if (line.startsWith('FAMILLE')) {
+      console.log(`Found family: "${line}"`);
       children.push(
         new Paragraph({
           children: [
@@ -222,16 +255,19 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 360, after: 300 }, // Plus d'espace autour des familles
+          spacing: { before: 360, after: 200 },
         })
       );
       lastWasCriterion = false;
       continue;
     }
 
-    // Nom du critère en majuscules (mais pas la définition)
+    // Nom du critère en majuscules
     if (line === line.toUpperCase() && line.length > 3 && 
-        !line.includes('RAPPORT') && !line.includes('FAMILLE') && !line.startsWith('Score :')) {
+        !line.includes('RAPPORT') && !line.includes('FAMILLE') && 
+        !line.startsWith('Score :') && !line.match(/^[1-5]\./)) {
+      
+      console.log(`Found criterion: ${line}`);
       
       // Vérifier si la ligne suivante est la définition (en italique)
       const nextLine = i + 1 < lines.length ? lines[i + 1].trim() : '';
@@ -248,7 +284,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 200, after: 0 }, // Espace avant chaque critère
+          spacing: { before: 200, after: 0 },
         })
       );
       
@@ -265,7 +301,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               }),
             ],
             alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 0, after: 40 }, // Petit espace après la définition
+            spacing: { before: 0, after: 40 },
           })
         );
         skipNextLine = true;
@@ -288,7 +324,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 60 }, // Espacement après le score avant l'analyse
+          spacing: { before: 0, after: 60 },
         })
       );
       lastWasCriterion = false;
@@ -307,7 +343,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 60, after: 60 }, // Espacement entre les points
+          spacing: { before: 60, after: 60 },
         })
       );
       lastWasCriterion = false;
@@ -325,14 +361,14 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           }),
         ],
         alignment: AlignmentType.JUSTIFIED,
-        spacing: { before: 0, after: 40 }, // Petit espace entre les paragraphes
+        spacing: { before: 0, after: 40 },
       })
     );
     lastWasCriterion = false;
   }
 
   // Insérer le dernier graphique si nécessaire
-  if (inSection3 && chartBuffers.sorted) {
+  if (currentSection === 3 && chartBuffers.sorted) {
     children.push(
       new Paragraph({
         children: [
@@ -358,13 +394,13 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           new ImageRun({
             data: logoBuffer,
             transformation: {
-              width: 104, // 875/336 ≈ 2.6:1
+              width: 104,
               height: 40,
             },
           }),
         ],
         alignment: AlignmentType.LEFT,
-        spacing: { after: 200 }, // Espace après le logo
+        spacing: { after: 200 },
       }),
     ],
   }) : undefined;
@@ -387,7 +423,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           }),
         ],
         alignment: AlignmentType.LEFT,
-        spacing: { before: 0, after: 60 }, // Petit espacement avant le logo
+        spacing: { before: 0, after: 60 },
       }),
       // Logo en dessous de la numérotation
       new Paragraph({
@@ -395,7 +431,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           new ImageRun({
             data: logoBuffer,
             transformation: {
-              width: 52, // Ratio 2.6:1
+              width: 52,
               height: 20,
             },
           }),
@@ -438,15 +474,15 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               left: convertInchesToTwip(0.98),
             },
           },
-          titlePage: true, // Active la différenciation première page
+          titlePage: true,
         },
         headers: {
-          first: firstPageHeader || new Header({ children: [] }), // En-tête première page
-          default: new Header({ children: [] }), // Pas d'en-tête sur les autres pages
+          first: firstPageHeader || new Header({ children: [] }),
+          default: new Header({ children: [] }),
         },
         footers: {
-          first: new Footer({ children: [] }), // Pas de pied de page première page
-          default: defaultFooter || new Footer({ children: [] }), // Pied de page autres pages
+          first: new Footer({ children: [] }),
+          default: defaultFooter || new Footer({ children: [] }),
         },
         children: children,
       },
