@@ -107,68 +107,68 @@ ${promptType.toUpperCase()}
 FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 
 AMBITION
-La volonté de progresser dans sa carrière en élargissant le champ de ses responsabilités et en construisant un parcours porteur de sens
+Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 INITIATIVE
-Le dynamisme d'une personne, le besoin de prendre des initiatives et d'impulser des projets sans attendre l'évolution des événements
+Besoin de prendre des initiatives et d’impulser des projets
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 RÉSILIENCE
-Faire preuve de persévérance et d'opiniâtreté dans les situations de tensions psychologiques et physiologiques
+Persévérance face aux tensions psychologiques et physiologiques
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 
 VISION
-Faire preuve d'intuition pour imaginer l'avenir afin de mieux gérer l'instant présent en préparant et anticipant le futur avec des idées novatrices
+Intuition pour imaginer l’avenir, anticiper et innover.
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 RECUL
-Prendre du recul sur les événements et sur les hommes pour étudier avec objectivité et rationalité une situation avec un esprit analytique et synthétique à la fois
+Capacité d’analyse objective et synthétique avec distance critique
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 PERTINENCE
-La compréhension instantanée d'une situation par l'intuition et la perspicacité
+Compréhension instantanée, diagnostic rapide par intuition.
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 FAMILLE « AGIR » (EFFICACITÉ DANS L'ACTION)
 
 ORGANISATION
-L'attachement à une structuration du travail permettant une efficacité collective et individuelle
+Structuration du travail pour l’efficacité collective et individuelle
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 DÉCISION
-La capacité à trancher et agir rapidement face à l'urgence et aux changements de l'environnement
+Aptitude à trancher vite en contexte incertain
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 SENS DU RÉSULTAT
-L'attention portée aux résultats concrets, avec une action ancrée dans les réalités opérationnelles
+Attention aux résultats concrets, pragmatisme.
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 FAMILLE « ENSEMBLE » (POSTURE RELATIONNELLE)
 
 COMMUNICATION
-Être à l'écoute et favoriser un dialogue ouvert où chacun peut s'exprimer librement
+Écoute et dialogue ouvert, authentique
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 ESPRIT D'ÉQUIPE
-L'aptitude à inscrire son action dans un projet collectif, en valorisant la cohésion du groupe
+Inscription de l’action dans un projet collectif, cohésion.
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
 LEADERSHIP
-La faculté de susciter l'adhésion et de mobiliser un groupe autour d'un projet par sa personnalité
+Capacité à mobiliser un groupe, charisme et entraînement.
 Score : X,X – [Interprétation selon barème]
 [Analyse qualitative – 120 à 180 mots]
 
@@ -237,7 +237,8 @@ RÈGLES CRITIQUES :
 - Points de vigilance : utiliser • (bullet) et non - (tiret), avec titre en gras et paragraphe explicatif
 - Recommandations : utiliser • (bullet), format "Critère : action détaillée"
 - Chaque point de vigilance doit avoir un titre descriptif avec le critère entre parenthèses
-- Chaque recommandation doit commencer par le nom du critère suivi de deux-points`;
+- Chaque recommandation doit commencer par le nom du critère suivi de deux-points
+- Toujours utiliser le prénom de l'éavulué pour parler de lui`;
 
   const userPrompt = `Voici les données à analyser :
 
@@ -251,8 +252,6 @@ ${scoresTableText}
 
 Génère le rapport complet en respectant EXACTEMENT la structure demandée.
 
-IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.
-
 FORMAT DES POINTS DE VIGILANCE ET RECOMMANDATIONS :
 - Les points de vigilance doivent être substantiels (80-120 mots par point)
 - Chaque point de vigilance a un titre descriptif suivi d'un paragraphe explicatif complet
@@ -264,7 +263,9 @@ Le rapport doit commencer EXACTEMENT par ces lignes dans cet ordre :
 1. ${promptType.toUpperCase()}
 2. Une ligne vide
 3. 1. Analyse critère par critère
-4. Une ligne vide`;
+4. Une ligne vide
+
+IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.`;
 
   try {
     console.log('Calling OpenAI API...');
