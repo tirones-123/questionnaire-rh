@@ -99,7 +99,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     }
 
     // Titre principal et identité sur fond gris
-    if (line.startsWith('RAPPORT') || line.toUpperCase().startsWith('RAPPORT')) {
+    if (line.startsWith('RAPPORT') || line.toUpperCase().startsWith('RAPPORT') || /^\d\.\s*RAPPORT/i.test(line)) {
+      // Supprimer l'éventuelle numérotation "1. " pour l'affichage
+      const cleanedTitle = line.replace(/^\d\.\s*/, '').trim();
       console.log(`Found main title: "${line}"`);
       
       // Créer le titre sur fond gris
@@ -107,7 +109,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         new Paragraph({
           children: [
             new TextRun({
-              text: line,
+              text: cleanedTitle,
               font: 'Avenir Book',
               size: 36, // 18pt
               bold: true,
