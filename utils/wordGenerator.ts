@@ -25,6 +25,13 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   console.log('Person:', data.person.firstName, data.person.lastName);
   console.log('Report content length:', data.reportContent.length);
   
+  // Debug : afficher les premières lignes du rapport
+  const debugLines = data.reportContent.split('\n').slice(0, 10);
+  console.log('First 10 lines of report content:');
+  debugLines.forEach((line, index) => {
+    console.log(`Line ${index}: "${line}"`);
+  });
+  
   const children: Paragraph[] = [];
   
   // Générer les graphiques avec QuickChart
@@ -60,20 +67,23 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   // Parser le contenu du rapport
   const lines = data.reportContent.split('\n');
   let currentSection = 0;
-  let inSection1 = false;
-  let inSection2 = false;
-  let inSection3 = false;
+  let chartInserted = {
+    family: false,
+    radar: false,
+    sorted: false
+  };
   let skipNextLine = false;
   let lastWasTitle = false;
   let lastWasCriterion = false;
   let isFirstSection = true;
+
+  console.log('Starting to parse report content...');
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
     // Gestion des lignes vides
     if (!line) {
-      // Ne pas ignorer les lignes vides car elles peuvent être importantes pour la structure
       continue;
     }
     
@@ -82,13 +92,14 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Log pour debug
-    if (line.length > 0) {
-      console.log(`Processing line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
+    // Log pour debug - uniquement les lignes importantes
+    if (line.startsWith('RAPPORT') || line.match(/^[1-5]\./) || line.startsWith('FAMILLE') || line.startsWith('Score :')) {
+      console.log(`Processing line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
     }
 
     // Titre principal et identité sur fond gris
-    if (line.startsWith('RAPPORT')) {
+    if (line.toUpperCase().startsWith('RAPPORT')) {
+      console.log(`Found report title: "${line}"`);
       // Créer le titre sur fond gris
       children.push(
         new Paragraph({
@@ -151,7 +162,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       const newSection = parseInt(line[0]);
       
       // Insérer les graphiques à la fin de la section précédente
-      if (currentSection === 1 && chartBuffers.family && newSection > 1) {
+      if (currentSection === 1 && chartBuffers.family && newSection > 1 && !chartInserted.family) {
         console.log('Inserting family chart at end of section 1');
         children.push(
           new Paragraph({
@@ -168,7 +179,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2) {
+        chartInserted.family = true;
+      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2 && !chartInserted.radar) {
         console.log('Inserting radar chart at end of section 2');
         children.push(
           new Paragraph({
@@ -185,7 +197,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-      } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3) {
+        chartInserted.radar = true;
+      } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3 && !chartInserted.sorted) {
         console.log('Inserting sorted chart at end of section 3');
         children.push(
           new Paragraph({
@@ -202,12 +215,10 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
+        chartInserted.sorted = true;
       }
       
       currentSection = newSection;
-      inSection1 = (currentSection === 1);
-      inSection2 = (currentSection === 2);
-      inSection3 = (currentSection === 3);
       
       console.log(`Adding section title: "${line}"`);
       
@@ -452,8 +463,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   }
 
   // Insérer les graphiques restants à la fin du document
-  if (currentSection === 1 && chartBuffers.family) {
-    console.log('Inserting family chart at end of document (section 1)');
+  console.log(`End of document parsing. Current section: ${currentSection}`);
+  
+  // Insérer le graphique de la section 1 si on ne l'a pas déjà fait
+  if (currentSection >= 1 && chartBuffers.family && !chartInserted.family) {
+    console.log('Inserting family chart at end of section 1/document');
     children.push(
       new Paragraph({
         children: [
@@ -469,8 +483,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-  } else if (currentSection === 2 && chartBuffers.radar) {
-    console.log('Inserting radar chart at end of document (section 2)');
+    chartInserted.family = true;
+  }
+  
+  // Insérer le graphique de la section 2 si on ne l'a pas déjà fait
+  if (currentSection >= 2 && chartBuffers.radar && !chartInserted.radar) {
+    console.log('Inserting radar chart at end of section 2/document');
     children.push(
       new Paragraph({
         children: [
@@ -486,8 +504,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-  } else if (currentSection === 3 && chartBuffers.sorted) {
-    console.log('Inserting sorted chart at end of document (section 3)');
+    chartInserted.radar = true;
+  }
+  
+  // Insérer le graphique de la section 3 si on ne l'a pas déjà fait
+  if (currentSection >= 3 && chartBuffers.sorted && !chartInserted.sorted) {
+    console.log('Inserting sorted chart at end of section 3/document');
     children.push(
       new Paragraph({
         children: [
@@ -503,6 +525,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
+    chartInserted.sorted = true;
   }
 
   // Créer l'en-tête avec logo (première page uniquement)
