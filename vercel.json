@@ -4,12 +4,10 @@
       "maxDuration": 300
     },
     "pages/api/submit-questionnaire.ts": {
-      "maxDuration": 300,
-      "includeFiles": "utils/fonts/DejaVuSans.ttf"
+      "maxDuration": 300
     },
     "pages/api/submit-evaluation.ts": {
-      "maxDuration": 300,
-      "includeFiles": "utils/fonts/DejaVuSans.ttf"
+      "maxDuration": 300
     }
   },
   "headers": [
@@ -30,13 +28,5 @@
         }
       ]
     }
-  ],
-  "build": {
-    "env": {
-      "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
-    }
-  },
-  "env": {
-    "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
-  }
+  ]
 } 

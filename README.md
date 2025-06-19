@@ -96,3 +96,23 @@ Voir [TROUBLESHOOTING.md](TROUBLESHOOTING.md) pour les problèmes courants.
 - [Guide de déploiement](DEPLOYMENT.md)
 - [Architecture technique](docs/architecture.md)
 - [Format des rapports](docs/rapports.md)
+
+### Technologies utilisées
+
+- Next.js
+- TypeScript 
+- React
+- Node.js
+- Nodemailer (envoi d'emails)
+- ExcelJS (génération Excel)
+- Docx (génération Word)
+- OpenAI API (analyse IA)
+- QuickChart (génération de graphiques)
+
+## Architecture
+
+### Génération des graphiques
+
+Les graphiques sont générés via **QuickChart.io**, un service externe qui garantit la compatibilité avec tous les environnements d'hébergement, y compris Vercel. Cette approche résout les problèmes de polices rencontrés avec les environnements serverless.
+
+Pour plus de détails, consultez [CHARTS_DOCUMENTATION.md](./CHARTS_DOCUMENTATION.md).

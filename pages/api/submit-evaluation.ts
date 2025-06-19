@@ -4,7 +4,7 @@ import ExcelJS from 'exceljs';
 import { sections, responseOptions } from '../../data/questions';
 import { calculateScores, generateScoresTable } from '../../utils/scoreCalculator';
 import { generateReportContent } from '../../utils/reportGenerator';
-import { generateRadarChart, generateSortedBarChart, generateFamilyBarChart } from '../../utils/chartGenerator';
+// Les graphiques sont maintenant générés par QuickChart dans wordGenerator
 import { generateWordDocument } from '../../utils/wordGenerator';
 
 interface EvaluatedPersonInfo {
@@ -262,38 +262,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Report content generated successfully');
       console.log('Report content length:', reportContent.length);
 
-      // Générer les graphiques
-      console.log('Starting chart generation...');
-      let radarChart: string;
-      let sortedChart: string;
-      let familyChart: string;
-      
-      // NOTE: Ces graphiques SVG ne sont plus utilisés, on utilise QuickChart maintenant
-      // Mais on les garde temporairement pour compatibilité
-      try {
-        radarChart = generateRadarChart(scores);
-        console.log('Radar chart SVG generated (for compatibility), length:', radarChart.length);
-      } catch (chartError) {
-        console.error('Error generating radar chart:', chartError);
-        radarChart = '<svg></svg>';
-      }
-      
-      try {
-        sortedChart = generateSortedBarChart(scores);
-        console.log('Sorted chart SVG generated (for compatibility), length:', sortedChart.length);
-      } catch (chartError) {
-        console.error('Error generating sorted chart:', chartError);
-        sortedChart = '<svg></svg>';
-      }
-      
-      try {
-        familyChart = generateFamilyBarChart(scores);
-        console.log('Family chart SVG generated (for compatibility), length:', familyChart.length);
-      } catch (chartError) {
-        console.error('Error generating family chart:', chartError);
-        familyChart = '<svg></svg>';
-      }
-
       // Générer le document Word
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
@@ -312,12 +280,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             lastName: evaluatorLastName
           },
           reportContent,
-          scores, // Ajouter les scores pour QuickChart
-          charts: {
-            radar: radarChart,
-            sorted: sortedChart,
-            family: familyChart
-          }
+          scores // Les graphiques sont maintenant générés par QuickChart
         });
         console.log('Word document generated successfully, buffer size:', wordBuffer.length);
       } catch (wordError) {
