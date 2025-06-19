@@ -51,9 +51,10 @@ export async function generateReportContent(params: GenerateReportParams): Promi
     .join('\n');
 
   const promptType = type === 'evaluation' 
-    ? `Rapport d'évaluation du potentiel de : ${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}
+    ? `RAPPORT D'ÉVALUATION DU POTENTIEL DE : ${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}
 évalué par ${evaluator?.firstName || 'un évaluateur'} ${evaluator?.lastName || ''}`
-    : `Rapport d'autodiagnostic de ${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}`;
+    : `RAPPORT D'AUTODIAGNOSTIC
+${person.firstName} ${person.lastName}, ${person.age} ans, ${person.profession}`;
 
   const evaluationInstructions = type === 'evaluation'
     ? `IMPORTANT : Ce rapport est basé sur l'évaluation faite par ${evaluator?.firstName || 'l\'évaluateur'}. 
@@ -256,7 +257,15 @@ FORMAT DES POINTS DE VIGILANCE ET RECOMMANDATIONS :
 - Les points de vigilance doivent être substantiels (80-120 mots par point)
 - Chaque point de vigilance a un titre descriptif suivi d'un paragraphe explicatif complet
 - Les recommandations doivent être détaillées et pratiques (60-80 mots par recommandation)
-- Utiliser le caractère • (bullet) et non - (tiret) pour les listes`;
+- Utiliser le caractère • (bullet) et non - (tiret) pour les listes
+
+STRUCTURE OBLIGATOIRE DU DÉBUT :
+Le rapport doit commencer EXACTEMENT par ces lignes dans cet ordre :
+1. ${promptType.toUpperCase()}
+2. Une ligne vide
+3. 1. Analyse critère par critère
+4. Une ligne vide
+5. FAMILLE « VOULOIR » (MOTEUR PERSONNEL)`;
 
   try {
     console.log('Calling OpenAI API...');

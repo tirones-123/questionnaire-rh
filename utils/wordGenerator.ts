@@ -89,7 +89,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     }
 
     // Titre principal et identité sur fond gris
-    if (line.startsWith('RAPPORT')) {
+    if (line.startsWith('RAPPORT') || line.toUpperCase().startsWith('RAPPORT')) {
+      console.log(`Found main title: "${line}"`);
+      
       // Créer le titre sur fond gris
       children.push(
         new Paragraph({
@@ -114,6 +116,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       // Créer l'identité sur fond gris (ligne suivante)
       if (i + 1 < lines.length) {
         const identityLine = lines[i + 1].trim();
+        console.log(`Found identity line: "${identityLine}"`);
+        
         children.push(
           new Paragraph({
             children: [
