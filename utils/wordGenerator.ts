@@ -72,6 +72,16 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
+    // Debug pour la section 2
+    if (i === 74 || (currentSection === 2 && line.length > 50)) {
+      console.log(`[DEBUG LINE ${i}] line="${line}" length=${line.length} currentSection=${currentSection}`);
+    }
+    
+    // Log détaillé pour les lignes 73 à 77
+    if (i >= 73 && i <= 77) {
+      console.log(`[DEBUG LINES 73-77] Line ${i}: "${line}" (length=${line.length})`);
+    }
+    
     // Ignorer les délimiteurs de blocs de code Markdown
     if (line === "```" || line.startsWith("```")) {
       continue;
@@ -87,7 +97,10 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     
     // Gestion des lignes vides
     if (!line) {
-      // Ne pas ignorer les lignes vides car elles peuvent être importantes pour la structure
+      // Debug : log les lignes vides en section 2
+      if (currentSection === 2) {
+        console.log(`[DEBUG SECTION 2] Empty line at ${i}`);
+      }
       continue;
     }
     
@@ -285,6 +298,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         !line.includes('RAPPORT') && !line.includes('FAMILLE') && 
         !line.startsWith('Score :') && !line.match(/^[1-5]\./)) {
       
+      // Debug pour voir si la ligne de section 2 est détectée comme critère
+      if (currentSection === 2) {
+        console.log(`[DEBUG SECTION 2] Line detected as uppercase criterion at ${i}: "${line}"`);
+      }
+      
       console.log(`Found criterion: ${line}`);
       
       // Vérifier si la ligne suivante est la définition (en italique)
@@ -445,6 +463,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
 
     // Paragraphe normal
     console.log(`Processing normal paragraph at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
+    
+    // Debug spécifique pour la section 2
+    if (currentSection === 2 && !line.startsWith('3.')) {
+      console.log(`[DEBUG SECTION 2] About to create paragraph for line ${i}, length=${line.length}`);
+    }
+    
     children.push(
       new Paragraph({
         children: [
@@ -464,7 +488,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       })
     );
     
-    console.log('>>> Section 2 paragraph added length=', line.length);
+    // Debug : confirmer l'ajout
+    if (currentSection === 2 && !line.startsWith('3.')) {
+      console.log(`[DEBUG SECTION 2] Paragraph successfully added for line ${i}`);
+    }
+    
     lastWasCriterion = false;
   }
 
