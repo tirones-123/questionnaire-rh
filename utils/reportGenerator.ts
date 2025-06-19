@@ -263,9 +263,7 @@ Le rapport doit commencer EXACTEMENT par ces lignes dans cet ordre :
 1. ${promptType.toUpperCase()}
 2. Une ligne vide
 3. 1. Analyse critère par critère
-4. Une ligne vide
-
-IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.`;
+4. Une ligne vide`;
 
   try {
     console.log('Calling OpenAI API...');

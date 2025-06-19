@@ -7,8 +7,8 @@ const BASE_URL = 'https://questionnaire-rh-git-main-maximemarsal18-gmailcoms-pro
 
 // Informations utilisateur de test
 const userInfo = {
-  firstName: 'Test',
-  lastName: 'Utilisateur',
+  firstName: 'Maxime',
+  lastName: 'Marsal',
   age: '30',
   profession: 'Développeur',
   email: 'test@example.com'
