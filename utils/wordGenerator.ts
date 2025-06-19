@@ -316,8 +316,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 0, after: 40 },
           })
         );
-        // Revenir à skipNextLine car i++ cause un double incrément
-        skipNextLine = true;
+        // Incrémenter i pour passer la ligne de définition
+        i++;
       }
       
       lastWasCriterion = true;
