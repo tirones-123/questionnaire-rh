@@ -203,136 +203,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('First email sent successfully');
 
-    // GÉNÉRATION DU RAPPORT - Maintenant en mode synchrone pour s'assurer qu'il s'exécute
-      try {
-      console.log('Starting report generation process...');
-        
-        // Générer le contenu du rapport avec OpenAI
-      console.log('Calling OpenAI for report generation...');
-        const reportContent = await generateReportContent({
-          type: 'autodiagnostic',
-          person: userInfo,
-          scores,
-          scoresTable
-        });
-        console.log('Report content generated successfully');
-      console.log('Report content length:', reportContent.length);
+    // NOUVEAU : Répondre immédiatement à l'utilisateur
+    res.status(200).json({ 
+      success: true, 
+      message: 'Questionnaire reçu avec succès. Le rapport d\'analyse sera envoyé par email dans quelques minutes.' 
+    });
 
-        // Générer le document Word
-      console.log('Starting Word document generation...');
-      let wordBuffer: Buffer;
-      try {
-        // Passer les scores directement pour utiliser QuickChart
-        wordBuffer = await generateWordDocument({
-          type: 'autodiagnostic',
-          person: userInfo,
-          reportContent,
-          scores // Les graphiques sont maintenant générés par QuickChart
-        });
-        console.log('Word document generated successfully, buffer size:', wordBuffer.length);
-      } catch (wordError) {
-        console.error('Error generating Word document:', wordError);
-        console.error('Error stack:', wordError instanceof Error ? wordError.stack : 'No stack');
-        throw wordError;
-      }
+    // NOUVEAU : Déclencher la génération du rapport en arrière-plan
+    console.log('Triggering background report generation...');
+    
+    // Déclencher l'API de génération de rapport en arrière-plan
+    const reportData = {
+      type: 'autodiagnostic',
+      userInfo,
+      scores,
+      scoresTable
+    };
 
-        const wordFileName = `Rapport_Autodiagnostic_${userInfo.firstName}_${userInfo.lastName}_${new Date().toISOString().split('T')[0]}.docx`;
-
-        // SECOND EMAIL : Envoyer le rapport Word
-      console.log('Preparing to send report email...');
-      console.log('Email to:', 'luc.marsal@auramanagement.fr');
-      console.log('Attachment filename:', wordFileName);
-      console.log('Attachment size:', wordBuffer.length, 'bytes');
+    // Appel API interne asynchrone (fire and forget)
+    try {
+      // Construire l'URL de base
+      const protocol = req.headers['x-forwarded-proto'] || 'http';
+      const host = req.headers.host;
+      const baseUrl = `${protocol}://${host}`;
       
-      try {
-        const emailResult = await transporter.sendMail({
-          from: process.env.SMTP_FROM || process.env.SMTP_USER,
-          to: 'luc.marsal@auramanagement.fr',
-          subject: `Rapport d'analyse - ${userInfo.firstName} ${userInfo.lastName}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background-color: #1d4e89; color: white; padding: 20px; text-align: center;">
-                <h1>Rapport d'analyse du potentiel</h1>
-              </div>
-              
-              <div style="padding: 20px; background-color: #f8fafc;">
-                <h2>Rapport généré pour :</h2>
-                <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
-                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
-                
-                <div style="background-color: #e6f3ff; border: 1px solid #1d4e89; padding: 15px; border-radius: 5px; margin-top: 20px;">
-                  <p><strong>📄 Document Word joint</strong></p>
-                  <p>Le rapport complet d'analyse du potentiel avec graphiques et recommandations personnalisées.</p>
-                </div>
-              </div>
-              
-              <div style="padding: 20px; text-align: center; color: #6b7280; font-size: 12px;">
-                <p>Email généré automatiquement par le système de questionnaire RH</p>
-              </div>
-            </div>
-          `,
-          attachments: [
-            {
-              filename: wordFileName,
-              content: wordBuffer,
-              contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            }
-          ]
-        });
-        
-        console.log('Email sent successfully:', emailResult.messageId);
-        console.log('Report generation and sending completed successfully');
-        
-        // Maintenant on peut répondre au client
-        res.status(200).json({ 
-          success: true, 
-          message: 'Questionnaire et rapport envoyés avec succès.' 
-        });
-        
-      } catch (emailError) {
-        console.error('Error sending report email:', emailError);
-        console.error('Email error details:', emailError instanceof Error ? emailError.stack : 'No stack');
-        throw emailError;
-      }
-      
-    } catch (error) {
-      console.error('Erreur lors de la génération du rapport:', error);
-      console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack');
-        
-      // Envoyer un email d'erreur
-        try {
-          await transporter.sendMail({
-            from: process.env.SMTP_FROM || process.env.SMTP_USER,
-            to: 'luc.marsal@auramanagement.fr',
-            subject: `ERREUR - Rapport non généré - ${userInfo.firstName} ${userInfo.lastName}`,
-            html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center;">
-                  <h1>Erreur de génération du rapport</h1>
-                </div>
-                
-                <div style="padding: 20px; background-color: #f8fafc;">
-                  <p>Une erreur s'est produite lors de la génération du rapport pour :</p>
-                  <p><strong>Participant :</strong> ${userInfo.firstName} ${userInfo.lastName}</p>
-                  <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
-                  
-                  <p><strong>Détails de l'erreur :</strong></p>
-                  <pre style="background-color: #f3f4f6; padding: 10px; overflow: auto;">${error instanceof Error ? error.message : 'Erreur inconnue'}</pre>
-                  
-                  <p>Les réponses ont bien été enregistrées dans le fichier Excel envoyé précédemment.</p>
-                </div>
-              </div>
-            `
-          });
-        } catch (emailError) {
-          console.error('Erreur lors de l\'envoi de l\'email d\'erreur:', emailError);
-        }
-      
-      // Répondre au client avec l'erreur
-      res.status(500).json({ 
-        error: 'Le questionnaire a été enregistré mais une erreur est survenue lors de la génération du rapport.',
-        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      // Déclencher l'API de génération de rapport
+      fetch(`${baseUrl}/api/generate-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData),
+      }).catch(error => {
+        console.error('Error triggering background report generation:', error);
       });
+      
+      console.log('Background report generation triggered successfully');
+    } catch (error) {
+      console.error('Failed to trigger background report generation:', error);
     }
 
   } catch (error) {

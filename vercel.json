@@ -8,6 +8,9 @@
     },
     "pages/api/submit-evaluation.ts": {
       "maxDuration": 300
+    },
+    "pages/api/generate-report.ts": {
+      "maxDuration": 300
     }
   },
   "headers": [
