@@ -175,20 +175,36 @@ Score : X,X – [Interprétation selon barème]
 [Résumé transversal – 200 à 300 mots]
 
 3. Points de vigilance
-- [4 à 8 points, format bullet]
-Exemples de vigilances à considérer selon les profils :
-- Forte ambition + faible esprit d'équipe = risque pour l'harmonie collective
-- Forte initiative + faible recul = risque d'imprudence
-- Fort sens du résultat + faible vision = risque de ne pas innover
-- Forte communication + faible résilience = risque d'évitement du conflit
+
+• Tendance à [titre descriptif] (Critère concerné)
+[Description détaillée du point de vigilance – 80 à 120 mots expliquant la nature du point d'attention, les situations où il peut se manifester, et l'impact potentiel sur la performance ou les relations professionnelles]
+
+• [Répéter pour 3 à 4 points de vigilance principaux]
+
+IMPORTANT : Chaque point de vigilance doit :
+- Avoir un titre clair et descriptif
+- Mentionner le ou les critères concernés entre parenthèses
+- Être développé dans un paragraphe de 80-120 mots
+- Expliquer concrètement comment ce point se manifeste
+- Rester constructif et orienté développement
 
 4. Recommandations de développement
-- [1 à 2 recommandations par point de vigilance]
-Exemples d'actions concrètes :
-- Coaching sur projet professionnel, prise de décision, leadership
-- Missions transverses pour développer la vision systémique
-- Contextes permettant l'erreur comme apprentissage
-- Indicateurs clairs et bilans d'action réguliers
+
+• Critère : [développer 2-3 recommandations concrètes par point de vigilance identifié, format paragraphe de 60-100 mots chacune, avec des actions précises et contextualisées]
+
+IMPORTANT : Chaque recommandation doit :
+- Commencer par le nom du critère en gras
+- Proposer des actions concrètes et réalisables
+- Être reliée explicitement aux points de vigilance
+- Inclure des exemples de situations ou d'exercices pratiques
+
+Exemples de format attendu :
+
+• Décision : multiplier les mises en situation où le temps de réflexion est restreint, avec des feedbacks ciblés sur la rapidité et la clarté des arbitrages ; encourager la formalisation de critères décisionnels simples pour faciliter le passage à l'acte.
+
+• Décision : travailler la tolérance à l'incertitude à travers des scénarios de crise ou de changement imprévu, afin de renforcer la confiance en ses choix même sans vision exhaustive.
+
+• Pertinence : favoriser la prise de décision rapide sur des situations opérationnelles concrètes, avec un retour d'expérience systématique ; organiser des ateliers de type "diagnostic flash" pour entraîner la réactivité intuitive.
 
 5. Conclusion synthétique
 [80 à 120 mots]
