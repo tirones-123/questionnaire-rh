@@ -82,8 +82,19 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       console.log(`[DEBUG LINES 73-77] Line ${i}: "${line}" (length=${line.length})`);
     }
     
+    // Trace spécifique pour la ligne 74
+    if (i === 74) {
+      console.log(`[TRACE LINE 74] Starting processing of line 74`);
+      console.log(`[TRACE LINE 74] Line content: "${line}"`);
+      console.log(`[TRACE LINE 74] Line starts with "Max": ${line.startsWith("Max")}`);
+      console.log(`[TRACE LINE 74] Is uppercase: ${line === line.toUpperCase()}`);
+      console.log(`[TRACE LINE 74] Starts with bullet: ${line.startsWith('• ')}`);
+      console.log(`[TRACE LINE 74] currentSection=${currentSection}, skipNextLine=${skipNextLine}`);
+    }
+    
     // Ignorer les délimiteurs de blocs de code Markdown
     if (line === "```" || line.startsWith("```")) {
+      if (currentSection === 2) console.log(`[DEBUG S2] Skipping markdown delimiter at line ${i}`);
       continue;
     }
     
@@ -106,6 +117,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     
     if (skipNextLine) {
       console.log(`[DEBUG] Skipping line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
+      if (currentSection === 2) console.log(`[DEBUG S2] SkipNextLine triggered at line ${i}`);
       skipNextLine = false;
       continue;
     }
@@ -263,6 +275,31 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           spacing: { before: 300, after: 200 },
         })
       );
+      
+      // Traitement spécial pour la section 2 : ajouter le contenu directement
+      if (newSection === 2 && i + 1 < lines.length) {
+        const nextLine = lines[i + 1].trim();
+        if (nextLine && !nextLine.startsWith('3.') && nextLine.length > 100) {
+          console.log(`[SECTION 2 CONTENT] Adding section 2 content directly: "${nextLine.substring(0, 80)}..."`);
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: nextLine,
+                  font: 'Avenir Book',
+                  size: 22, // 11pt
+                  color: '000000',
+                }),
+              ],
+              alignment: AlignmentType.JUSTIFIED,
+              spacing: { before: 120, after: 120 },
+            })
+          );
+          // Marquer cette ligne comme déjà traitée
+          i++;
+        }
+      }
+      
       lastWasCriterion = false;
       continue;
     }
@@ -464,9 +501,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     // Paragraphe normal
     console.log(`Processing normal paragraph at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
     
-    // Debug spécifique pour la section 2
-    if (currentSection === 2 && !line.startsWith('3.')) {
-      console.log(`[DEBUG SECTION 2] About to create paragraph for line ${i}, length=${line.length}`);
+    // Forcer le traitement de la ligne de section 2 si elle n'a pas été traitée
+    if (i === 74 || (currentSection === 2 && line.length > 200 && !line.startsWith('3.'))) {
+      console.log(`[FORCE SECTION 2] Creating paragraph for line ${i}`);
     }
     
     children.push(
@@ -488,9 +525,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       })
     );
     
-    // Debug : confirmer l'ajout
+    // Debug spécifique pour la section 2
     if (currentSection === 2 && !line.startsWith('3.')) {
-      console.log(`[DEBUG SECTION 2] Paragraph successfully added for line ${i}`);
+      console.log(`[DEBUG SECTION 2] About to create paragraph for line ${i}, length=${line.length}`);
     }
     
     lastWasCriterion = false;
