@@ -452,10 +452,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             text: line,
             font: 'Avenir Book',
             size: 22, // 11pt
+            color: '000000', // couleur explicite pour éviter tout texte invisible
           }),
         ],
         alignment: AlignmentType.JUSTIFIED,
-        spacing: { before: 0, after: 40 },
+        spacing: { before: 120, after: 120 }, // espacement plus large pour bien séparer
         // Indenter si on est dans une section avec bullets (points de vigilance ou recommandations)
         ...(inBulletSection && !line.startsWith('1.') && !line.startsWith('2.') && 
             !line.startsWith('3.') && !line.startsWith('4.') && !line.startsWith('5.') 
