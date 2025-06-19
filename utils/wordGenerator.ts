@@ -1,6 +1,5 @@
 import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun, PageBreak, Packer } from 'docx';
-import { svgToBase64 } from './chartGenerator';
-import sharp from 'sharp';
+import { generateRadarChartBuffer, generateSortedBarChartBuffer, generateFamilyBarChartBuffer } from './quickchartGenerator';
 
 interface WordReportData {
   type: 'autodiagnostic' | 'evaluation';
@@ -15,84 +14,12 @@ interface WordReportData {
     lastName: string;
   };
   reportContent: string;
-  charts: {
-    radar: string;      // SVG string
-    sorted: string;     // SVG string
-    family: string;     // SVG string
+  charts?: {
+    radar: string;      // SVG string - maintenant optionnel car on utilise QuickChart
+    sorted: string;     // SVG string - maintenant optionnel car on utilise QuickChart
+    family: string;     // SVG string - maintenant optionnel car on utilise QuickChart
   };
-}
-
-// Convertir SVG en PNG via sharp
-async function svgToPng(svg: string, width: number = 800, height: number = 600): Promise<Buffer> {
-  try {
-    console.log(`Converting SVG to PNG (${width}x${height}), SVG length: ${svg.length}`);
-    
-    // Nettoyer le SVG pour Sharp et environnements serverless
-    const cleanSvg = svg
-      .replace(/encoding="UTF-8"/g, '')
-      .replace(/\s+/g, ' ')
-      .replace(/font-family="[^"]*"/g, 'font-family="Arial, sans-serif"') // Forcer Arial
-      .trim();
-    
-    // Créer un buffer depuis le SVG nettoyé
-    const svgBuffer = Buffer.from(cleanSvg, 'utf-8');
-    
-    // Configuration optimisée pour environnements serverless
-    const buffer = await sharp(svgBuffer, {
-      density: 150, // Réduire la densité pour éviter les problèmes de mémoire
-    })
-      .resize(width, height, { 
-        fit: 'inside', 
-        withoutEnlargement: false,
-        background: { r: 255, g: 255, b: 255, alpha: 1 } 
-      })
-      .png({ 
-        quality: 80, // Réduire la qualité pour des fichiers plus légers
-        compressionLevel: 9,
-        progressive: false, // Éviter les problèmes sur serverless
-        force: true // Forcer le format PNG
-      })
-      .toBuffer();
-      
-    console.log(`PNG conversion successful, buffer size: ${buffer.length}`);
-    return buffer;
-  } catch (error) {
-    console.error('Erreur lors de la conversion SVG vers PNG:', error);
-    console.error('SVG content (first 500 chars):', svg.substring(0, 500));
-    
-    // Créer une image de fallback simple SANS polices complexes
-    return createSimpleFallbackImage(width, height, 'Graphique');
-  }
-}
-
-// Créer une image de fallback ultra-simple
-async function createSimpleFallbackImage(width: number, height: number, text: string): Promise<Buffer> {
-  try {
-    // SVG ultra-simple sans polices externes
-    const fallbackSvg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${width}" height="${height}" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
-      <text x="${width/2}" y="${height/2}" text-anchor="middle" dominant-baseline="middle" 
-            font-family="Arial" font-size="16" fill="#6c757d">${text}</text>
-    </svg>`;
-    
-    return await sharp(Buffer.from(fallbackSvg), { density: 72 })
-      .png({ quality: 50, force: true })
-      .toBuffer();
-  } catch (error) {
-    console.error('Impossible de créer l\'image de fallback:', error);
-    
-    // Dernier recours : créer un rectangle coloré simple
-    return await sharp({
-      create: {
-        width: width,
-        height: height,
-        channels: 4,
-        background: { r: 248, g: 249, b: 250, alpha: 1 }
-      }
-    })
-    .png()
-    .toBuffer();
-  }
+  scores?: { [key: string]: any }; // Pour passer les scores directement
 }
 
 export async function generateWordDocument(data: WordReportData): Promise<Buffer> {
@@ -103,34 +30,30 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   
   const children: Paragraph[] = [];
 
-  // Convertir les graphiques SVG en PNG avec dimensions optimisées
+  // Générer les graphiques avec QuickChart si les scores sont fournis
   let chartBuffers: { [key: string]: Buffer } = {};
+  
   try {
-    console.log('Converting charts to PNG...');
+    console.log('Generating charts with QuickChart...');
     
-    // Convertir chaque graphique avec une taille appropriée
-    chartBuffers.family = await svgToPng(data.charts.family, 600, 400);
-    console.log('Family chart converted');
-    
-    chartBuffers.radar = await svgToPng(data.charts.radar, 600, 600);
-    console.log('Radar chart converted'); 
-    
-    chartBuffers.sorted = await svgToPng(data.charts.sorted, 600, 400);
-    console.log('Sorted chart converted');
-    
-    console.log('All charts converted successfully');
-  } catch (error) {
-    console.error('Erreur lors de la conversion des graphiques:', error);
-    console.error('Error details:', error instanceof Error ? error.stack : 'No stack');
-    
-    // Créer des images de fallback
-    try {
-      chartBuffers.family = await createSimpleFallbackImage(600, 400, 'Graphique par famille');
-      chartBuffers.radar = await createSimpleFallbackImage(600, 600, 'Graphique radar');
-      chartBuffers.sorted = await createSimpleFallbackImage(600, 400, 'Graphique trié');
-    } catch (fallbackError) {
-      console.error('Impossible de créer les images de fallback:', fallbackError);
+    if (data.scores) {
+      // Utiliser QuickChart pour générer les graphiques
+      chartBuffers.family = await generateFamilyBarChartBuffer(data.scores);
+      console.log('Family chart generated with QuickChart');
+      
+      chartBuffers.radar = await generateRadarChartBuffer(data.scores);
+      console.log('Radar chart generated with QuickChart'); 
+      
+      chartBuffers.sorted = await generateSortedBarChartBuffer(data.scores);
+      console.log('Sorted chart generated with QuickChart');
+    } else {
+      console.warn('No scores provided, charts will not be generated');
     }
+    
+    console.log('All charts generated successfully');
+  } catch (error) {
+    console.error('Erreur lors de la génération des graphiques:', error);
+    // Continuer sans graphiques en cas d'erreur
   }
 
   // Parser le contenu du rapport

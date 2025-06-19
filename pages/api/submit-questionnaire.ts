@@ -224,39 +224,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let sortedChart: string;
       let familyChart: string;
       
+      // NOTE: Ces graphiques SVG ne sont plus utilisés, on utilise QuickChart maintenant
+      // Mais on les garde temporairement pour compatibilité
       try {
         radarChart = generateRadarChart(scores);
-        console.log('Radar chart SVG generated, length:', radarChart.length);
+        console.log('Radar chart SVG generated (for compatibility), length:', radarChart.length);
       } catch (chartError) {
         console.error('Error generating radar chart:', chartError);
-        throw chartError;
+        radarChart = '<svg></svg>';
       }
       
       try {
         sortedChart = generateSortedBarChart(scores);
-        console.log('Sorted chart SVG generated, length:', sortedChart.length);
+        console.log('Sorted chart SVG generated (for compatibility), length:', sortedChart.length);
       } catch (chartError) {
         console.error('Error generating sorted chart:', chartError);
-        throw chartError;
+        sortedChart = '<svg></svg>';
       }
       
       try {
         familyChart = generateFamilyBarChart(scores);
-        console.log('Family chart SVG generated, length:', familyChart.length);
+        console.log('Family chart SVG generated (for compatibility), length:', familyChart.length);
       } catch (chartError) {
         console.error('Error generating family chart:', chartError);
-        throw chartError;
+        familyChart = '<svg></svg>';
       }
 
         // Générer le document Word
       console.log('Starting Word document generation...');
       let wordBuffer: Buffer;
       try {
-        // Réactiver la version avec images
+        // Passer les scores directement pour utiliser QuickChart
         wordBuffer = await generateWordDocument({
           type: 'autodiagnostic',
           person: userInfo,
           reportContent,
+          scores, // Ajouter les scores pour QuickChart
           charts: {
             radar: radarChart,
             sorted: sortedChart,
