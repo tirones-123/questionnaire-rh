@@ -175,36 +175,42 @@ Score : X,X – [Interprétation selon barème]
 [Résumé transversal – 200 à 300 mots]
 
 3. Points de vigilance
+- **Titre du point de vigilance (Critère concerné)**
+  Paragraphe explicatif détaillé de 3 à 5 lignes décrivant la problématique, les manifestations concrètes et les risques associés. L'analyse doit être nuancée et contextualisée.
 
-• Tendance à [titre descriptif] (Critère concerné)
-[Description détaillée du point de vigilance – 80 à 120 mots expliquant la nature du point d'attention, les situations où il peut se manifester, et l'impact potentiel sur la performance ou les relations professionnelles]
+[Répéter pour 3 à 5 points de vigilance]
 
-• [Répéter pour 3 à 4 points de vigilance principaux]
+Exemples concrets à suivre :
+- **Tendance à rechercher un confort intellectuel avant de trancher (Décision)**
+  [Nom] semble avoir besoin de sécuriser ses décisions par une réflexion approfondie. Cette exigence de clarté peut freiner sa capacité à agir rapidement, notamment lorsqu'il s'agit de trancher dans des contextes mouvants où toutes les données ne sont pas disponibles. Bien qu'elle reflète un souci de justesse, cette posture peut générer des lenteurs opérationnelles si elle n'est pas compensée par des processus de décision simplifiés.
 
-IMPORTANT : Chaque point de vigilance doit :
-- Avoir un titre clair et descriptif
-- Mentionner le ou les critères concernés entre parenthèses
-- Être développé dans un paragraphe de 80-120 mots
-- Expliquer concrètement comment ce point se manifeste
-- Rester constructif et orienté développement
+- **Légères hésitations dans les contextes d'incertitude forte (Décision)**
+  Lorsqu'il est confronté à des situations complexes ou imprévues, [Nom] peut manifester une forme de prudence excessive. Cette tendance à différer le choix, en attente d'une meilleure visibilité, peut constituer un frein à l'agilité attendue dans certains environnements. Cela ne remet pas en cause sa capacité à décider, mais souligne un axe de consolidation autour de la confiance dans ses intuitions premières.
+
+- **Pertinence encore perfectible en contexte d'urgence (Pertinence)**
+  Si [Nom] démontre une capacité d'analyse fine dans les situations structurées, son acuité peut être moins efficiente lorsque l'action rapide est requise. Il peut manquer d'instantanéité dans le repérage des signaux critiques, notamment sous pression. Le développement de réflexes intuitifs plus immédiats permettrait de compléter utilement son registre de jugement.
+
+UTILISE CE FORMAT : titre descriptif en gras suivi d'un paragraphe explicatif détaillé qui contextualise la problématique.
+
+IMPORTANT : Chaque point de vigilance doit faire AU MINIMUM 3 lignes complètes. Ne jamais faire de points courts ou télégraphiques.
 
 4. Recommandations de développement
+- **Critère : action concrète à mettre en œuvre**
+  Description détaillée de la recommandation sur 2 à 4 lignes, incluant modalités de mise en œuvre, bénéfices attendus et lien avec le point de vigilance correspondant.
 
-• Critère : [développer 2-3 recommandations concrètes par point de vigilance identifié, format paragraphe de 60-100 mots chacune, avec des actions précises et contextualisées]
+[Répéter pour chaque point de vigilance identifié]
 
-IMPORTANT : Chaque recommandation doit :
-- Commencer par le nom du critère en gras
-- Proposer des actions concrètes et réalisables
-- Être reliée explicitement aux points de vigilance
-- Inclure des exemples de situations ou d'exercices pratiques
+Exemples concrets à suivre :
+- **Décision : multiplier les mises en situation où le temps de réflexion est restreint**
+  avec des feedbacks ciblés sur la rapidité et la clarté des arbitrages ; encourager la formalisation de critères décisionnels simples pour faciliter le passage à l'acte.
 
-Exemples de format attendu :
+- **Décision : travailler la tolérance à l'incertitude**
+  à travers des scénarios de crise ou de changement imprévu, afin de renforcer la confiance en ses choix même sans vision exhaustive.
 
-• Décision : multiplier les mises en situation où le temps de réflexion est restreint, avec des feedbacks ciblés sur la rapidité et la clarté des arbitrages ; encourager la formalisation de critères décisionnels simples pour faciliter le passage à l'acte.
+- **Pertinence : favoriser la prise de décision rapide sur des situations opérationnelles concrètes**
+  avec un retour d'expérience systématique ; organiser des ateliers de type "diagnostic flash" pour entraîner la réactivité intuitive.
 
-• Décision : travailler la tolérance à l'incertitude à travers des scénarios de crise ou de changement imprévu, afin de renforcer la confiance en ses choix même sans vision exhaustive.
-
-• Pertinence : favoriser la prise de décision rapide sur des situations opérationnelles concrètes, avec un retour d'expérience systématique ; organiser des ateliers de type "diagnostic flash" pour entraîner la réactivité intuitive.
+UTILISE CE FORMAT : chaque recommandation doit être concrète, actionnable et détaillée (minimum 2 lignes complètes).
 
 5. Conclusion synthétique
 [80 à 120 mots]
@@ -225,7 +231,14 @@ RÈGLES CRITIQUES :
 - Analyses fluides et nuancées, pas de répétitions mécaniques
 - S'inspirer des principes et mécanismes décrits pour chaque critère
 - Intégrer les dimensions spécifiques (ex: ambition managériale/expertise/entrepreneuriale)
-- Utiliser les niveaux de développement quand pertinent (ex: suiveur/réactif/entrepreneur pour l'initiative)`;
+- Utiliser les niveaux de développement quand pertinent (ex: suiveur/réactif/entrepreneur pour l'initiative)
+- Points de vigilance : TOUJOURS avec titre en gras + paragraphe explicatif détaillé (3-5 lignes COMPLÈTES)
+- Recommandations : TOUJOURS avec format "Critère : action" en gras + description détaillée (2-4 lignes COMPLÈTES)
+- Minimum 3 points de vigilance, chacun bien développé et substantiel
+- Une recommandation détaillée pour chaque point de vigilance
+- Utiliser le format Markdown pour le gras : **texte en gras**
+- Les puces seront automatiquement formatées, utiliser simplement - au début des lignes
+- NE JAMAIS faire de points télégraphiques ou trop courts`;
 
   const userPrompt = `Voici les données à analyser :
 

@@ -325,110 +325,129 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Points avec bullet • (pour les points de vigilance et recommandations)
-    if (line.startsWith('• ')) {
-      // Vérifier si c'est un titre de point (contient des parenthèses)
-      const hasParentheses = line.includes('(') && line.includes(')');
-      
-      if (hasParentheses) {
-        // C'est un titre de point de vigilance avec critère entre parenthèses
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                font: 'Avenir Book',
-                size: 22, // 11pt
-                bold: true,
-              }),
-            ],
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 120, after: 40 },
-          })
-        );
-      } else if (line.includes(':') && line.indexOf(':') < 30) {
-        // C'est une recommandation (commence par "• Critère :")
-        const colonIndex = line.indexOf(':');
-        const critere = line.substring(2, colonIndex).trim();
-        const recommendation = line.substring(colonIndex + 1).trim();
-        
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: '• ',
-                font: 'Avenir Book',
-                size: 22, // 11pt
-              }),
-              new TextRun({
-                text: critere + ' : ',
-                font: 'Avenir Book',
-                size: 22, // 11pt
-                bold: true,
-              }),
-              new TextRun({
-                text: recommendation,
-                font: 'Avenir Book',
-                size: 22, // 11pt
-              }),
-            ],
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 80, after: 60 },
-          })
-        );
-      } else {
-        // Autre point avec bullet
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                font: 'Avenir Book',
-                size: 22, // 11pt
-              }),
-            ],
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 60, after: 60 },
-          })
-        );
-      }
-      lastWasCriterion = false;
-      continue;
-    }
-
-    // Points de vigilance (lignes commençant par - pour compatibilité)
+    // Points de vigilance (lignes commençant par -)
     if (line.startsWith('- ')) {
+      // Extraire le contenu après le tiret
+      const content = line.substring(2).trim();
+      
+      // Vérifier si le contenu contient du gras (format **texte**)
+      const boldPattern = /\*\*(.*?)\*\*/g;
+      const textRuns: TextRun[] = [];
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = boldPattern.exec(content)) !== null) {
+        // Ajouter le texte avant le gras
+        if (match.index > lastIndex) {
+          textRuns.push(new TextRun({
+            text: content.substring(lastIndex, match.index),
+            font: 'Avenir Book',
+            size: 22,
+          }));
+        }
+        
+        // Ajouter le texte en gras
+        textRuns.push(new TextRun({
+          text: match[1],
+          font: 'Avenir Book',
+          size: 22,
+          bold: true,
+        }));
+        
+        lastIndex = match.index + match[0].length;
+      }
+      
+      // Ajouter le texte restant après le dernier gras
+      if (lastIndex < content.length) {
+        textRuns.push(new TextRun({
+          text: content.substring(lastIndex),
+          font: 'Avenir Book',
+          size: 22,
+        }));
+      }
+      
+      // Si aucun gras n'a été trouvé, créer un TextRun simple
+      if (textRuns.length === 0) {
+        textRuns.push(new TextRun({
+          text: content,
+          font: 'Avenir Book',
+          size: 22,
+        }));
+      }
+      
+      // Ajouter la puce au début
+      textRuns.unshift(new TextRun({
+        text: '• ',
+        font: 'Avenir Book',
+        size: 22,
+      }));
+      
       children.push(
         new Paragraph({
-          children: [
-            new TextRun({
-              text: line,
-              font: 'Avenir Book',
-              size: 22, // 11pt
-            }),
-          ],
+          children: textRuns,
           alignment: AlignmentType.JUSTIFIED,
           spacing: { before: 60, after: 60 },
+          indent: { left: 360 }, // Indentation pour la puce
         })
       );
       lastWasCriterion = false;
       continue;
     }
 
-    // Paragraphe normal
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: line,
+    // Paragraphe normal (peut aussi contenir du formatage gras)
+    {
+      const boldPattern = /\*\*(.*?)\*\*/g;
+      const textRuns: TextRun[] = [];
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = boldPattern.exec(line)) !== null) {
+        // Ajouter le texte avant le gras
+        if (match.index > lastIndex) {
+          textRuns.push(new TextRun({
+            text: line.substring(lastIndex, match.index),
             font: 'Avenir Book',
-            size: 22, // 11pt
-          }),
-        ],
-        alignment: AlignmentType.JUSTIFIED,
-        spacing: { before: 0, after: 40 },
-      })
-    );
+            size: 22,
+          }));
+        }
+        
+        // Ajouter le texte en gras
+        textRuns.push(new TextRun({
+          text: match[1],
+          font: 'Avenir Book',
+          size: 22,
+          bold: true,
+        }));
+        
+        lastIndex = match.index + match[0].length;
+      }
+      
+      // Ajouter le texte restant après le dernier gras
+      if (lastIndex < line.length) {
+        textRuns.push(new TextRun({
+          text: line.substring(lastIndex),
+          font: 'Avenir Book',
+          size: 22,
+        }));
+      }
+      
+      // Si aucun gras n'a été trouvé, créer un TextRun simple
+      if (textRuns.length === 0) {
+        textRuns.push(new TextRun({
+          text: line,
+          font: 'Avenir Book',
+          size: 22,
+        }));
+      }
+      
+      children.push(
+        new Paragraph({
+          children: textRuns,
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { before: 0, after: 40 },
+        })
+      );
+    }
     lastWasCriterion = false;
   }
 
