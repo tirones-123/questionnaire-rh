@@ -265,7 +265,7 @@ Le rapport doit commencer EXACTEMENT par ces lignes dans cet ordre :
 2. Une ligne vide
 3. 1. Analyse critère par critère
 4. Une ligne vide
-5. FAMILLE « VOULOIR » (MOTEUR PERSONNEL)`;
+
 
   try {
     console.log('Calling OpenAI API...');

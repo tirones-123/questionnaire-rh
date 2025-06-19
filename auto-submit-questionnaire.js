@@ -14,19 +14,55 @@ const userInfo = {
   email: 'test@example.com'
 };
 
-// Génération des réponses automatiques (répartition équilibrée)
+// Structure des questions réelles (copiée depuis data/questions.ts)
+const sections = [
+  {
+    id: 1,
+    questions: [1, 7, 10, 36, 37, 61, 70, 72, 13]
+  },
+  {
+    id: 2,
+    questions: [20, 32, 44, 56, 8, 68, 22, 27, 64]
+  },
+  {
+    id: 3,
+    questions: [9, 21, 69, 2, 50, 62, 45, 57, 33]
+  },
+  {
+    id: 4,
+    questions: [3, 15, 39, 51, 63, 52, 16, 40, 28]
+  },
+  {
+    id: 5,
+    questions: [6, 24, 54, 12, 29, 48, 65, 67, 4]
+  },
+  {
+    id: 6,
+    questions: [5, 11, 17, 18, 30, 35, 42, 66, 71]
+  },
+  {
+    id: 7,
+    questions: [23, 31, 34, 43, 46, 55, 58, 59, 60]
+  },
+  {
+    id: 8,
+    questions: [14, 19, 25, 26, 38, 41, 47, 49, 53]
+  }
+];
+
+// Génération des réponses automatiques avec les vrais IDs de questions
 function generateResponses() {
   const responseOptions = ['a', 'b', 'c', 'd', 'e'];
   const responses = {};
   
-  // 8 sections × 9 questions = 72 questions
-  for (let sectionId = 1; sectionId <= 8; sectionId++) {
-    for (let questionId = 1; questionId <= 9; questionId++) {
+  // Parcourir chaque section avec les vraies questions
+  sections.forEach(section => {
+    section.questions.forEach(questionId => {
       // Génère une réponse aléatoire mais équilibrée
       const randomResponse = responseOptions[Math.floor(Math.random() * responseOptions.length)];
-      responses[`${sectionId}-${questionId}`] = randomResponse;
-    }
-  }
+      responses[`${section.id}-${questionId}`] = randomResponse;
+    });
+  });
   
   return responses;
 }
