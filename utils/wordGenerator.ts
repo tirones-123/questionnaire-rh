@@ -25,13 +25,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   console.log('Person:', data.person.firstName, data.person.lastName);
   console.log('Report content length:', data.reportContent.length);
   
-  // Debug : afficher les premières lignes du rapport
-  const debugLines = data.reportContent.split('\n').slice(0, 10);
-  console.log('First 10 lines of report content:');
-  debugLines.forEach((line, index) => {
-    console.log(`Line ${index}: "${line}"`);
-  });
-  
   const children: Paragraph[] = [];
   
   // Générer les graphiques avec QuickChart
@@ -67,23 +60,21 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   // Parser le contenu du rapport
   const lines = data.reportContent.split('\n');
   let currentSection = 0;
-  let chartInserted = {
-    family: false,
-    radar: false,
-    sorted: false
-  };
+  let inSection1 = false;
+  let inSection2 = false;
+  let inSection3 = false;
   let skipNextLine = false;
   let lastWasTitle = false;
   let lastWasCriterion = false;
   let isFirstSection = true;
-
-  console.log('Starting to parse report content...');
+  let inBulletSection = false; // Pour savoir si on est dans une section avec bullets
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
     // Gestion des lignes vides
     if (!line) {
+      // Ne pas ignorer les lignes vides car elles peuvent être importantes pour la structure
       continue;
     }
     
@@ -92,14 +83,13 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Log pour debug - uniquement les lignes importantes
-    if (line.startsWith('RAPPORT') || line.match(/^[1-5]\./) || line.startsWith('FAMILLE') || line.startsWith('Score :')) {
-      console.log(`Processing line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
+    // Log pour debug
+    if (line.length > 0) {
+      console.log(`Processing line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
     }
 
     // Titre principal et identité sur fond gris
-    if (line.toUpperCase().startsWith('RAPPORT')) {
-      console.log(`Found report title: "${line}"`);
+    if (line.startsWith('RAPPORT')) {
       // Créer le titre sur fond gris
       children.push(
         new Paragraph({
@@ -161,8 +151,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       console.log(`Found section: "${line}"`);
       const newSection = parseInt(line[0]);
       
+      // Réinitialiser le flag des sections avec bullets
+      inBulletSection = false;
+      
       // Insérer les graphiques à la fin de la section précédente
-      if (currentSection === 1 && chartBuffers.family && newSection > 1 && !chartInserted.family) {
+      if (currentSection === 1 && chartBuffers.family && newSection > 1) {
         console.log('Inserting family chart at end of section 1');
         children.push(
           new Paragraph({
@@ -179,8 +172,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-        chartInserted.family = true;
-      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2 && !chartInserted.radar) {
+      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2) {
         console.log('Inserting radar chart at end of section 2');
         children.push(
           new Paragraph({
@@ -197,8 +189,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-        chartInserted.radar = true;
-      } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3 && !chartInserted.sorted) {
+      } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3) {
         console.log('Inserting sorted chart at end of section 3');
         children.push(
           new Paragraph({
@@ -215,10 +206,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-        chartInserted.sorted = true;
       }
       
       currentSection = newSection;
+      inSection1 = (currentSection === 1);
+      inSection2 = (currentSection === 2);
+      inSection3 = (currentSection === 3);
       
       console.log(`Adding section title: "${line}"`);
       
@@ -336,138 +329,100 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Points de vigilance (lignes commençant par -)
+    // Points de vigilance et recommandations (lignes commençant par •)
+    if (line.startsWith('• ')) {
+      console.log(`Found bullet point: "${line}"`);
+      
+      // Vérifier si c'est un titre (contient des parenthèses ou deux-points)
+      const isTitle = line.includes('(') && line.includes(')') || line.includes(' : ');
+      
+      if (isTitle) {
+        // C'est un titre de point de vigilance ou recommandation
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: line,
+                font: 'Avenir Book',
+                size: 22, // 11pt
+                bold: true, // En gras pour les titres
+              }),
+            ],
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 120, after: 40 }, // Plus d'espace avant, moins après
+            indent: {
+              left: 240, // Indentation pour les bullets
+            },
+          })
+        );
+        inBulletSection = true; // On est dans une section avec bullets
+      } else {
+        // C'est un point normal
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: line,
+                font: 'Avenir Book',
+                size: 22, // 11pt
+              }),
+            ],
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 60, after: 60 },
+            indent: {
+              left: 240, // Indentation pour les bullets
+            },
+          })
+        );
+      }
+      lastWasCriterion = false;
+      continue;
+    }
+
+    // Ancien traitement des tirets (pour compatibilité)
     if (line.startsWith('- ')) {
-      // Extraire le contenu après le tiret
-      const content = line.substring(2).trim();
-      
-      // Vérifier si le contenu contient du gras (format **texte**)
-      const boldPattern = /\*\*(.*?)\*\*/g;
-      const textRuns: TextRun[] = [];
-      let lastIndex = 0;
-      let match;
-      
-      while ((match = boldPattern.exec(content)) !== null) {
-        // Ajouter le texte avant le gras
-        if (match.index > lastIndex) {
-          textRuns.push(new TextRun({
-            text: content.substring(lastIndex, match.index),
-            font: 'Avenir Book',
-            size: 22,
-          }));
-        }
-        
-        // Ajouter le texte en gras
-        textRuns.push(new TextRun({
-          text: match[1],
-          font: 'Avenir Book',
-          size: 22,
-          bold: true,
-        }));
-        
-        lastIndex = match.index + match[0].length;
-      }
-      
-      // Ajouter le texte restant après le dernier gras
-      if (lastIndex < content.length) {
-        textRuns.push(new TextRun({
-          text: content.substring(lastIndex),
-          font: 'Avenir Book',
-          size: 22,
-        }));
-      }
-      
-      // Si aucun gras n'a été trouvé, créer un TextRun simple
-      if (textRuns.length === 0) {
-        textRuns.push(new TextRun({
-          text: content,
-          font: 'Avenir Book',
-          size: 22,
-        }));
-      }
-      
-      // Ajouter la puce au début
-      textRuns.unshift(new TextRun({
-        text: '• ',
-        font: 'Avenir Book',
-        size: 22,
-      }));
-      
       children.push(
         new Paragraph({
-          children: textRuns,
+          children: [
+            new TextRun({
+              text: line,
+              font: 'Avenir Book',
+              size: 22, // 11pt
+            }),
+          ],
           alignment: AlignmentType.JUSTIFIED,
           spacing: { before: 60, after: 60 },
-          indent: { left: 360 }, // Indentation pour la puce
         })
       );
       lastWasCriterion = false;
       continue;
     }
 
-    // Paragraphe normal (peut aussi contenir du formatage gras)
-    {
-      const boldPattern = /\*\*(.*?)\*\*/g;
-      const textRuns: TextRun[] = [];
-      let lastIndex = 0;
-      let match;
-      
-      while ((match = boldPattern.exec(line)) !== null) {
-        // Ajouter le texte avant le gras
-        if (match.index > lastIndex) {
-          textRuns.push(new TextRun({
-            text: line.substring(lastIndex, match.index),
+    // Paragraphe normal
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: line,
             font: 'Avenir Book',
-            size: 22,
-          }));
-        }
-        
-        // Ajouter le texte en gras
-        textRuns.push(new TextRun({
-          text: match[1],
-          font: 'Avenir Book',
-          size: 22,
-          bold: true,
-        }));
-        
-        lastIndex = match.index + match[0].length;
-      }
-      
-      // Ajouter le texte restant après le dernier gras
-      if (lastIndex < line.length) {
-        textRuns.push(new TextRun({
-          text: line.substring(lastIndex),
-          font: 'Avenir Book',
-          size: 22,
-        }));
-      }
-      
-      // Si aucun gras n'a été trouvé, créer un TextRun simple
-      if (textRuns.length === 0) {
-        textRuns.push(new TextRun({
-          text: line,
-          font: 'Avenir Book',
-          size: 22,
-        }));
-      }
-      
-      children.push(
-        new Paragraph({
-          children: textRuns,
-          alignment: AlignmentType.JUSTIFIED,
-          spacing: { before: 0, after: 40 },
-        })
-      );
-    }
+            size: 22, // 11pt
+          }),
+        ],
+        alignment: AlignmentType.JUSTIFIED,
+        spacing: { before: 0, after: 40 },
+        // Indenter si on est dans une section avec bullets (points de vigilance ou recommandations)
+        ...(inBulletSection && !line.startsWith('1.') && !line.startsWith('2.') && 
+            !line.startsWith('3.') && !line.startsWith('4.') && !line.startsWith('5.') 
+            ? { indent: { left: 240 } } : {}),
+      })
+    );
+    
     lastWasCriterion = false;
   }
 
   // Insérer les graphiques restants à la fin du document
-  console.log(`End of document parsing. Current section: ${currentSection}`);
-  
-  // Insérer le graphique de la section 1 si on ne l'a pas déjà fait
-  if (currentSection >= 1 && chartBuffers.family && !chartInserted.family) {
-    console.log('Inserting family chart at end of section 1/document');
+  if (currentSection === 1 && chartBuffers.family) {
+    console.log('Inserting family chart at end of document (section 1)');
     children.push(
       new Paragraph({
         children: [
@@ -483,12 +438,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-    chartInserted.family = true;
-  }
-  
-  // Insérer le graphique de la section 2 si on ne l'a pas déjà fait
-  if (currentSection >= 2 && chartBuffers.radar && !chartInserted.radar) {
-    console.log('Inserting radar chart at end of section 2/document');
+  } else if (currentSection === 2 && chartBuffers.radar) {
+    console.log('Inserting radar chart at end of document (section 2)');
     children.push(
       new Paragraph({
         children: [
@@ -504,12 +455,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-    chartInserted.radar = true;
-  }
-  
-  // Insérer le graphique de la section 3 si on ne l'a pas déjà fait
-  if (currentSection >= 3 && chartBuffers.sorted && !chartInserted.sorted) {
-    console.log('Inserting sorted chart at end of section 3/document');
+  } else if (currentSection === 3 && chartBuffers.sorted) {
+    console.log('Inserting sorted chart at end of document (section 3)');
     children.push(
       new Paragraph({
         children: [
@@ -525,7 +472,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-    chartInserted.sorted = true;
   }
 
   // Créer l'en-tête avec logo (première page uniquement)

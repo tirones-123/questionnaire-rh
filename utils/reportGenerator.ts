@@ -175,42 +175,43 @@ Score : X,X – [Interprétation selon barème]
 [Résumé transversal – 200 à 300 mots]
 
 3. Points de vigilance
-- **Titre du point de vigilance (Critère concerné)**
-  Paragraphe explicatif détaillé de 3 à 5 lignes décrivant la problématique, les manifestations concrètes et les risques associés. L'analyse doit être nuancée et contextualisée.
+[3 à 5 points détaillés avec cette structure :]
 
-[Répéter pour 3 à 5 points de vigilance]
+• Titre du point de vigilance (Critère concerné)
+[Paragraphe explicatif de 80-120 mots détaillant le point de vigilance, ses manifestations et ses conséquences potentielles]
 
-Exemples concrets à suivre :
-- **Tendance à rechercher un confort intellectuel avant de trancher (Décision)**
-  [Nom] semble avoir besoin de sécuriser ses décisions par une réflexion approfondie. Cette exigence de clarté peut freiner sa capacité à agir rapidement, notamment lorsqu'il s'agit de trancher dans des contextes mouvants où toutes les données ne sont pas disponibles. Bien qu'elle reflète un souci de justesse, cette posture peut générer des lenteurs opérationnelles si elle n'est pas compensée par des processus de décision simplifiés.
+Exemples de structure :
+• Tendance à rechercher un confort intellectuel avant de trancher (Décision)
+Olivier semble avoir besoin de sécuriser ses décisions par une réflexion approfondie. Cette exigence de clarté peut freiner sa capacité à agir rapidement...
 
-- **Légères hésitations dans les contextes d'incertitude forte (Décision)**
-  Lorsqu'il est confronté à des situations complexes ou imprévues, [Nom] peut manifester une forme de prudence excessive. Cette tendance à différer le choix, en attente d'une meilleure visibilité, peut constituer un frein à l'agilité attendue dans certains environnements. Cela ne remet pas en cause sa capacité à décider, mais souligne un axe de consolidation autour de la confiance dans ses intuitions premières.
+• Légères hésitations dans les contextes d'incertitude forte (Décision)
+Lorsqu'il est confronté à des situations complexes ou imprévues...
 
-- **Pertinence encore perfectible en contexte d'urgence (Pertinence)**
-  Si [Nom] démontre une capacité d'analyse fine dans les situations structurées, son acuité peut être moins efficiente lorsque l'action rapide est requise. Il peut manquer d'instantanéité dans le repérage des signaux critiques, notamment sous pression. Le développement de réflexes intuitifs plus immédiats permettrait de compléter utilement son registre de jugement.
-
-UTILISE CE FORMAT : titre descriptif en gras suivi d'un paragraphe explicatif détaillé qui contextualise la problématique.
-
-IMPORTANT : Chaque point de vigilance doit faire AU MINIMUM 3 lignes complètes. Ne jamais faire de points courts ou télégraphiques.
+Points de vigilance possibles selon les combinaisons de scores :
+- Score faible en Décision : difficulté à trancher rapidement
+- Score faible en Initiative : tendance à attendre plutôt qu'agir
+- Forte ambition + faible esprit d'équipe : risque d'isolement
+- Fort sens du résultat + faible vision : manque d'innovation
+- Forte communication + faible résilience : évitement du conflit
 
 4. Recommandations de développement
-- **Critère : action concrète à mettre en œuvre**
-  Description détaillée de la recommandation sur 2 à 4 lignes, incluant modalités de mise en œuvre, bénéfices attendus et lien avec le point de vigilance correspondant.
+[Pour chaque point de vigilance, 1-2 recommandations structurées ainsi :]
 
-[Répéter pour chaque point de vigilance identifié]
+• Critère : description détaillée de l'action recommandée, incluant les modalités pratiques, les bénéfices attendus et les méthodes de mise en œuvre (60-80 mots).
 
-Exemples concrets à suivre :
-- **Décision : multiplier les mises en situation où le temps de réflexion est restreint**
-  avec des feedbacks ciblés sur la rapidité et la clarté des arbitrages ; encourager la formalisation de critères décisionnels simples pour faciliter le passage à l'acte.
+Exemple de structure :
+• Décision : multiplier les mises en situation où le temps de réflexion est restreint, avec des feedbacks ciblés sur la rapidité et la clarté des arbitrages ; encourager la formalisation de critères décisionnels simples pour faciliter le passage à l'acte.
 
-- **Décision : travailler la tolérance à l'incertitude**
-  à travers des scénarios de crise ou de changement imprévu, afin de renforcer la confiance en ses choix même sans vision exhaustive.
+• Décision : travailler la tolérance à l'incertitude à travers des scénarios de crise ou de changement imprévu, afin de renforcer la confiance en ses choix même sans vision exhaustive.
 
-- **Pertinence : favoriser la prise de décision rapide sur des situations opérationnelles concrètes**
-  avec un retour d'expérience systématique ; organiser des ateliers de type "diagnostic flash" pour entraîner la réactivité intuitive.
-
-UTILISE CE FORMAT : chaque recommandation doit être concrète, actionnable et détaillée (minimum 2 lignes complètes).
+Actions recommandées possibles :
+- Coaching individuel sur projet professionnel
+- Mises en situation avec contraintes temporelles
+- Missions transverses pour vision systémique
+- Ateliers "diagnostic flash" pour l'intuition
+- Scénarios de crise pour la décision
+- Feedback 360° pour le leadership
+- Projets collaboratifs pour l'esprit d'équipe
 
 5. Conclusion synthétique
 [80 à 120 mots]
@@ -232,13 +233,10 @@ RÈGLES CRITIQUES :
 - S'inspirer des principes et mécanismes décrits pour chaque critère
 - Intégrer les dimensions spécifiques (ex: ambition managériale/expertise/entrepreneuriale)
 - Utiliser les niveaux de développement quand pertinent (ex: suiveur/réactif/entrepreneur pour l'initiative)
-- Points de vigilance : TOUJOURS avec titre en gras + paragraphe explicatif détaillé (3-5 lignes COMPLÈTES)
-- Recommandations : TOUJOURS avec format "Critère : action" en gras + description détaillée (2-4 lignes COMPLÈTES)
-- Minimum 3 points de vigilance, chacun bien développé et substantiel
-- Une recommandation détaillée pour chaque point de vigilance
-- Utiliser le format Markdown pour le gras : **texte en gras**
-- Les puces seront automatiquement formatées, utiliser simplement - au début des lignes
-- NE JAMAIS faire de points télégraphiques ou trop courts`;
+- Points de vigilance : utiliser • (bullet) et non - (tiret), avec titre en gras et paragraphe explicatif
+- Recommandations : utiliser • (bullet), format "Critère : action détaillée"
+- Chaque point de vigilance doit avoir un titre descriptif avec le critère entre parenthèses
+- Chaque recommandation doit commencer par le nom du critère suivi de deux-points`;
 
   const userPrompt = `Voici les données à analyser :
 
@@ -252,7 +250,13 @@ ${scoresTableText}
 
 Génère le rapport complet en respectant EXACTEMENT la structure demandée.
 
-IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.`;
+IMPORTANT : Le rapport DOIT COMMENCER par le titre de section "1. Analyse critère par critère" sur une ligne seule, AVANT la première famille.
+
+FORMAT DES POINTS DE VIGILANCE ET RECOMMANDATIONS :
+- Les points de vigilance doivent être substantiels (80-120 mots par point)
+- Chaque point de vigilance a un titre descriptif suivi d'un paragraphe explicatif complet
+- Les recommandations doivent être détaillées et pratiques (60-80 mots par recommandation)
+- Utiliser le caractère • (bullet) et non - (tiret) pour les listes`;
 
   try {
     console.log('Calling OpenAI API...');
