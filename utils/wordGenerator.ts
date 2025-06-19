@@ -368,9 +368,27 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     ],
   }) : undefined;
 
-  // Créer le pied de page avec logo (à partir de la page 2)
+  // Créer le pied de page avec numérotation et logo (à partir de la page 2)
   const defaultFooter = logoBuffer ? new Footer({
     children: [
+      // Numérotation de page en bas à gauche
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "Page ",
+            font: 'Avenir Book',
+            size: 20, // 10pt
+          }),
+          new TextRun({
+            children: ["PAGE_NUMBER"],
+            font: 'Avenir Book',
+            size: 20, // 10pt
+          }),
+        ],
+        alignment: AlignmentType.LEFT,
+        spacing: { before: 0, after: 60 }, // Petit espacement avant le logo
+      }),
+      // Logo en dessous de la numérotation
       new Paragraph({
         children: [
           new ImageRun({
@@ -382,9 +400,29 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           }),
         ],
         alignment: AlignmentType.LEFT,
+        spacing: { before: 0, after: 0 },
       }),
     ],
-  }) : undefined;
+  }) : new Footer({
+    children: [
+      // Numérotation seule si pas de logo
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "Page ",
+            font: 'Avenir Book',
+            size: 20, // 10pt
+          }),
+          new TextRun({
+            children: ["PAGE_NUMBER"],
+            font: 'Avenir Book',
+            size: 20, // 10pt
+          }),
+        ],
+        alignment: AlignmentType.LEFT,
+      }),
+    ],
+  });
 
   // Créer le document Word
   const doc = new Document({
