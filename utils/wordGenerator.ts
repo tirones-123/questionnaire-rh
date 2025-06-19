@@ -187,23 +187,6 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 240, after: 240 },
           })
         );
-      } else if (currentSection === 2 && chartBuffers.radar && newSection > 2) {
-        console.log('Inserting radar chart at end of section 2');
-        children.push(
-          new Paragraph({
-            children: [
-              new ImageRun({
-                data: chartBuffers.radar,
-                transformation: {
-                  width: 450,
-                  height: 450,
-                },
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spacing: { before: 240, after: 240 },
-          })
-        );
       } else if (currentSection === 3 && chartBuffers.sorted && newSection > 3) {
         console.log('Inserting sorted chart at end of section 3');
         children.push(
@@ -222,6 +205,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           })
         );
       }
+      // Note: Le graphique radar sera inséré à la fin de la section 2 seulement après tout son contenu
       
       currentSection = newSection;
       inSection1 = (currentSection === 1);
@@ -479,8 +463,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-  } else if (currentSection === 2 && chartBuffers.radar) {
-    console.log('Inserting radar chart at end of document (section 2)');
+  }
+  
+  // Insérer le graphique radar après la section 2 (que le document s'arrête à la section 2 ou continue)
+  if (currentSection >= 2 && chartBuffers.radar) {
+    console.log('Inserting radar chart after section 2 content');
     children.push(
       new Paragraph({
         children: [
@@ -496,7 +483,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         spacing: { before: 240, after: 240 },
       })
     );
-  } else if (currentSection === 3 && chartBuffers.sorted) {
+  }
+  
+  if (currentSection === 3 && chartBuffers.sorted) {
     console.log('Inserting sorted chart at end of document (section 3)');
     children.push(
       new Paragraph({

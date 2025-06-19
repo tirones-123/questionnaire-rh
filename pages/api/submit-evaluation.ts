@@ -253,25 +253,77 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Appel API interne asynchrone (fire and forget)
     try {
-      // Construire l'URL de base
-      const protocol = req.headers['x-forwarded-proto'] || 'http';
-      const host = req.headers.host;
-      const baseUrl = `${protocol}://${host}`;
+      // DEBUG : Afficher tous les headers pour comprendre le problème
+      console.log('DEBUG - Request headers for URL construction:', {
+        'x-forwarded-proto': req.headers['x-forwarded-proto'],
+        'x-forwarded-host': req.headers['x-forwarded-host'],
+        'host': req.headers.host,
+        'origin': req.headers.origin,
+        'referer': req.headers.referer
+      });
+
+      // Construction robuste de l'URL
+      let baseUrl: string;
       
-      // Déclencher l'API de génération de rapport
-      fetch(`${baseUrl}/api/generate-report`, {
+      // 1. Vérifier si on est sur Vercel avec x-forwarded-host
+      if (req.headers['x-forwarded-host']) {
+        const protocol = req.headers['x-forwarded-proto'] || 'https';
+        baseUrl = `${protocol}://${req.headers['x-forwarded-host']}`;
+        console.log('Using x-forwarded-host for baseUrl');
+      }
+      // 2. Fallback avec host normal
+      else if (req.headers.host) {
+        const protocol = req.headers['x-forwarded-proto'] || 
+                        (req.headers.host.includes('localhost') ? 'http' : 'https');
+        baseUrl = `${protocol}://${req.headers.host}`;
+        console.log('Using host header for baseUrl');
+      }
+      // 3. Hardcoded fallback pour production Vercel
+      else {
+        baseUrl = 'https://questionnaire-rh-git-main-maximemarsal18-gmailcoms-projects.vercel.app';
+        console.log('Using hardcoded fallback for baseUrl');
+      }
+      
+      console.log('Final baseUrl:', baseUrl);
+      const fullApiUrl = `${baseUrl}/api/generate-report`;
+      console.log('Full API URL for background call:', fullApiUrl);
+      
+      // Déclencher l'API de génération de rapport avec plus de debugging
+      const startTime = Date.now();
+      fetch(fullApiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'User-Agent': 'evaluation-internal-call'
         },
         body: JSON.stringify(reportData),
+      }).then(response => {
+        const duration = Date.now() - startTime;
+        console.log(`Background API call completed in ${duration}ms`);
+        console.log('Background API response status:', response.status);
+        
+        if (!response.ok) {
+          console.error('Background API failed with status:', response.status);
+          return response.text().then(text => {
+            console.error('Background API error response:', text);
+          });
+        } else {
+          console.log('Background API call successful!');
+        }
       }).catch(error => {
-        console.error('Error triggering background report generation:', error);
+        const duration = Date.now() - startTime;
+        console.error(`Background API call failed after ${duration}ms:`, error);
+        console.error('Error details:', {
+          message: error.message,
+          code: error.code,
+          type: error.constructor.name
+        });
       });
       
-      console.log('Background report generation triggered successfully');
+      console.log('Background report generation request initiated');
     } catch (error) {
       console.error('Failed to trigger background report generation:', error);
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     }
 
   } catch (error) {
