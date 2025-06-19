@@ -264,8 +264,7 @@ Le rapport doit commencer EXACTEMENT par ces lignes dans cet ordre :
 1. ${promptType.toUpperCase()}
 2. Une ligne vide
 3. 1. Analyse critère par critère
-4. Une ligne vide
-
+4. Une ligne vide`;
 
   try {
     console.log('Calling OpenAI API...');
