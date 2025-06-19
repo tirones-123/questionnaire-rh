@@ -237,8 +237,7 @@ RÈGLES CRITIQUES :
 - Points de vigilance : utiliser • (bullet) et non - (tiret), avec titre en gras et paragraphe explicatif
 - Recommandations : utiliser • (bullet), format "Critère : action détaillée"
 - Chaque point de vigilance doit avoir un titre descriptif avec le critère entre parenthèses
-- Chaque recommandation doit commencer par le nom du critère suivi de deux-points
-- Toujours utiliser le prénom de l'éavulué pour parler de lui`;
+- Chaque recommandation doit commencer par le nom du critère suivi de deux-points`;
 
   const userPrompt = `Voici les données à analyser :
 

@@ -72,6 +72,14 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
+    // Log spécifique pour AMBITION
+    if (line === 'AMBITION' || line.includes('AMBITION')) {
+      console.log(`[DEBUG AMBITION] Found AMBITION at line ${i}: "${line}"`);
+      if (i + 1 < lines.length) console.log(`[DEBUG AMBITION] Next line: "${lines[i + 1].trim()}"`);
+      if (i + 2 < lines.length) console.log(`[DEBUG AMBITION] Line +2: "${lines[i + 2].trim()}"`);
+      if (i + 3 < lines.length) console.log(`[DEBUG AMBITION] Line +3: "${lines[i + 3].trim()}"`);
+    }
+    
     // Gestion des lignes vides
     if (!line) {
       // Ne pas ignorer les lignes vides car elles peuvent être importantes pour la structure
@@ -79,6 +87,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     }
     
     if (skipNextLine) {
+      console.log(`[DEBUG] Skipping line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
       skipNextLine = false;
       continue;
     }
@@ -292,6 +301,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       
       // Si la ligne suivante est la définition, l'ajouter en italique
       if (isDefinition) {
+        console.log(`Found definition for ${line}: "${nextLine}"`);
         children.push(
           new Paragraph({
             children: [
@@ -306,7 +316,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 0, after: 40 },
           })
         );
-        skipNextLine = true;
+        // On incrémente i au lieu d'utiliser skipNextLine pour éviter de perdre la ligne Score
+        i++;
       }
       
       lastWasCriterion = true;
@@ -315,6 +326,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
 
     // Score : x,x - Interprétation
     if (line.startsWith('Score :')) {
+      console.log(`Found score line: "${line}"`);
       children.push(
         new Paragraph({
           children: [
@@ -330,6 +342,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         })
       );
       lastWasCriterion = false;
+      // Important: ne pas sauter la ligne suivante qui contient la description
+      skipNextLine = false;
       continue;
     }
 
@@ -403,6 +417,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     }
 
     // Paragraphe normal
+    console.log(`Processing normal paragraph at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
     children.push(
       new Paragraph({
         children: [
