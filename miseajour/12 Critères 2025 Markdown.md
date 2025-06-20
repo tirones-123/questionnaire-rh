@@ -1,10 +1,5 @@
 # 12 CRITERES DE POTENTIEL
 
-
-
-
-
-
 # AMBITION
 (Famille « Vouloir » - Forces motrices)
 
@@ -43,7 +38,6 @@ Un coaching centré sur le projet professionnel peut :
 # INITIATIVE
 (Famille « Vouloir » - Forces motrices)
 
-
 Définition :
 C’est le dynamisme d’une personne, le besoin de prendre des initiatives et d’impulser des projets sans attendre l’évolution des événements.
 
@@ -73,7 +67,6 @@ Pour soutenir ce critère :
 # RÉSILIENCE
 (Famille « Vouloir » - Forces motrices)
 
-
 Définition :
 C’est faire preuve de persévérance et d’opiniâtreté dans les situations de tensions psychologiques et physiologiques.
 
@@ -89,7 +82,6 @@ Il s’agit d’évaluer la force de continuité de l’action dans la durée, m
 Remarques :
 Ce critère ne mesure pas les aptitudes relationnelles en situation de conflit mais la capacité à maintenir une dynamique d’action en dépit des résistances rencontrées.
 
-
 Points d’attention
 Forte « Résilience » et manque de « Pertinence » et/ou de « Recul »   risque de s’entêter dans des voies sans issues
 Forte « Résilience » et difficultés à gérer son énergie : risque d’épuisement professionnel
@@ -97,16 +89,11 @@ Forte « Résilience » et difficultés à gérer son énergie : risque d’�
 Pistes de développement
 Développer la capacité de prise de distance émotionnelle et physique par le coaching, afin de renforcer la résilience tout en préservant ses ressources.
 
-
-
-
 # VISION
 (Famille « Penser » - Intelligence des situations)
 
-
 Définition :
 C’est faire preuve d’intuition pour imaginer l’avenir afin de mieux gérer l’instant présent en préparant et anticipant le futur avec des idées novatrices.
-
 
 Principes et mécanismes :
 Ce critère évalue la capacité à projeter une vision du futur et à l’intégrer dans l’action présente.
@@ -132,11 +119,8 @@ Pistes de développement
 Travailler sur l’anticipation notamment au travers de l’ambition personnelle (construction d’un projet avec la stratégie associée pour construire son propre avenir professionnel)
 Travailler la confiance en ses intuitions via coaching ou formation-action.
 
-
-
 # RECUL
 (Famille « Penser » - Intelligence des situations)
-
 
 Définition :
 C’est prendre du recul sur les événements et sur les hommes pour étudier avec objectivité et rationalité une situation avec un esprit analytique et synthétique à la fois.
@@ -163,7 +147,6 @@ Favoriser les responsabilités transverses pour élargir la vision stratégique 
 # PERTINENCE
 (Famille « Penser » - Intelligence des situations)
 
-
 Définition :
 C’est la compréhension instantanée d’une situation par l’intuition et la perspicacité.
 
@@ -185,6 +168,7 @@ Points d’attention
 
 Pistes de développement
 Confronter les intuitions à la mise en œuvre, à travers des responsabilités impliquant diagnostic et action.
+
 # ORGANISATION
 (Famille « Agir » - Capacités de réalisation)
 
@@ -204,10 +188,8 @@ Points d’attention
 - Forte « Organisation » et faible « Sens du résultat » sans lien au terrain : perte de sens pratique.
 - Manque de méthode : difficulté à structurer son action efficacement
 
-
 Pistes de développement
 Accompagner par des outils de gestion adaptés et un apprentissage de la délégation efficace.
-
 
 # DÉCISION
 (Famille « Agir » - Capacités de réalisation)
@@ -235,10 +217,8 @@ Possibilités de développement
 Multiplier les expériences de terrain et situations d’urgence pour renforcer la confiance en sa capacité de décision.
 Privilégier les postes ou les mises en situation permettant une visibilité rapide sur les résultats des décisions prises et d’assumer ses prises de décision
 
-
 # SENS DU RÉSULTAT
 (Famille « Agir » - Capacités de réalisation)
-
 
 Définition :
 C’est l’attention portée aux résultats concrets, avec une action ancrée dans les réalités opérationnelles.
@@ -262,10 +242,8 @@ Installer des indicateurs clairs
 Structurer des bilans d’action
 Stabiliser les missions pour ancrer les résultats
 
-
 # COMMUNICATION
 (Groupe « Ensemble » - Aptitudes relationnelles)
-
 
 Définition :
 C’est être à l’écoute et favoriser un dialogue ouvert où chacun peut s’exprimer librement
@@ -286,6 +264,7 @@ Fort « Leadership » et faible « communication » : risque de renforcer l
 
 Pistes de développement
 Travailler la fluidité, la clarté, ou l’écoute active selon le point faible identifié ; coaching ou training selon les besoins.
+
 # ESPRIT D’ÉQUIPE
 (Groupe « Ensemble » - Aptitudes relationnelles)
 
@@ -312,7 +291,6 @@ Possibilités de développement
 Confier des missions transverses,
 Promouvoir des projets collaboratifs,
 Valoriser les résultats collectifs.
-
 
 # LEADERSHIP
 (Groupe « Ensemble » - Aptitudes relationnelles)

@@ -131,7 +131,7 @@ export async function generateSortedBarChartBuffer(scores: { [key: string]: Scor
     options: {
       title: {
         display: true,
-        text: 'Forces et axes de progression - Triés par score',
+        text: 'Forces et axes de progression',
         fontSize: 18
       },
       legend: {
