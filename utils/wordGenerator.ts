@@ -148,8 +148,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           spacing: { before: 0, after: 0 },
           shading: {
             type: ShadingType.SOLID,
-            color: 'DDDDDD',
-            fill: 'DDDDDD',
+            color: 'EEEEEE',
+            fill: 'EEEEEE',
           },
         })
       );
@@ -173,8 +173,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             spacing: { before: 0, after: 400 },
             shading: {
               type: ShadingType.SOLID,
-              color: 'DDDDDD',
-              fill: 'DDDDDD',
+              color: 'EEEEEE',
+              fill: 'EEEEEE',
             },
           })
         );
@@ -267,7 +267,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             new TextRun({
               text: line,
               font: 'Avenir Book',
-              size: 22, // 11pt comme le texte normal
+              size: 24, // 12pt pour les titres de chapitres
               bold: true,
             }),
           ],
@@ -321,8 +321,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           spacing: { before: 360, after: 200 },
           shading: {
             type: ShadingType.SOLID,
-            color: 'DDDDDD',
-            fill: 'DDDDDD',
+            color: 'EEEEEE',
+            fill: 'EEEEEE',
           },
         })
       );
@@ -580,8 +580,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           new ImageRun({
             data: logoBuffer,
             transformation: {
-              width: 104,
-              height: 40,
+              width: 78,
+              height: 30,
             },
           }),
         ],
@@ -617,8 +617,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           new ImageRun({
             data: logoBuffer,
             transformation: {
-              width: 52,
-              height: 20,
+              width: 39,
+              height: 15,
             },
           }),
         ],
