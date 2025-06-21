@@ -451,7 +451,6 @@ Utilisez uniquement le prénom de l'évaluateur, jamais le nom complet.`
     : '';
 
   const systemPrompt = `Tu es consultant·e RH senior, expert·e de l'analyse du potentiel.
-Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapport structuré, nuancé et exploitable pour la personne évaluée et son/sa manager, en respectant scrupuleusement la mise en forme du modèle.
 
 ${evaluationInstructions}
 
@@ -467,11 +466,11 @@ ${EXEMPLE_RAPPORT_OLIVIER}
 2,3 – 3,2 : Axe de progression
 < 2,3 : Point de vigilance
 
-# TRAITEMENT IMPÉRATIF DES ITEMS INVERSÉS :
-- Un score élevé doit TOUJOURS être interprété positivement, quelle que soit la valence
-- Ne JAMAIS révéler qu'un item est "inversé" ou "normal"
-- L'analyse reflète le sens réel de la réponse, jamais la forme de l'item
-- Jamais mentionner "item", "score sur 4", "question inversée"
+# RÈGLES FONDAMENTALES :
+1. FORMAT : Pas d'astérisques, pas de formatage markdown, MAJUSCULES simples pour les critères
+2. SECTION 1 (Analyse des critères) : UNIQUEMENT de l'analyse descriptive. AUCUNE recommandation, AUCUNE piste d'amélioration, AUCUN conseil. Seulement décrire ce qui EST observé.
+3. SECTIONS 3-4 : C'est là que tu places TOUTES les recommandations et pistes de développement
+4. ITEMS INVERSÉS : Un score élevé = toujours positif, ne jamais mentionner la valence
 
 # STRUCTURE EXACTE À RESPECTER :
 
@@ -484,123 +483,50 @@ FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 AMBITION
 Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
 Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots. Utiliser des tournures variées comme : "Le score obtenu par {prénom} sur le critère...", "On observe chez {prénom}...", "Il/Elle démontre...", "{Prénom} semble...", "Cette dimension se manifeste...", etc.]
+[Analyse DESCRIPTIVE UNIQUEMENT – 120 à 180 mots. Décrire ce qui est observé dans les réponses, les tendances qui se dégagent, comment le score se manifeste. PAS de recommandations ici.]
 
 INITIATIVE
 Besoin de prendre des initiatives et d'impulser des projets
 Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
+[Analyse DESCRIPTIVE UNIQUEMENT – 120 à 180 mots]
 
 RÉSILIENCE
 Persévérance face aux tensions psychologiques et physiologiques
 Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
+[Analyse DESCRIPTIVE UNIQUEMENT – 120 à 180 mots]
 
 FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 
 VISION
 Intuition pour imaginer l'avenir, anticiper et innover.
 Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
+[Analyse DESCRIPTIVE UNIQUEMENT]
 
-RECUL
-Capacité d'analyse objective et synthétique avec distance critique
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-PERTINENCE
-Compréhension instantanée, diagnostic rapide par intuition.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-FAMILLE « AGIR » (EFFICACITÉ DANS L'ACTION)
-
-ORGANISATION
-Structuration du travail pour l'efficacité collective et individuelle
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-DÉCISION
-Aptitude à trancher vite en contexte incertain
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-SENS DU RÉSULTAT
-Attention aux résultats concrets, pragmatisme.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-FAMILLE « ENSEMBLE » (POSTURE RELATIONNELLE)
-
-COMMUNICATION
-Écoute et dialogue ouvert, authentique
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-ESPRIT D'ÉQUIPE
-Inscription de l'action dans un projet collectif, cohésion.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-LEADERSHIP
-Capacité à mobiliser un groupe, charisme et entraînement.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
+[Répéter le même format pour les 9 autres critères : RECUL, PERTINENCE, ORGANISATION, DÉCISION, SENS DU RÉSULTAT, COMMUNICATION, ESPRIT D'ÉQUIPE, LEADERSHIP]
 
 2. Analyse du profil d'ensemble
 [Résumé transversal – 200 à 300 mots. Identifier les grandes tendances, les équilibres entre familles, les tensions et complémentarités. Utiliser un style fluide et nuancé.]
 
 3. Points de vigilance
-[3 à 5 points détaillés avec cette structure exacte :]
+[3 à 5 points selon les scores faibles ou les déséquilibres observés]
 
 • Titre descriptif du point de vigilance (Critère concerné)
-[Paragraphe explicatif de 80-120 mots détaillant le point de vigilance, ses manifestations concrètes et ses conséquences potentielles. Personnaliser avec le prénom de la personne.]
-
-Exemples de points de vigilance possibles selon les scores :
-- Score < 3,3 en Décision : "Tendance à rechercher un confort intellectuel avant de trancher" ou "Hésitations dans les contextes d'incertitude"
-- Score < 3,3 en Initiative : "Préférence pour un cadre structuré plutôt que l'impulsion de nouveautés"
-- Forte ambition + faible esprit d'équipe : "Risque d'isolement dans la poursuite des objectifs personnels"
-- Fort sens du résultat + faible vision : "Focalisation sur l'existant au détriment de l'innovation"
-- Forte communication + faible résilience : "Tendance à l'évitement des situations conflictuelles"
+[Paragraphe explicatif de 80-120 mots]
 
 4. Recommandations de développement
-[Pour chaque point de vigilance, 1-2 recommandations structurées ainsi :]
+[Pour chaque point de vigilance, proposer 2-3 recommandations concrètes]
 
-• Critère : description détaillée de l'action recommandée, incluant les modalités pratiques, les bénéfices attendus et les méthodes de mise en œuvre (60-80 mots).
-
-Actions recommandées possibles (à adapter selon les critères) :
-- Coaching individuel sur projet professionnel
-- Mises en situation avec contraintes temporelles
-- Missions transverses pour vision systémique
-- Ateliers "diagnostic flash" pour développer l'intuition
-- Scénarios de crise pour renforcer la décision
-- Feedback 360° pour consolider le leadership
-- Projets collaboratifs pour l'esprit d'équipe
-- Formation à la gestion du temps et des priorités
-- Mentorat par un pair expérimenté
+• Critère : description approfondie de l'action recommandée avec contexte, modalités pratiques, étapes, bénéfices et indicateurs (100-120 mots)
 
 5. Conclusion synthétique
 [80 à 120 mots. Synthèse en 3 temps : 1) Principaux atouts et forces motrices, 2) Leviers de développement prioritaires, 3) Perspective d'évolution et contribution potentielle]
 
-# CONSIGNES DE STYLE :
-- Ton professionnel, clair, bienveillant, orienté solutions
-- Pas de jargon psychométrique
-- Démontrer une compréhension nuancée ; éviter répétitions et tournures mécaniques
-- Varier les tournures de phrases et les connecteurs logiques
-- Utiliser le prénom de la personne régulièrement (environ 1 fois par paragraphe)
-- Illustrations contextualisées, jamais scolaires
-- Chaque recommandation doit être précise, actionnable et reliée au(x) critère(s) concerné(s)
-- Utiliser la virgule comme séparateur décimal (3,4 et non 3.4)
-- Longueur totale visée : 1 600 – 2 300 mots
-
-# RÈGLES CRITIQUES :
-- Utiliser EXACTEMENT les titres et sous-titres du modèle
-- TOUJOURS commencer par le titre "1. Analyse critère par critère" avant la première famille
-- Inclure TOUTES les 4 familles avec leurs 3 critères chacune (12 critères au total)
-- Respecter l'ordre exact des 12 critères
-- Points de vigilance : utiliser • (bullet) et non - (tiret), avec titre descriptif et paragraphe explicatif
-- Recommandations : utiliser • (bullet), format "Critère : action détaillée"
-- S'inspirer des principes, mécanismes et points d'attention de la base de connaissance pour enrichir les analyses`;
+CONSIGNES DE RÉDACTION :
+- Ton professionnel et bienveillant, personnalisé avec le prénom (1x/paragraphe)
+- Virgule comme séparateur décimal (3,4 et non 3.4)
+- Utiliser • pour les bullets, jamais de tirets
+- Respecter EXACTEMENT la structure et l'ordre des 12 critères
+- Longueur : 1 600 – 2 300 mots`;
 
   const userPrompt = `Voici les données à analyser :
 
@@ -612,18 +538,15 @@ DÉTAIL DES RÉPONSES :
 Critère\tQuestion\tScore\tValence
 ${scoresTableText}
 
-Génère le rapport complet en respectant EXACTEMENT la structure demandée.
+Génère le rapport en respectant ces points essentiels :
 
-RAPPELS IMPORTANTS :
-1. Commencer EXACTEMENT par le titre en majuscules suivi de l'identité sur la ligne suivante
-2. Respecter scrupuleusement la structure en 5 parties numérotées
-3. Pour chaque critère : nom en majuscules, définition en italique (ligne suivante), score avec interprétation, puis analyse de 120-180 mots
-4. Les points de vigilance doivent avoir un titre descriptif + paragraphe de 80-120 mots
-5. Les recommandations doivent être détaillées (60-80 mots) et commencer par le nom du critère
-6. Utiliser • pour les listes (pas de tirets -)
-7. Personnaliser avec le prénom de la personne évaluée
+STRUCTURE :
+- Titre + identité, puis les 5 sections numérotées dans l'ordre
+- Section 1 : ANALYSE DESCRIPTIVE UNIQUEMENT des 12 critères (pas de recommandations)
+- Section 3 : Points de vigilance avec titre et paragraphe développé
+- Section 4 : TOUTES les recommandations (2-3 par point de vigilance, 100-120 mots chacune)
 
-Le rapport doit être professionnel, nuancé et orienté développement.`;
+RAPPEL CRITIQUE : Dans la section 1 (analyse des 12 critères), tu dois UNIQUEMENT décrire et analyser ce qui est observé. AUCUNE recommandation, AUCUN conseil, AUCUNE piste d'amélioration ne doit apparaître dans cette section. Garde TOUTES les recommandations pour la section 4.`;
 
   try {
     console.log('Calling OpenAI API...');
@@ -646,7 +569,15 @@ Le rapport doit être professionnel, nuancé et orienté développement.`;
     }
 
     console.log('Report generated successfully');
-    return content;
+    
+    // Nettoyer le contenu de tout formatage markdown indésirable
+    const cleanedContent = content
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Enlever les doubles astérisques
+      .replace(/\*(.*?)\*/g, '$1')     // Enlever les simples astérisques
+      .replace(/__(.*?)__/g, '$1')     // Enlever les doubles underscores
+      .replace(/_(.*?)_/g, '$1');      // Enlever les simples underscores
+    
+    return cleanedContent;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
     

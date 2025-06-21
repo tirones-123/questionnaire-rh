@@ -170,7 +170,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
               }),
             ],
             alignment: AlignmentType.CENTER,
-            spacing: { before: 0, after: 400 },
+            spacing: { before: 0, after: 600 },
             shading: {
               type: ShadingType.SOLID,
               color: 'EEEEEE',
@@ -272,7 +272,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
             }),
           ],
           alignment: AlignmentType.LEFT, // Aligné à gauche
-          spacing: { before: 300, after: 200 },
+          spacing: { before: 500, after: 200 },
         })
       );
       
@@ -436,6 +436,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       // Vérifier si c'est un titre (contient des parenthèses ou deux-points)
       const isTitle = line.includes('(') && line.includes(')') || line.includes(' : ');
       
+      // Pour le chapitre 4 (recommandations), on ne met pas en gras
+      const isBold = isTitle && currentSection !== 4;
+      
       if (isTitle) {
         // C'est un titre de point de vigilance ou recommandation
         children.push(
@@ -445,7 +448,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
                 text: line,
                 font: 'Avenir Book',
                 size: 22, // 11pt
-                bold: true, // En gras pour les titres
+                bold: isBold, // En gras seulement pour les titres hors chapitre 4
               }),
             ],
             alignment: AlignmentType.JUSTIFIED,
