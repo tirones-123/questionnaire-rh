@@ -572,22 +572,39 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
       max_tokens: 10000,
     });
 
-    const content = completion.choices[0]?.message?.content;
-    
-    if (!content) {
-      console.error('OpenAI returned empty content');
-      throw new Error('La génération du rapport a échoué : contenu vide');
+    let content = completion.choices[0]?.message?.content || '';
+    let finishReason = completion.choices[0]?.finish_reason;
+
+    // Tant que le modèle coupe pour longueur, demander la suite
+    while (finishReason === 'length') {
+      console.log('Partial response received (length). Requesting continuation...');
+      const cont = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "assistant", name: "retrieval", content: retrievalContext },
+          { role: "user", content: userPrompt },
+          { role: "assistant", content: content },
+          { role: "user", content: 'CONTINUE' }
+        ],
+        temperature: 0.7,
+        top_p: 0.9,
+        frequency_penalty: 0.35,
+        presence_penalty: 0.4,
+        max_tokens: 10000
+      });
+      content += '\n' + (cont.choices[0]?.message?.content || '');
+      finishReason = cont.choices[0]?.finish_reason;
     }
 
-    console.log('Report generated successfully');
-    
-    // Nettoyer le contenu de tout formatage markdown indésirable
+    console.log('Full report generated');
+
     const cleanedContent = content
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Enlever les doubles astérisques
-      .replace(/\*(.*?)\*/g, '$1')     // Enlever les simples astérisques
-      .replace(/__(.*?)__/g, '$1')     // Enlever les doubles underscores
-      .replace(/_(.*?)_/g, '$1');      // Enlever les simples underscores
-    
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/__(.*?)__/g, '$1')
+      .replace(/_(.*?)_/g, '$1');
+
     return cleanedContent;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
