@@ -422,9 +422,9 @@ export async function generateReportContent(params: GenerateReportParams): Promi
     apiKey: apiKey,
   });
 
-  // Préparer le tableau des scores pour le prompt
+  // Préparer le tableau des scores pour le prompt (sans la colonne Valence pour ne pas exposer Normal/Inversé)
   const scoresTableText = scoresTable
-    .map(row => `${row.critere}\t${row.question}\t${row.score}\t${row.sens}`)
+    .map(row => `${row.critere}\t${row.question}\t${row.score}`)
     .join('\n');
 
   // Préparer le tableau des scores globaux
@@ -545,7 +545,7 @@ Critère\tNote sur 5
 ${globalScoresText}
 
 DÉTAIL DES RÉPONSES :
-Critère\tQuestion\tScore\tValence
+Critère\tQuestion\tScore
 ${scoresTableText}
 
 Génère le rapport complet conformément aux instructions fournies, sans répéter les consignes.`;
@@ -560,8 +560,8 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7,
-      max_tokens: 8000,
+      temperature: 0.85,
+      max_tokens: 10000,
     });
 
     const content = completion.choices[0]?.message?.content;
