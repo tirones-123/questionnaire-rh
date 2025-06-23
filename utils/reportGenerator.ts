@@ -595,7 +595,7 @@ Actions recommandées possibles (à adapter selon les critères) :
 - Utiliser la virgule comme séparateur décimal (3,4 et non 3.4)
 - Longueur totale visée : 1 600 – 2 300 mots
 - Proscrire toute liste numérotée interne dans les paragraphes : privilégier l'intégration fluide des idées
-- Employer un vocabulaire riche : privilégier les synonymes variés pour "démontrer", "montrer", "révéler", etc.
+- Employer un vocabulaire riche : éviter les répétitions, notamment du verbe « pouvoir » sous la forme « pourrait » ; utiliser des variantes (« serait susceptible de », « risque de », « tend à », "est en mesure de", « est capable de ») et limiter « pourrait » à 4 occurrences maximum sur l'ensemble du rapport ; privilégier des synonymes variés pour « démontrer », « montrer », « révéler », etc.
 - Bannir les expressions scolaires (« cependant, néanmoins » systématiques) ; préférer un style conseil haut de gamme
 
 # RÈGLES CRITIQUES :
