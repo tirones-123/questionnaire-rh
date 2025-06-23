@@ -671,7 +671,7 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
       ],
-      temperature: 0.85,
+      temperature: 0.75,
       max_tokens: 5000,
     });
 
