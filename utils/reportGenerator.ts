@@ -584,14 +584,19 @@ Actions recommandées possibles (à adapter selon les critères) :
 
 # CONSIGNES DE STYLE :
 - Ton professionnel, clair, bienveillant, orienté solutions
-- Pas de jargon psychométrique
-- Démontrer une compréhension nuancée ; éviter répétitions et tournures mécaniques
-- Varier les tournures de phrases et les connecteurs logiques
-- Utiliser le prénom de la personne régulièrement (environ 1 fois par paragraphe)
-- Illustrations contextualisées, jamais scolaires
-- Chaque recommandation doit être précise, actionnable et reliée au(x) critère(s) concerné(s)
+- PAS de jargon psychométrique ni de formules scolaires (éviter « Il est important de noter que », « Premièrement », etc.)
+- Style premium de conseil stratégique : phrases dynamiques, verbes d'action, transitions fluides, registre soutenu mais vivant
+- Démontrer une compréhension nuancée ; éviter répétitions, clichés et tournures mécaniques
+- Varier les rythmes, les connecteurs logiques et le champ lexical pour maintenir l'intérêt du lecteur
+- Intégrer des exemples concrets ou métaphores légères pour illustrer les idées, sans excès
+- Utiliser le prénom de la personne régulièrement (≈ 1 fois par paragraphe) pour personnaliser le propos
+- Illustrations contextualisées, jamais scolaires ni didactiques
+- Chaque recommandation doit être précise, actionnable, ambitieuse et directement reliée au(x) critère(s) concerné(s)
 - Utiliser la virgule comme séparateur décimal (3,4 et non 3.4)
 - Longueur totale visée : 1 600 – 2 300 mots
+- Proscrire toute liste numérotée interne dans les paragraphes : privilégier l'intégration fluide des idées
+- Employer un vocabulaire riche : privilégier les synonymes variés pour "démontrer", "montrer", "révéler", etc.
+- Bannir les expressions scolaires (« cependant, néanmoins » systématiques) ; préférer un style conseil haut de gamme
 
 # RÈGLES CRITIQUES :
 - Utiliser EXACTEMENT les titres et sous-titres du modèle
@@ -625,7 +630,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7,
+      temperature: 0.85,
       max_tokens: 8000,
     });
 

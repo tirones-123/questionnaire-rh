@@ -11,56 +11,168 @@ const userInfo = {
   lastName: 'Marsal',
   age: '30',
   profession: 'Développeur',
-  email: 'test@example.com'
+  email: 'maxime.marsal@example.com'
 };
 
 // Structure des questions réelles (copiée depuis data/questions.ts)
 const sections = [
   {
     id: 1,
-    questions: [1, 7, 10, 36, 37, 61, 70, 72, 13]
+    title: "Performance et réussite",
+    questions: [
+      { id: 1, text: "Attache de l'importance à sa réussite professionnelle" },
+      { id: 7, text: "Est focalisé sur la performance et l'efficacité" },
+      { id: 10, text: "Utilise efficacement les moyens mis à sa disposition" },
+      { id: 36, text: "Va jusqu'au bout de ce qu'il entreprend sans jamais céder à la facilité" },
+      { id: 37, text: "Souhaite évoluer en responsabilité ou en influence dans l'entreprise" },
+      { id: 61, text: "Est prêt à faire des efforts importants pour réussir professionnellement" },
+      { id: 70, text: "Respecte toujours les échéances et les délais" },
+      { id: 72, text: "Possède une forte puissance de travail" },
+      { id: 13, text: "Préfère son confort personnel à son évolution professionnelle" }
+    ]
   },
   {
     id: 2,
-    questions: [20, 32, 44, 56, 8, 68, 22, 27, 64]
+    title: "Leadership et influence",
+    questions: [
+      { id: 20, text: "Possède un fort impact dans les réunions" },
+      { id: 32, text: "N'ose pas se placer en leader dans un groupe" },
+      { id: 44, text: "Possède une forte présence et sait se faire entendre" },
+      { id: 56, text: "Entraîne facilement l'adhésion de ses interlocuteurs" },
+      { id: 8, text: "A du mal à se faire entendre et à capter l'attention" },
+      { id: 68, text: "Manque de charisme et d'impact sur les autres" },
+      { id: 22, text: "A du mal à déléguer" },
+      { id: 27, text: "Possède un bon sens pédagogique" },
+      { id: 64, text: "Prend du temps pour aider ses collègues" }
+    ]
   },
   {
     id: 3,
-    questions: [9, 21, 69, 2, 50, 62, 45, 57, 33]
+    title: "Initiative et innovation",
+    questions: [
+      { id: 9, text: "Prend activement des initiatives même dans des contextes peu stimulants" },
+      { id: 21, text: "Sait se stimuler en permanence pour entreprendre" },
+      { id: 69, text: "Sait prendre des risques si la situation l'exige" },
+      { id: 2, text: "S'intéresse peu aux idées nouvelles et à l'innovation" },
+      { id: 50, text: "Ne croit qu'aux solutions qui ont déjà fait leurs preuves" },
+      { id: 62, text: "Est curieux de l'évolution de son environnement et est à l'affût de la nouveauté" },
+      { id: 45, text: "A besoin d'un environnement stimulant pour se dynamiser" },
+      { id: 57, text: "A tendance à se laisser porter par les événements" },
+      { id: 33, text: "Pêche par excès de prudence pour avancer" }
+    ]
   },
   {
     id: 4,
-    questions: [3, 15, 39, 51, 63, 52, 16, 40, 28]
+    title: "Communication et relations",
+    questions: [
+      { id: 3, text: "A tendance à monopoliser la parole dans les discussions" },
+      { id: 15, text: "Ne se met pas suffisamment à la portée de ses interlocuteurs" },
+      { id: 39, text: "Manque parfois de sincérité et de transparence avec son entourage professionnel" },
+      { id: 51, text: "Prend en compte et intègre véritablement les arguments d'autrui" },
+      { id: 63, text: "Ses échanges au sein de l'entreprise sont chaleureux et ouverts" },
+      { id: 52, text: "A tendance à travailler de manière isolée et solitaire" },
+      { id: 16, text: "Favorise le travail transverse avec d'autres entités ou services" },
+      { id: 40, text: "S'intéresse peu aux activités des autres services" },
+      { id: 28, text: "A tendance à défendre son territoire au détriment de l'intérêt collectif" }
+    ]
   },
   {
     id: 5,
-    questions: [6, 24, 54, 12, 29, 48, 65, 67, 4]
+    title: "Adaptabilité et réactivité",
+    questions: [
+      { id: 6, text: "Sait réagir vite en cas d'urgence ou d'imprévu" },
+      { id: 24, text: "S'accommode facilement des ruptures de rythme (déplacements, décalages horaires...)" },
+      { id: 54, text: "Sait être réactif pour saisir les opportunités" },
+      { id: 12, text: "Est éprouvé par les relations de travail difficiles" },
+      { id: 29, text: "Perd de sa perspicacité dans les situations d'urgence" },
+      { id: 48, text: "A du mal à s'adapter à des efforts soutenus" },
+      { id: 65, text: "Fait preuve d'un bon jugement dans les situations d'urgences" },
+      { id: 67, text: "Sait tenir compte des contraintes du terrain" },
+      { id: 4, text: "Est solidaire des décisions prises en commun même s'il n'est pas d'accord" }
+    ]
   },
   {
     id: 6,
-    questions: [5, 11, 17, 18, 30, 35, 42, 66, 71]
+    title: "Analyse et prise de décision",
+    questions: [
+      { id: 5, text: "Repère rapidement les dysfonctionnements d'une organisation" },
+      { id: 11, text: "Conserve son objectivité dans les situations où il est lui-même impliqué" },
+      { id: 17, text: "Possède un excellent coup d'œil, perspicace et critique" },
+      { id: 18, text: "A du mal à trancher dans les situations floues" },
+      { id: 30, text: "A tendance à remettre à plus tard les décisions à prendre" },
+      { id: 35, text: "A du mal à argumenter rationnellement ses points de vue" },
+      { id: 42, text: "Fait preuve d'indépendance d'esprit pour décider" },
+      { id: 66, text: "A du mal à se décider seul" },
+      { id: 71, text: "Sait être logique et rationnel dans l'analyse des problèmes complexes" }
+    ]
   },
   {
     id: 7,
-    questions: [23, 31, 34, 43, 46, 55, 58, 59, 60]
+    title: "Organisation et méthode",
+    questions: [
+      { id: 23, text: "A tendance à se polariser sur les détails" },
+      { id: 31, text: "Son perfectionnisme nuit à son efficacité" },
+      { id: 34, text: "Fait preuve de méthode dans le pilotage de ses projets" },
+      { id: 43, text: "Sait concrétiser les idées et les projets" },
+      { id: 46, text: "Se plaint souvent du manque de moyens pour atteindre ses objectifs" },
+      { id: 55, text: "A du mal à fixer des objectifs clairs et concrets" },
+      { id: 58, text: "A tendance à se disperser dans son travail" },
+      { id: 59, text: "A du mal à saisir l'ensemble des paramètres d'un problème complexe" },
+      { id: 60, text: "Manque de ténacité pour mener à leur terme les projets difficiles" }
+    ]
   },
   {
     id: 8,
-    questions: [14, 19, 25, 26, 38, 41, 47, 49, 53]
+    title: "Vision et projection",
+    questions: [
+      { id: 14, text: "Possède une bonne intuition pour imaginer la suite des événements" },
+      { id: 19, text: "Se préoccupe peu de la pérennité de ce qu'il met en œuvre" },
+      { id: 25, text: "A du mal à se projeter dans son avenir professionnel" },
+      { id: 26, text: "A la conviction qu'il peut agir sur le futur et modifier le cours des événements" },
+      { id: 38, text: "A du mal à se projeter dans le futur" },
+      { id: 41, text: "Manque de bon sens dans les situations confuses et incertaines" },
+      { id: 47, text: "Sait prendre de la hauteur pour se donner plus de perspectives sur une situation" },
+      { id: 49, text: "Se préoccupe peu de son évolution de carrière" },
+      { id: 53, text: "A besoin de réfléchir posément plutôt que de faire confiance en son intuition" }
+    ]
   }
 ];
 
 // Génération des réponses automatiques avec les vrais IDs de questions
-function generateResponses() {
+function generateResponses(bias = 'balanced') {
   const responseOptions = ['a', 'b', 'c', 'd', 'e'];
   const responses = {};
   
   // Parcourir chaque section avec les vraies questions
   sections.forEach(section => {
-    section.questions.forEach(questionId => {
-      // Génère une réponse aléatoire mais équilibrée
-      const randomResponse = responseOptions[Math.floor(Math.random() * responseOptions.length)];
-      responses[`${section.id}-${questionId}`] = randomResponse;
+    section.questions.forEach(question => {
+      let randomResponse;
+      
+      // Différents modes de génération
+      switch (bias) {
+        case 'positive':
+          // Favoriser les réponses positives (a, b)
+          randomResponse = Math.random() < 0.7 ? 
+            responseOptions[Math.floor(Math.random() * 2)] : 
+            responseOptions[Math.floor(Math.random() * responseOptions.length)];
+          break;
+        case 'negative':
+          // Favoriser les réponses négatives (d, e)
+          randomResponse = Math.random() < 0.7 ? 
+            responseOptions[3 + Math.floor(Math.random() * 2)] : 
+            responseOptions[Math.floor(Math.random() * responseOptions.length)];
+          break;
+        case 'neutral':
+          // Favoriser les réponses neutres (c)
+          randomResponse = Math.random() < 0.5 ? 'c' : 
+            responseOptions[Math.floor(Math.random() * responseOptions.length)];
+          break;
+        default: // balanced
+          // Distribution équilibrée
+          randomResponse = responseOptions[Math.floor(Math.random() * responseOptions.length)];
+      }
+      
+      responses[`${section.id}-${question.id}`] = randomResponse;
     });
   });
   
@@ -68,20 +180,25 @@ function generateResponses() {
 }
 
 // Fonction principale pour soumettre le questionnaire
-async function submitQuestionnaire() {
+async function submitQuestionnaire(bias = 'balanced') {
   try {
     console.log('🚀 Début de la soumission automatique du questionnaire...');
     console.log(`📍 URL cible: ${BASE_URL}`);
+    console.log(`🎯 Mode de réponse: ${bias}`);
     
     // Générer les réponses
-    const responses = generateResponses();
+    const responses = generateResponses(bias);
     console.log(`✅ Génération de ${Object.keys(responses).length} réponses automatiques`);
     
     // Afficher un échantillon des réponses
     console.log('📋 Échantillon des réponses générées:');
     const sampleKeys = Object.keys(responses).slice(0, 5);
     sampleKeys.forEach(key => {
-      console.log(`   ${key}: ${responses[key]}`);
+      const questionId = parseInt(key.split('-')[1]);
+      const questionText = sections
+        .flatMap(s => s.questions)
+        .find(q => q.id === questionId)?.text || 'Question introuvable';
+      console.log(`   ${key}: ${responses[key]} - "${questionText.substring(0, 50)}..."`);
     });
     console.log('   ...');
     
@@ -104,6 +221,7 @@ async function submitQuestionnaire() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'auto-submit-script/1.0'
       },
       body: JSON.stringify(requestData)
     });
@@ -121,11 +239,11 @@ async function submitQuestionnaire() {
       });
       
       console.log('📊 Statistiques des réponses:');
-      console.log(`   A (Tout à fait d'accord): ${responseStats.a || 0}`);
-      console.log(`   B (D'accord): ${responseStats.b || 0}`);
-      console.log(`   C (Neutre): ${responseStats.c || 0}`);
-      console.log(`   D (Pas d'accord): ${responseStats.d || 0}`);
-      console.log(`   E (Pas d'accord du tout): ${responseStats.e || 0}`);
+      console.log(`   A (Tout à fait d'accord): ${responseStats.a || 0} (${Math.round((responseStats.a || 0) / 72 * 100)}%)`);
+      console.log(`   B (D'accord): ${responseStats.b || 0} (${Math.round((responseStats.b || 0) / 72 * 100)}%)`);
+      console.log(`   C (Neutre): ${responseStats.c || 0} (${Math.round((responseStats.c || 0) / 72 * 100)}%)`);
+      console.log(`   D (Pas d'accord): ${responseStats.d || 0} (${Math.round((responseStats.d || 0) / 72 * 100)}%)`);
+      console.log(`   E (Pas d'accord du tout): ${responseStats.e || 0} (${Math.round((responseStats.e || 0) / 72 * 100)}%)`);
       
     } else {
       console.log('❌ ERREUR lors de la soumission:');
@@ -144,15 +262,16 @@ async function submitQuestionnaire() {
 }
 
 // Fonction pour soumettre une évaluation (mode évaluation)
-async function submitEvaluation() {
+async function submitEvaluation(bias = 'balanced') {
   try {
     console.log('🚀 Début de la soumission automatique en mode évaluation...');
+    console.log(`🎯 Mode de réponse: ${bias}`);
     
     const evaluationInfo = {
       evaluatedPerson: {
         firstName: 'Jean',
         lastName: 'Dupont',
-        position: 'Manager',
+        position: 'Manager Commercial',
         ageRange: '35-44'
       },
       evaluator: {
@@ -162,12 +281,14 @@ async function submitEvaluation() {
       evaluatorEmail: 'evaluateur@example.com'
     };
     
-    const responses = generateResponses();
+    const responses = generateResponses(bias);
     
     console.log('👥 Informations d\'évaluation:');
     console.log(`   Évalué: ${evaluationInfo.evaluatedPerson.firstName} ${evaluationInfo.evaluatedPerson.lastName}`);
     console.log(`   Poste: ${evaluationInfo.evaluatedPerson.position}`);
+    console.log(`   Tranche d'âge: ${evaluationInfo.evaluatedPerson.ageRange}`);
     console.log(`   Relation: ${evaluationInfo.evaluator.relationship}`);
+    console.log(`   Niveau: ${evaluationInfo.evaluator.hierarchyLevel}`);
     console.log(`   Email évaluateur: ${evaluationInfo.evaluatorEmail}`);
     
     const requestData = {
@@ -181,6 +302,7 @@ async function submitEvaluation() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'auto-submit-script/1.0'
       },
       body: JSON.stringify(requestData)
     });
@@ -190,10 +312,23 @@ async function submitEvaluation() {
     if (response.ok) {
       console.log('✅ SUCCESS! Évaluation soumise avec succès');
       console.log(`📧 ${result.message || 'Évaluation envoyée par email'}`);
+      
+      // Statistiques des réponses
+      const responseStats = {};
+      Object.values(responses).forEach(response => {
+        responseStats[response] = (responseStats[response] || 0) + 1;
+      });
+      
+      console.log('📊 Statistiques des réponses:');
+      console.log(`   A: ${responseStats.a || 0}, B: ${responseStats.b || 0}, C: ${responseStats.c || 0}, D: ${responseStats.d || 0}, E: ${responseStats.e || 0}`);
+      
     } else {
       console.log('❌ ERREUR lors de la soumission de l\'évaluation:');
       console.log(`   Status: ${response.status}`);
       console.log(`   Message: ${result.error || 'Erreur inconnue'}`);
+      if (result.details) {
+        console.log(`   Détails: ${result.details}`);
+      }
     }
     
   } catch (error) {
@@ -208,7 +343,7 @@ function showHelp() {
 🎯 Script de soumission automatique du questionnaire RH
 
 Usage:
-  node auto-submit-questionnaire.js [mode]
+  node auto-submit-questionnaire.js [mode] [bias]
 
 Modes disponibles:
   auto          Mode autodiagnostic (défaut)
@@ -216,20 +351,42 @@ Modes disponibles:
   both          Les deux modes
   help          Affiche cette aide
 
+Biais de réponses disponibles:
+  balanced      Distribution équilibrée (défaut)
+  positive      Favorise les réponses positives (a, b)
+  negative      Favorise les réponses négatives (d, e)
+  neutral       Favorise les réponses neutres (c)
+
 Exemples:
-  node auto-submit-questionnaire.js              # Mode autodiagnostic
-  node auto-submit-questionnaire.js auto         # Mode autodiagnostic
-  node auto-submit-questionnaire.js evaluation   # Mode évaluation
-  node auto-submit-questionnaire.js both         # Les deux modes
+  node auto-submit-questionnaire.js                    # Mode autodiagnostic équilibré
+  node auto-submit-questionnaire.js auto positive      # Mode autodiagnostic avec biais positif
+  node auto-submit-questionnaire.js evaluation         # Mode évaluation équilibré
+  node auto-submit-questionnaire.js both negative      # Les deux modes avec biais négatif
+  node auto-submit-questionnaire.js auto neutral       # Mode autodiagnostic avec biais neutre
+
+📊 Informations:
+  - Le questionnaire contient 72 questions réparties en 8 sections
+  - Chaque section contient 9 questions
+  - Les réponses vont de A (tout à fait d'accord) à E (pas d'accord du tout)
+  - L'API génère automatiquement un rapport Excel et Word
 `);
 }
 
 // Point d'entrée principal
 async function main() {
   const mode = process.argv[2] || 'auto';
+  const bias = process.argv[3] || 'balanced';
   
   console.log('🔧 Script de soumission automatique du questionnaire RH');
   console.log('═'.repeat(60));
+  
+  // Valider le biais
+  const validBiases = ['balanced', 'positive', 'negative', 'neutral'];
+  if (!validBiases.includes(bias)) {
+    console.log(`❌ Biais inconnu: ${bias}`);
+    console.log(`Biais disponibles: ${validBiases.join(', ')}`);
+    process.exit(1);
+  }
   
   switch (mode.toLowerCase()) {
     case 'help':
@@ -240,20 +397,20 @@ async function main() {
       
     case 'auto':
     case 'autodiagnostic':
-      await submitQuestionnaire();
+      await submitQuestionnaire(bias);
       break;
       
     case 'evaluation':
     case 'eval':
-      await submitEvaluation();
+      await submitEvaluation(bias);
       break;
       
     case 'both':
     case 'all':
       console.log('🔄 Mode combiné: autodiagnostic + évaluation\n');
-      await submitQuestionnaire();
+      await submitQuestionnaire(bias);
       console.log('\n' + '─'.repeat(60) + '\n');
-      await submitEvaluation();
+      await submitEvaluation(bias);
       break;
       
     default:
