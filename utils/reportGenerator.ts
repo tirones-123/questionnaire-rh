@@ -565,6 +565,23 @@ RAPPELS CRITIQUES :
 - Suivre l'ordre exact des 4 familles et 12 critères
 - Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse 120-180 mots
 - ⚠️ INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
+- ⚠️⚠️⚠️ ATTENTION CRITIQUE - ZÉRO RECOMMANDATION ⚠️⚠️⚠️
+INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
+- "Pour renforcer ce critère..."
+- "Un développement de..."
+- "pourrait être bénéfique"
+- "gagnerait à..."
+- "serait judicieux de..."
+- "il conviendrait de..."
+- AUCUNE phrase commençant par "Pour", "Afin de", "Dans l'optique de"
+- AUCUNE suggestion d'amélioration, même subtile
+
+✅ EXEMPLE CORRECT (descriptif pur) :
+"Marie manifeste une aptitude modérée à prendre des initiatives. Elle agit de manière autonome dans certaines circonstances, mais son dynamisme dépend du contexte. En présence de situations stimulantes, elle se mobilise. Ce profil réactif témoigne d'une capacité à intervenir quand les circonstances l'y incitent."
+
++❌ EXEMPLE INTERDIT (contient une recommandation) :
+"Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
+
 - Varier le vocabulaire, éviter toute répétition
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
