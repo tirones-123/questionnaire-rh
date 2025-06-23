@@ -569,12 +569,34 @@ RAPPELS CRITIQUES :
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
+    const part1Exigences = `EXIGENCES RÉDACTIONNELLES STRICTES :
+
+1. BANNIR ABSOLUMENT ces formulations trop utilisées :
+   - "pourrait" → remplacer par : "est susceptible de", "tend à", "se révèle capable de", "dispose du potentiel pour", "manifeste une aptitude à"
+   - "permet de" → "favorise", "autorise", "offre la possibilité de", "ouvre la voie à", "facilite"
+   - "montre" → "révèle", "témoigne de", "illustre", "met en lumière", "traduit"
+   - "semble" → "apparaît", "se présente comme", "laisse transparaître", "donne à voir"
+   - "capacité à" → "aptitude à", "faculté de", "talent pour", "disposition à", "compétence en matière de"
+
+2. ENRICHIR LE VOCABULAIRE avec :
+   - Des verbes d'action variés : impulser, catalyser, orchestrer, structurer, mobiliser, fédérer, insuffler
+   - Des connecteurs élégants : par ailleurs, en outre, qui plus est, de surcroît, au demeurant
+   - Des nuances : indéniablement, manifestement, vraisemblablement, assurément
+
+3. VARIER LES STRUCTURES DE PHRASES :
+   - Alterner phrases courtes percutantes et périodes plus amples
+   - Utiliser des tournures nominales : "La maîtrise qu'affiche ${person.firstName}..."
+   - Employer l'inversion : "Se dessine ainsi chez ${person.firstName}..."
+   - Intégrer des incises : "${person.firstName}, fort de cette qualité, parvient à..."
+
+4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.`;
+
     const completion1 = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "assistant", name: "retrieval", content: retrievalContext },
-        { role: "user", content: `${userPrompt}\n\n${part1Prompt}` }
+        { role: "user", content: `${userPrompt}\n\n${part1Prompt}\n\n${part1Exigences}` }
       ],
       temperature: 0.9,
       top_p: 0.9,
@@ -613,12 +635,41 @@ STRUCTURE À PRODUIRE :
 
 IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"`;
 
+    const part2Exigences = `IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"
+
+CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
+
+1. PROSCRIRE TOTALEMENT :
+   - "pourrait" → utiliser : "serait en mesure de", "a le potentiel pour", "dispose des ressources pour"
+   - "il convient de" → "il s'agit de", "l'enjeu consiste à", "la priorité réside dans"
+   - "afin de" → "pour", "dans l'optique de", "en vue de", "avec l'objectif de"
+
+2. POUR LA PARTIE 2 (Profil d'ensemble) :
+   - Synthèse élégante sans redite de la partie 1
+   - Mise en perspective des interactions entre critères
+   - Identification des dynamiques transversales
+
+3. POUR LA PARTIE 3 (Points de vigilance) :
+   - Titres percutants et spécifiques (pas de généralités)
+   - Formulations nuancées : "Une certaine tendance à...", "Un risque mesuré de..."
+   - Contextualisation des impacts potentiels
+
+4. POUR LA PARTIE 4 (Recommandations) :
+   - Actions concrètes et ambitieuses
+   - Verbes d'action directs : engager, déployer, expérimenter, instituer
+   - Horizons temporels variés : court terme/moyen terme
+   - Indicateurs tangibles de progrès
+
+5. DIVERSITÉ LEXICALE OBLIGATOIRE :
+   - Maximum 3 occurrences du même verbe sur l'ensemble des parties 2-5
+   - Synonymes systématiques pour les mots-clés`;
+
     const completion2 = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "assistant", name: "retrieval", content: retrievalContext },
-        { role: "user", content: `${userPrompt}\n\n${part2Prompt}` }
+        { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
       ],
       temperature: 0.85,
       max_tokens: 5000,
