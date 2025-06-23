@@ -524,11 +524,6 @@ Règles de mise en forme
 
 Consignes de style
 • Ton professionnel, clair, bienveillant, orienté solutions.
-• Registre soutenu mais vivant : phrases dynamiques, tournures inversées, métaphores légères.
-• Ne commence jamais deux phrases successives par le même mot.
-• Un même mot ne doit pas apparaître plus de deux fois dans un paragraphe.
-• Évite absolument les verbes passe-partout (« être », « avoir », « pouvoir ») et privilégie des verbes d'action spécifiques.
-• Varie les connecteurs logiques ; proscrire la répétition de « ainsi », « cependant », « toutefois ».
 • Pas de jargon psychométrique ni de formules scolaires.
 • Style premium de conseil stratégique : verbes d'action, transitions fluides.
 • Bannir les répétitions ("pourrait" max 4 fois, etc.).
@@ -558,53 +553,100 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
   try {
     console.log('Calling OpenAI API...');
     
-    const completion = await openai.chat.completions.create({
+    // PREMIER APPEL : Génération de la partie 1 (analyse des 12 critères)
+    console.log('Generating Part 1: Criteria Analysis...');
+    
+    const part1Prompt = `Génère UNIQUEMENT la partie 1 (Analyse critère par critère) du rapport.
+
+Tu dois produire une analyse riche, nuancée et élégante pour chaque critère.
+
+RAPPELS CRITIQUES :
+- Commencer par le titre exact : "1. Analyse critère par critère"
+- Suivre l'ordre exact des 4 familles et 12 critères
+- Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse 120-180 mots
+- Aucune recommandation dans cette partie
+- Varier le vocabulaire, éviter toute répétition
+- Style conseil stratégique premium
+- Utiliser le prénom ${person.firstName} régulièrement`;
+
+    const completion1 = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "assistant", name: "retrieval", content: retrievalContext },
-        { role: "user", content: userPrompt }
+        { role: "user", content: `${userPrompt}\n\n${part1Prompt}` }
       ],
-      temperature: 0.7,
+      temperature: 0.9,
       top_p: 0.9,
-      frequency_penalty: 0.35,
-      presence_penalty: 0.4,
-      max_tokens: 10000,
+      max_tokens: 5000,
     });
 
-    let content = completion.choices[0]?.message?.content || '';
-    let finishReason = completion.choices[0]?.finish_reason;
-
-    // Tant que le modèle coupe pour longueur, demander la suite
-    while (finishReason === 'length') {
-      console.log('Partial response received (length). Requesting continuation...');
-      const cont = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "assistant", name: "retrieval", content: retrievalContext },
-          { role: "user", content: userPrompt },
-          { role: "assistant", content: content },
-          { role: "user", content: 'CONTINUE' }
-        ],
-        temperature: 0.7,
-        top_p: 0.9,
-        frequency_penalty: 0.35,
-        presence_penalty: 0.4,
-        max_tokens: 10000
-      });
-      content += '\n' + (cont.choices[0]?.message?.content || '');
-      finishReason = cont.choices[0]?.finish_reason;
+    const part1Content = completion1.choices[0]?.message?.content;
+    if (!part1Content) {
+      throw new Error('La génération de la partie 1 a échoué');
     }
 
-    console.log('Full report generated');
+    console.log('Part 1 generated successfully');
 
-    const cleanedContent = content
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/__(.*?)__/g, '$1')
-      .replace(/_(.*?)_/g, '$1');
+    // DEUXIÈME APPEL : Génération des parties 2-5 avec la partie 1 en contexte
+    console.log('Generating Parts 2-5...');
+    
+    const part2Prompt = `Voici la partie 1 déjà générée :
 
+${part1Content}
+
+Maintenant, génère les parties 2 à 5 du rapport en te basant sur l'analyse ci-dessus.
+
+STRUCTURE À PRODUIRE :
+
+2. Analyse du profil d'ensemble
+[Résumé transversal de 200-300 mots qui synthétise les forces et axes de progression identifiés dans la partie 1]
+
+3. Points de vigilance
+[3-5 points avec titre descriptif et paragraphe de 80-120 mots chacun]
+
+4. Recommandations de développement
+[2-3 recommandations par point de vigilance, 100-120 mots chacune]
+
+5. Conclusion synthétique
+[80-120 mots : synthèse des atouts, leviers et perspectives]
+
+IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"`;
+
+    const completion2 = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "assistant", name: "retrieval", content: retrievalContext },
+        { role: "user", content: `${userPrompt}\n\n${part2Prompt}` }
+      ],
+      temperature: 0.85,
+      max_tokens: 5000,
+    });
+
+    const part2Content = completion2.choices[0]?.message?.content;
+    if (!part2Content) {
+      throw new Error('La génération des parties 2-5 a échoué');
+    }
+
+    console.log('Parts 2-5 generated successfully');
+
+    // Assembler le rapport complet
+    const fullReport = `${promptType.toUpperCase()}
+
+${part1Content}
+
+${part2Content}`;
+    
+    console.log('Report generated successfully');
+    
+    // Nettoyer le contenu de tout formatage markdown indésirable
+    const cleanedContent = fullReport
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Enlever les doubles astérisques
+      .replace(/\*(.*?)\*/g, '$1')     // Enlever les simples astérisques
+      .replace(/__(.*?)__/g, '$1')     // Enlever les doubles underscores
+      .replace(/_(.*?)_/g, '$1');      // Enlever les simples underscores
+    
     return cleanedContent;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
