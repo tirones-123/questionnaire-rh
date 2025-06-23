@@ -524,6 +524,11 @@ Règles de mise en forme
 
 Consignes de style
 • Ton professionnel, clair, bienveillant, orienté solutions.
+• Registre soutenu mais vivant : phrases dynamiques, tournures inversées, métaphores légères.
+• Ne commence jamais deux phrases successives par le même mot.
+• Un même mot ne doit pas apparaître plus de deux fois dans un paragraphe.
+• Évite absolument les verbes passe-partout (« être », « avoir », « pouvoir ») et privilégie des verbes d'action spécifiques.
+• Varie les connecteurs logiques ; proscrire la répétition de « ainsi », « cependant », « toutefois ».
 • Pas de jargon psychométrique ni de formules scolaires.
 • Style premium de conseil stratégique : verbes d'action, transitions fluides.
 • Bannir les répétitions ("pourrait" max 4 fois, etc.).
@@ -560,7 +565,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.85,
+      temperature: 0.7,
       max_tokens: 10000,
     });
 
