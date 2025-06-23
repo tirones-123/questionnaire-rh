@@ -589,8 +589,7 @@ RAPPELS CRITIQUES :
    - Employer l'inversion : "Se dessine ainsi chez ${person.firstName}..."
    - Intégrer des incises : "${person.firstName}, fort de cette qualité, parvient à..."
 
-4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.
-
+4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.`;
 
     const completion1 = await openai.chat.completions.create({
       model: "gpt-4o",
