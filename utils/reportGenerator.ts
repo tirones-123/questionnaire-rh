@@ -566,6 +566,9 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
         { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
+      top_p: 0.9,
+      frequency_penalty: 0.35,
+      presence_penalty: 0.4,
       max_tokens: 10000,
     });
 
