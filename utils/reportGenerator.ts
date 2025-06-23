@@ -589,7 +589,16 @@ RAPPELS CRITIQUES :
    - Employer l'inversion : "Se dessine ainsi chez ${person.firstName}..."
    - Intégrer des incises : "${person.firstName}, fort de cette qualité, parvient à..."
 
-4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.`;
+4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.
+
+5. CONCISION ET ÉLÉGANCE - ÉVITER LA VERBOSITÉ :
+   - PRIVILÉGIER la simplicité : une idée claire vaut mieux que trois périphrases
+   - BANNIR les tournures alambiquées : "au sein de" → "dans", "procéder à" → "faire", "être en mesure de" → "pouvoir"
+   - ÉVITER l'accumulation d'adjectifs : maximum 2 qualificatifs par phrase
+   - PROSCRIRE les redondances : "projet futur" → "projet", "collaborer ensemble" → "collaborer"
+   - PRÉFÉRER : "Marie excelle en négociation" plutôt que "Marie démontre une capacité remarquable dans l'art subtil de la négociation commerciale"
+   - VISER 15-20 mots par phrase en moyenne, avec quelques variations
+   - CHAQUE MOT doit apporter de la valeur ; supprimer tout ce qui n'est pas essentiel`;
 
     const completion1 = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -598,7 +607,7 @@ RAPPELS CRITIQUES :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part1Prompt}\n\n${part1Exigences}` }
       ],
-      temperature: 0.9,
+      temperature: 0.7,
       top_p: 0.9,
       max_tokens: 5000,
     });
@@ -662,7 +671,15 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
 
 5. DIVERSITÉ LEXICALE OBLIGATOIRE :
    - Maximum 3 occurrences du même verbe sur l'ensemble des parties 2-5
-   - Synonymes systématiques pour les mots-clés`;
+   - Synonymes systématiques pour les mots-clés
+
+6. ÉLÉGANCE ET CONCISION :
+   - Éviter les phrases de plus de 25 mots sauf exception justifiée
+   - Une recommandation = une idée forte, pas trois reformulations
+   - Supprimer tous les mots superflus : "véritablement", "réellement", "particulièrement"
+   - Préférer la voix active : "Le manager pilote" plutôt que "Le pilotage est assuré par le manager"
+   - EXEMPLE à suivre : "Instituer des revues mensuelles de 30 minutes pour calibrer les décisions urgentes" 
+   - EXEMPLE à éviter : "Il conviendrait de mettre en place de manière régulière des sessions de revue qui permettraient d'améliorer progressivement la capacité décisionnelle"`;
 
     const completion2 = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -671,7 +688,7 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
       ],
-      temperature: 0.75,
+      temperature: 0.7,
       max_tokens: 5000,
     });
 
