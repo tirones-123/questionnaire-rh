@@ -607,7 +607,9 @@ Actions recommandées possibles (à adapter selon les critères) :
 - Recommandations : utiliser • (bullet), format "Critère : action détaillée"
 - S'inspirer des principes, mécanismes et points d'attention de la base de connaissance pour enrichir les analyses
 - NE JAMAIS utiliser d'astérisques (*) ou de formatage markdown (pas de **texte**, pas de *texte*, pas de _texte_)
-- Les noms des critères doivent être en MAJUSCULES SIMPLES sans aucun formatage`;
+- Les noms des critères doivent être en MAJUSCULES SIMPLES sans aucun formatage
+- NE PAS inclure de recommandations, d'actions ou de conseils dans la section 1 (analyse critère par critère) ; les recommandations sont EXCLUSIVEMENT dans la partie 4
+- S'inspirer des principes, mécanismes et points d'attention de la base de connaissance pour enrichir les analyses`;
 
   const userPrompt = `Données à analyser :
 
