@@ -564,7 +564,8 @@ RAPPELS CRITIQUES :
 - Commencer par le titre exact : "1. Analyse critère par critère"
 - Suivre l'ordre exact des 4 familles et 12 critères
 - Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse 120-180 mots
-- Aucune recommandation dans cette partie
+- ⚠️ INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
+- L'analyse doit être PUREMENT DESCRIPTIVE ET ANALYTIQUE, sans aucune projection sur ce qu'il faudrait faire
 - Varier le vocabulaire, éviter toute répétition
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
@@ -589,7 +590,14 @@ RAPPELS CRITIQUES :
    - Employer l'inversion : "Se dessine ainsi chez ${person.firstName}..."
    - Intégrer des incises : "${person.firstName}, fort de cette qualité, parvient à..."
 
-4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.`;
+4. RÈGLE D'OR : Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe.
+
+5. ⚠️ INTERDICTION FORMELLE DE RECOMMANDATIONS :
+   - NE JAMAIS écrire : "il serait pertinent de", "il gagnerait à", "pourrait bénéficier de", "aurait intérêt à"
+   - NE JAMAIS suggérer : formations, coaching, mises en situation, développement de compétences
+   - NE JAMAIS projeter : "pour renforcer", "afin d'améliorer", "dans l'optique de développer"
+   - RESTER STRICTEMENT dans l'analyse de ce qui EST, jamais ce qui devrait être
+   - Les recommandations sont EXCLUSIVEMENT réservées à la partie 4 du rapport`;
 
     const completion1 = await openai.chat.completions.create({
       model: "gpt-4o",
