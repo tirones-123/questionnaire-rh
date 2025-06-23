@@ -450,16 +450,13 @@ Dans les parties 1 et 5 du rapport, variez les formulations pour rappeler que c'
 Utilisez uniquement le prénom de l'évaluateur, jamais le nom complet.`
     : '';
 
+  // Construction du prompt selon le schéma :
+  // system -> assistant(name=retrieval) -> user
+
   const systemPrompt = `Tu es consultant·e RH senior, expert·e de l'analyse du potentiel.
 Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapport structuré, nuancé et exploitable pour la personne évaluée et son/sa manager, en respectant scrupuleusement la mise en forme du modèle.
 
 ${evaluationInstructions}
-
-# BASE DE CONNAISSANCE - DÉFINITIONS DES 12 CRITÈRES :
-${KNOWLEDGE_BASE_12_CRITERES}
-
-# EXEMPLE DE RAPPORT - Pour t'inspirer du style et du format :
-${EXEMPLE_RAPPORT_OLIVIER}
 
 # BARÈME D'INTERPRÉTATION :
 ≥ 4,2 : Point fort
@@ -475,141 +472,13 @@ ${EXEMPLE_RAPPORT_OLIVIER}
 
 # STRUCTURE EXACTE À RESPECTER :
 
-${promptType.toUpperCase()}
+${promptType.toUpperCase()}`;
 
-1. Analyse critère par critère
+  const retrievalContext = `# BASE DE CONNAISSANCE - DÉFINITIONS DES 12 CRITÈRES :
+${KNOWLEDGE_BASE_12_CRITERES}
 
-FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
-
-AMBITION
-Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots. Utiliser des tournures variées comme : "Le score obtenu par {prénom} sur le critère...", "On observe chez {prénom}...", "Il/Elle démontre...", "{Prénom} semble...", "Cette dimension se manifeste...", etc.]
-
-INITIATIVE
-Besoin de prendre des initiatives et d'impulser des projets
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-RÉSILIENCE
-Persévérance face aux tensions psychologiques et physiologiques
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
-
-VISION
-Intuition pour imaginer l'avenir, anticiper et innover.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-RECUL
-Capacité d'analyse objective et synthétique avec distance critique
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-PERTINENCE
-Compréhension instantanée, diagnostic rapide par intuition.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-FAMILLE « AGIR » (EFFICACITÉ DANS L'ACTION)
-
-ORGANISATION
-Structuration du travail pour l'efficacité collective et individuelle
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-DÉCISION
-Aptitude à trancher vite en contexte incertain
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-SENS DU RÉSULTAT
-Attention aux résultats concrets, pragmatisme.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-FAMILLE « ENSEMBLE » (POSTURE RELATIONNELLE)
-
-COMMUNICATION
-Écoute et dialogue ouvert, authentique
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-ESPRIT D'ÉQUIPE
-Inscription de l'action dans un projet collectif, cohésion.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-LEADERSHIP
-Capacité à mobiliser un groupe, charisme et entraînement.
-Score : X,X – [Interprétation selon barème]
-[Analyse qualitative – 120 à 180 mots]
-
-2. Analyse du profil d'ensemble
-[Résumé transversal – 200 à 300 mots. Identifier les grandes tendances, les équilibres entre familles, les tensions et complémentarités. Utiliser un style fluide et nuancé.]
-
-3. Points de vigilance
-[3 à 5 points détaillés avec cette structure exacte :]
-
-• Titre descriptif du point de vigilance (Critère concerné)
-[Paragraphe explicatif de 80-120 mots détaillant le point de vigilance, ses manifestations concrètes et ses conséquences potentielles. Personnaliser avec le prénom de la personne.]
-
-Exemples de points de vigilance possibles selon les scores :
-- Score < 3,3 en Décision : "Tendance à rechercher un confort intellectuel avant de trancher" ou "Hésitations dans les contextes d'incertitude"
-- Score < 3,3 en Initiative : "Préférence pour un cadre structuré plutôt que l'impulsion de nouveautés"
-- Forte ambition + faible esprit d'équipe : "Risque d'isolement dans la poursuite des objectifs personnels"
-- Fort sens du résultat + faible vision : "Focalisation sur l'existant au détriment de l'innovation"
-- Forte communication + faible résilience : "Tendance à l'évitement des situations conflictuelles"
-
-4. Recommandations de développement
-[Pour chaque point de vigilance, proposer 2-3 recommandations concrètes et opérationnelles. Les recommandations doivent être développées et détaillées :]
-
-• Critère : description approfondie de l'action recommandée, détaillant le contexte d'application, les modalités pratiques de mise en œuvre, les étapes clés, les bénéfices attendus à court et moyen terme, les indicateurs de réussite et les méthodes d'accompagnement suggérées (100-120 mots).
-
-Actions recommandées possibles (à adapter selon les critères) :
-- Coaching individuel sur projet professionnel
-- Mises en situation avec contraintes temporelles
-- Missions transverses pour vision systémique
-- Ateliers "diagnostic flash" pour développer l'intuition
-- Scénarios de crise pour renforcer la décision
-- Feedback 360° pour consolider le leadership
-- Projets collaboratifs pour l'esprit d'équipe
-- Formation à la gestion du temps et des priorités
-- Mentorat par un pair expérimenté
-
-5. Conclusion synthétique
-[80 à 120 mots. Synthèse en 3 temps : 1) Principaux atouts et forces motrices, 2) Leviers de développement prioritaires, 3) Perspective d'évolution et contribution potentielle]
-
-# CONSIGNES DE STYLE :
-- Ton professionnel, clair, bienveillant, orienté solutions
-- PAS de jargon psychométrique ni de formules scolaires (éviter « Il est important de noter que », « Premièrement », etc.)
-- Style premium de conseil stratégique : phrases dynamiques, verbes d'action, transitions fluides, registre soutenu mais vivant
-- Démontrer une compréhension nuancée ; éviter répétitions, clichés et tournures mécaniques
-- Varier les rythmes, les connecteurs logiques et le champ lexical pour maintenir l'intérêt du lecteur
-- Intégrer des exemples concrets ou métaphores légères pour illustrer les idées, sans excès
-- Utiliser le prénom de la personne régulièrement (≈ 1 fois par paragraphe) pour personnaliser le propos
-- Illustrations contextualisées, jamais scolaires ni didactiques
-- Chaque recommandation doit être précise, actionnable, ambitieuse et directement reliée au(x) critère(s) concerné(s)
-- Utiliser la virgule comme séparateur décimal (3,4 et non 3.4)
-- Longueur totale visée : 1 600 – 2 300 mots
-- Proscrire toute liste numérotée interne dans les paragraphes : privilégier l'intégration fluide des idées
-- Employer un vocabulaire riche : éviter les répétitions, notamment du verbe « pouvoir » sous la forme « pourrait » ; utiliser des variantes (« serait susceptible de », « risque de », « tend à », "est en mesure de", « est capable de ») et limiter « pourrait » à 4 occurrences maximum sur l'ensemble du rapport ; privilégier des synonymes variés pour « démontrer », « montrer », « révéler », etc.
-- Bannir les expressions scolaires (« cependant, néanmoins » systématiques) ; préférer un style conseil haut de gamme
-
-# RÈGLES CRITIQUES :
-- Utiliser EXACTEMENT les titres et sous-titres du modèle
-- TOUJOURS commencer par le titre "1. Analyse critère par critère" avant la première famille
-- Inclure TOUTES les 4 familles avec leurs 3 critères chacune (12 critères au total)
-- Respecter l'ordre exact des 12 critères
-- Points de vigilance : utiliser • (bullet) et non - (tiret), avec titre descriptif et paragraphe explicatif
-- Recommandations : utiliser • (bullet), format "Critère : action détaillée"
-- S'inspirer des principes, mécanismes et points d'attention de la base de connaissance pour enrichir les analyses
-- NE JAMAIS utiliser d'astérisques (*) ou de formatage markdown (pas de **texte**, pas de *texte*, pas de _texte_)
-- Les noms des critères doivent être en MAJUSCULES SIMPLES sans aucun formatage
-- NE PAS inclure de recommandations, d'actions ou de conseils dans la section 1 (analyse critère par critère) ; les recommandations sont EXCLUSIVEMENT dans la partie 4
-- S'inspirer des principes, mécanismes et points d'attention de la base de connaissance pour enrichir les analyses`;
+# EXEMPLE DE RAPPORT - Pour t'inspirer du style et du format :
+${EXEMPLE_RAPPORT_OLIVIER}`;
 
   const userPrompt = `Données à analyser :
 
@@ -630,6 +499,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
+        { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
