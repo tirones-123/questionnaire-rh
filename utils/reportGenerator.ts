@@ -598,7 +598,8 @@ RAPPELS CRITIQUES :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part1Prompt}\n\n${part1Exigences}` }
       ],
-      temperature: 0.85,
+      temperature: 0.9,
+      top_p: 0.9,
       max_tokens: 5000,
     });
 
