@@ -598,7 +598,7 @@ RAPPELS CRITIQUES :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part1Prompt}\n\n${part1Exigences}` }
       ],
-      temperature: 0.7,
+      temperature: 0.85,
       max_tokens: 5000,
     });
 
@@ -670,7 +670,7 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
       ],
-      temperature: 0.7,
+      temperature: 0.85,
       max_tokens: 5000,
     });
 
