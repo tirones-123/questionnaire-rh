@@ -632,7 +632,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.85,
+      temperature: 0.7,
       max_tokens: 8000,
     });
 
