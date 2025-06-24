@@ -575,8 +575,16 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 - "il conviendrait de..."
 - AUCUNE phrase commençant par "Pour", "Afin de", "Dans l'optique de"
 - AUCUNE suggestion d'amélioration, même subtile
+
+✅ EXEMPLE CORRECT (descriptif pur) :
+"Marie manifeste une aptitude modérée à prendre des initiatives. Elle agit de manière autonome dans certaines circonstances, mais son dynamisme dépend du contexte. En présence de situations stimulantes, elle se mobilise. Ce profil réactif témoigne d'une capacité à intervenir quand les circonstances l'y incitent."
+
++❌ EXEMPLE INTERDIT (contient une recommandation) :
+"Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
+
 - Varier le vocabulaire, éviter toute répétition
-- Style conseil stratégique premium`;
+- Style conseil stratégique premium
+- Utiliser le prénom ${person.firstName} régulièrement`;
 
     const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
 
