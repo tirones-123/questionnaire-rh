@@ -164,6 +164,32 @@ function generateJulienResponses() {
   return responses;
 }
 
+// Réponses spécifiques d'Arnaud
+function generateArnaudResponses() {
+  // Réponses exactes d'Arnaud par numéro de question
+  const arnaudAnswers = {
+    1: 'a', 2: 'd', 3: 'd', 4: 'c', 5: 'a', 6: 'a', 7: 'a', 8: 'e', 9: 'd', 10: 'b',
+    11: 'c', 12: 'b', 13: 'e', 14: 'a', 15: 'e', 16: 'b', 17: 'b', 18: 'b', 19: 'b', 20: 'a',
+    21: 'c', 22: 'c', 23: 'd', 24: 'b', 25: 'c', 26: 'a', 27: 'a', 28: 'd', 29: 'd', 30: 'b',
+    31: 'd', 32: 'c', 33: 'd', 34: 'd', 35: 'd', 36: 'c', 37: 'b', 38: 'd', 39: 'c', 40: 'c',
+    41: 'd', 42: 'a', 43: 'a', 44: 'a', 45: 'a', 46: 'c', 47: 'b', 48: 'd', 49: 'c', 50: 'd',
+    51: 'b', 52: 'c', 53: 'd', 54: 'a', 55: 'c', 56: 'a', 57: 'd', 58: 'b', 59: 'd', 60: 'c',
+    61: 'a', 62: 'b', 63: 'b', 64: 'b', 65: 'a', 66: 'c', 67: 'b', 68: 'e', 69: 'a', 70: 'd',
+    71: 'c', 72: 'b'
+  };
+  
+  const responses = {};
+  
+  // Parcourir chaque section et assigner les réponses d'Arnaud
+  sections.forEach(section => {
+    section.questions.forEach(question => {
+      responses[`${section.id}-${question.id}`] = arnaudAnswers[question.id];
+    });
+  });
+  
+  return responses;
+}
+
 // Génération des réponses automatiques avec les vrais IDs de questions
 function generateResponses(bias = 'balanced') {
   const responseOptions = ['a', 'b', 'c', 'd', 'e'];
@@ -203,6 +229,97 @@ function generateResponses(bias = 'balanced') {
   });
   
   return responses;
+}
+
+// Fonction pour soumettre le questionnaire avec les réponses d'Arnaud
+async function submitArnaudQuestionnaire() {
+  try {
+    console.log('🚀 Début de la soumission du questionnaire d\'Arnaud...');
+    console.log(`📍 URL cible: ${BASE_URL}`);
+    console.log('🎯 Utilisation des réponses exactes d\'Arnaud');
+    
+    // Générer les réponses d'Arnaud
+    const responses = generateArnaudResponses();
+    console.log(`✅ Chargement des ${Object.keys(responses).length} réponses d'Arnaud`);
+    
+    // Afficher un échantillon des réponses
+    console.log('📋 Échantillon des réponses d\'Arnaud:');
+    const sampleKeys = Object.keys(responses).slice(0, 5);
+    sampleKeys.forEach(key => {
+      const questionId = parseInt(key.split('-')[1]);
+      const questionText = sections
+        .flatMap(s => s.questions)
+        .find(q => q.id === questionId)?.text || 'Question introuvable';
+      console.log(`   Q${questionId}: ${responses[key]} - "${questionText.substring(0, 50)}..."`);
+    });
+    console.log('   ...');
+    
+    // Informations utilisateur pour Arnaud
+    const arnaudUserInfo = {
+      firstName: 'Arnaud',
+      lastName: 'Example',
+      age: '32',
+      profession: 'Directeur Commercial',
+      email: 'arnaud@example.com'
+    };
+    
+    // Préparer les données pour l'API
+    const requestData = {
+      userInfo: arnaudUserInfo,
+      responses: responses
+    };
+    
+    console.log('👤 Informations d\'Arnaud:');
+    console.log(`   Nom: ${arnaudUserInfo.firstName} ${arnaudUserInfo.lastName}`);
+    console.log(`   Âge: ${arnaudUserInfo.age} ans`);
+    console.log(`   Profession: ${arnaudUserInfo.profession}`);
+    console.log(`   Email: ${arnaudUserInfo.email}`);
+    
+    console.log('📤 Envoi de la requête...');
+    
+    // Soumettre à l'API
+    const response = await fetch(`${BASE_URL}/api/submit-questionnaire`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'auto-submit-script/1.0'
+      },
+      body: JSON.stringify(requestData)
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      console.log('✅ SUCCESS! Questionnaire d\'Arnaud soumis avec succès');
+      console.log(`📧 ${result.message || 'Réponses envoyées par email'}`);
+      
+      // Statistiques des réponses d'Arnaud
+      const responseStats = {};
+      Object.values(responses).forEach(response => {
+        responseStats[response] = (responseStats[response] || 0) + 1;
+      });
+      
+      console.log('📊 Statistiques des réponses d\'Arnaud:');
+      console.log(`   A (Tout à fait d'accord): ${responseStats.a || 0} (${Math.round((responseStats.a || 0) / 72 * 100)}%)`);
+      console.log(`   B (D'accord): ${responseStats.b || 0} (${Math.round((responseStats.b || 0) / 72 * 100)}%)`);
+      console.log(`   C (Neutre): ${responseStats.c || 0} (${Math.round((responseStats.c || 0) / 72 * 100)}%)`);
+      console.log(`   D (Pas d'accord): ${responseStats.d || 0} (${Math.round((responseStats.d || 0) / 72 * 100)}%)`);
+      console.log(`   E (Pas d'accord du tout): ${responseStats.e || 0} (${Math.round((responseStats.e || 0) / 72 * 100)}%)`);
+      
+    } else {
+      console.log('❌ ERREUR lors de la soumission:');
+      console.log(`   Status: ${response.status}`);
+      console.log(`   Message: ${result.error || 'Erreur inconnue'}`);
+      if (result.details) {
+        console.log(`   Détails: ${result.details}`);
+      }
+    }
+    
+  } catch (error) {
+    console.log('💥 ERREUR CRITIQUE:');
+    console.log(`   ${error.message}`);
+    console.log('   Vérifiez votre connexion internet et que l\'URL est accessible');
+  }
 }
 
 // Fonction pour soumettre le questionnaire avec les réponses de Julien
@@ -466,6 +583,7 @@ Modes disponibles:
   auto          Mode autodiagnostic (défaut)
   evaluation    Mode évaluation d'un collaborateur
   julien        Mode avec les réponses exactes de Julien
+  arnaud        Mode avec les réponses exactes d'Arnaud
   both          Les deux modes (auto + evaluation)
   help          Affiche cette aide
 
@@ -480,6 +598,7 @@ Exemples:
   node auto-submit-questionnaire.js auto positive      # Mode autodiagnostic avec biais positif
   node auto-submit-questionnaire.js evaluation         # Mode évaluation équilibré
   node auto-submit-questionnaire.js julien             # Soumission avec les réponses de Julien
+  node auto-submit-questionnaire.js arnaud             # Soumission avec les réponses d'Arnaud
   node auto-submit-questionnaire.js both negative      # Les deux modes avec biais négatif
   node auto-submit-questionnaire.js auto neutral       # Mode autodiagnostic avec biais neutre
 
@@ -488,7 +607,7 @@ Exemples:
   - Chaque section contient 9 questions
   - Les réponses vont de A (tout à fait d'accord) à E (pas d'accord du tout)
   - L'API génère automatiquement un rapport Excel et Word
-  - Le mode "julien" utilise un jeu de réponses prédéfinies spécifiques
+  - Les modes "julien" et "arnaud" utilisent des jeux de réponses prédéfinies spécifiques
 `);
 }
 
@@ -529,6 +648,10 @@ async function main() {
       await submitJulienQuestionnaire();
       break;
       
+    case 'arnaud':
+      await submitArnaudQuestionnaire();
+      break;
+      
     case 'both':
     case 'all':
       console.log('🔄 Mode combiné: autodiagnostic + évaluation\n');
@@ -560,4 +683,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-module.exports = { submitQuestionnaire, submitEvaluation, submitJulienQuestionnaire, generateResponses, generateJulienResponses }; 
+module.exports = { submitQuestionnaire, submitEvaluation, submitJulienQuestionnaire, submitArnaudQuestionnaire, generateResponses, generateJulienResponses, generateArnaudResponses }; 
