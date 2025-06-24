@@ -639,7 +639,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
       ],
       temperature: 0.7,
       top_p: 0.9,
-      max_tokens: 5000,
+      max_completion_tokens: 10000,
     });
 
     const part1Content = completion1.choices[0]?.message?.content;
@@ -719,7 +719,7 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
         { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
       ],
       temperature: 0.7,
-      max_completion_tokens: 10000,
+      max_tokens: 5000,
     });
 
     const part2Content = completion2.choices[0]?.message?.content;
