@@ -583,7 +583,6 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 "Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
 
 - Varier le vocabulaire, éviter toute répétition mais rester simple
-- TON BIENVEILLANT OBLIGATOIRE
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
@@ -672,28 +671,58 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
    - Mise en perspective des interactions entre critères
    - Identification des dynamiques transversales
 
-3. POUR LA PARTIE 3 (Points de vigilance) :
-   - Titres percutants et spécifiques (pas de généralités)
-   - Formulations nuancées : "Une certaine tendance à...", "Un risque mesuré de..."
-   - Contextualisation des impacts potentiels
+3. POUR LA PARTIE 3 (Points de vigilance) - RÈGLES CRITIQUES :
+   ⚠️ CHAQUE POINT DE VIGILANCE DOIT AVOIR UN TITRE + DÉVELOPPEMENT COMPLET
+   ⚠️ INCLURE OBLIGATOIREMENT les combinaisons de critères (voir base de connaissance)
+   
+   FORMAT OBLIGATOIRE pour chaque point :
+   • Titre du point de vigilance (critère concerné)
+   [Paragraphe de développement 80-120 mots expliquant le risque et ses conséquences]
+   
+   TYPES DE POINTS DE VIGILANCE À INCLURE :
+   - Critères isolés avec scores faibles (< 3,3)
+   - ⚠️ COMBINAISONS DE CRITÈRES selon la base de connaissance :
+     * Forte "Ambition" + faible "Esprit d'équipe" → harmonie collective
+     * Fort "Sens du résultat" + faible "Communication"/"Esprit d'équipe" → brutalité
+     * Forte "Initiative" + faible "Recul" → imprudence
+     * Fort "Leadership" + faible "Communication" → communication descendante
+     * Forte "Résilience" + faible "Pertinence"/"Recul" → entêtement
+   - Formulations nuancées : "Tendance à...", "Risque de...", "Vigilance sur..."
 
-4. POUR LA PARTIE 4 (Recommandations) :
-   - Actions concrètes et ambitieuses
-   - Verbes d'action directs : engager, déployer, expérimenter, instituer
-   - Horizons temporels variés : court terme/moyen terme
-   - Indicateurs tangibles de progrès
+4. POUR LA PARTIE 4 (Recommandations) - FORMAT SPÉCIFIQUE :
+   STRUCTURE OBLIGATOIRE pour chaque recommandation :
+   
+   [VERBE À L'IMPÉRATIF] + objectif clair :
+   • Action concrète 1
+   • Action concrète 2  
+   • Action concrète 3
+   
+   EXEMPLES À SUIVRE :
+   ✅ "Développer la capacité décisionnelle en situation d'urgence :
+   • Multiplier les mises en situation de crise
+   • Instituer des feedback immédiats sur les décisions prises
+   • Organiser des simulations d'urgence trimestrielles"
+   
+   ✅ "Renforcer l'écoute active dans la communication :
+   • Pratiquer la reformulation systématique
+   • Instaurer des temps d'écoute structurés
+   • Développer l'empathie par des exercices pratiques"
 
-5. DIVERSITÉ LEXICALE OBLIGATOIRE :
+5. POUR LA PARTIE 5 (Conclusion synthétique) - PLUS ÉTOFFÉE :
+   - 120-180 mots (au lieu de 80-120)
+   - 3 paragraphes distincts :
+     * Atouts principaux et points forts du profil
+     * Axes de développement prioritaires et leurs enjeux
+     * Perspective d'évolution et potentiel d'impact
+
+6. DIVERSITÉ LEXICALE OBLIGATOIRE :
    - Maximum 3 occurrences du même verbe sur l'ensemble des parties 2-5
    - Synonymes systématiques pour les mots-clés
 
-6. ÉLÉGANCE ET CONCISION :
-   - Éviter les phrases de plus de 25 mots sauf exception justifiée
+7. ÉLÉGANCE ET CONCISION :
    - Une recommandation = une idée forte, pas trois reformulations
-   - Supprimer tous les mots superflus : "véritablement", "réellement", "particulièrement"
-   - Préférer la voix active : "Le manager pilote" plutôt que "Le pilotage est assuré par le manager"
-   - EXEMPLE à suivre : "Instituer des revues mensuelles de 30 minutes pour calibrer les décisions urgentes" 
-   - EXEMPLE à éviter : "Il conviendrait de mettre en place de manière régulière des sessions de revue qui permettraient d'améliorer progressivement la capacité décisionnelle"`;
+   - Supprimer les mots superflus
+   - Préférer la voix active`;
 
     const completion2 = await openai.chat.completions.create({
       model: "gpt-4o",
