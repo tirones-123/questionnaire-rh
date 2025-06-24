@@ -583,7 +583,8 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 "Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
 
 - Varier le vocabulaire, éviter toute répétition
-- TON BIENVEILLANT OBLIGATOIRE :Éviter les formulations trop directes ou critiques
+- TON BIENVEILLANT OBLIGATOIRE
+- Éviter les formulations trop directes ou critiques
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
@@ -611,7 +612,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - 5-6 phrases maximum par paragraphe
+   - 6-8 phrases maximum par paragraphe
    - Connecteurs naturels entre les phrases
    - Éviter les phrases saccadées qui cassent le rythme`;
 
