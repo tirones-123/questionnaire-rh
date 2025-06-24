@@ -533,7 +533,10 @@ Consignes de style
 Tout écart sera considéré comme une non-conformité.`;
 
   const retrievalContext = `# BASE DE CONNAISSANCE - DÉFINITIONS DES 12 CRITÈRES :
-${KNOWLEDGE_BASE_12_CRITERES}`;
+${KNOWLEDGE_BASE_12_CRITERES}
+
+# EXEMPLE DE RAPPORT - Pour t'inspirer du style et du format :
+${EXEMPLE_RAPPORT_OLIVIER}`;
 
   const userPrompt = `Données à analyser :
 
