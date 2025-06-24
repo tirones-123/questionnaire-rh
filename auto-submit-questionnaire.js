@@ -138,6 +138,32 @@ const sections = [
   }
 ];
 
+// Réponses spécifiques de Julien
+function generateJulienResponses() {
+  // Réponses exactes de Julien par numéro de question
+  const julienAnswers = {
+    1: 'd', 2: 'd', 3: 'd', 4: 'b', 5: 'd', 6: 'a', 7: 'a', 8: 'd', 9: 'd', 10: 'c',
+    11: 'c', 12: 'b', 13: 'a', 14: 'b', 15: 'e', 16: 'b', 17: 'c', 18: 'b', 19: 'd', 20: 'c',
+    21: 'b', 22: 'b', 23: 'a', 24: 'a', 25: 'b', 26: 'b', 27: 'a', 28: 'd', 29: 'e', 30: 'e',
+    31: 'b', 32: 'c', 33: 'c', 34: 'b', 35: 'b', 36: 'd', 37: 'e', 38: 'd', 39: 'd', 40: 'b',
+    41: 'd', 42: 'b', 43: 'b', 44: 'b', 45: 'b', 46: 'd', 47: 'c', 48: 'd', 49: 'b', 50: 'd',
+    51: 'b', 52: 'd', 53: 'd', 54: 'a', 55: 'd', 56: 'b', 57: 'b', 58: 'b', 59: 'b', 60: 'b',
+    61: 'd', 62: 'd', 63: 'a', 64: 'b', 65: 'b', 66: 'b', 67: 'b', 68: 'd', 69: 'b', 70: 'b',
+    71: 'b', 72: 'd'
+  };
+  
+  const responses = {};
+  
+  // Parcourir chaque section et assigner les réponses de Julien
+  sections.forEach(section => {
+    section.questions.forEach(question => {
+      responses[`${section.id}-${question.id}`] = julienAnswers[question.id];
+    });
+  });
+  
+  return responses;
+}
+
 // Génération des réponses automatiques avec les vrais IDs de questions
 function generateResponses(bias = 'balanced') {
   const responseOptions = ['a', 'b', 'c', 'd', 'e'];
@@ -177,6 +203,97 @@ function generateResponses(bias = 'balanced') {
   });
   
   return responses;
+}
+
+// Fonction pour soumettre le questionnaire avec les réponses de Julien
+async function submitJulienQuestionnaire() {
+  try {
+    console.log('🚀 Début de la soumission du questionnaire de Julien...');
+    console.log(`📍 URL cible: ${BASE_URL}`);
+    console.log('🎯 Utilisation des réponses exactes de Julien');
+    
+    // Générer les réponses de Julien
+    const responses = generateJulienResponses();
+    console.log(`✅ Chargement des ${Object.keys(responses).length} réponses de Julien`);
+    
+    // Afficher un échantillon des réponses
+    console.log('📋 Échantillon des réponses de Julien:');
+    const sampleKeys = Object.keys(responses).slice(0, 5);
+    sampleKeys.forEach(key => {
+      const questionId = parseInt(key.split('-')[1]);
+      const questionText = sections
+        .flatMap(s => s.questions)
+        .find(q => q.id === questionId)?.text || 'Question introuvable';
+      console.log(`   Q${questionId}: ${responses[key]} - "${questionText.substring(0, 50)}..."`);
+    });
+    console.log('   ...');
+    
+    // Informations utilisateur pour Julien
+    const julienUserInfo = {
+      firstName: 'Julien',
+      lastName: 'Example',
+      age: '35',
+      profession: 'Manager',
+      email: 'julien@example.com'
+    };
+    
+    // Préparer les données pour l'API
+    const requestData = {
+      userInfo: julienUserInfo,
+      responses: responses
+    };
+    
+    console.log('👤 Informations de Julien:');
+    console.log(`   Nom: ${julienUserInfo.firstName} ${julienUserInfo.lastName}`);
+    console.log(`   Âge: ${julienUserInfo.age} ans`);
+    console.log(`   Profession: ${julienUserInfo.profession}`);
+    console.log(`   Email: ${julienUserInfo.email}`);
+    
+    console.log('📤 Envoi de la requête...');
+    
+    // Soumettre à l'API
+    const response = await fetch(`${BASE_URL}/api/submit-questionnaire`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'auto-submit-script/1.0'
+      },
+      body: JSON.stringify(requestData)
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      console.log('✅ SUCCESS! Questionnaire de Julien soumis avec succès');
+      console.log(`📧 ${result.message || 'Réponses envoyées par email'}`);
+      
+      // Statistiques des réponses de Julien
+      const responseStats = {};
+      Object.values(responses).forEach(response => {
+        responseStats[response] = (responseStats[response] || 0) + 1;
+      });
+      
+      console.log('📊 Statistiques des réponses de Julien:');
+      console.log(`   A (Tout à fait d'accord): ${responseStats.a || 0} (${Math.round((responseStats.a || 0) / 72 * 100)}%)`);
+      console.log(`   B (D'accord): ${responseStats.b || 0} (${Math.round((responseStats.b || 0) / 72 * 100)}%)`);
+      console.log(`   C (Neutre): ${responseStats.c || 0} (${Math.round((responseStats.c || 0) / 72 * 100)}%)`);
+      console.log(`   D (Pas d'accord): ${responseStats.d || 0} (${Math.round((responseStats.d || 0) / 72 * 100)}%)`);
+      console.log(`   E (Pas d'accord du tout): ${responseStats.e || 0} (${Math.round((responseStats.e || 0) / 72 * 100)}%)`);
+      
+    } else {
+      console.log('❌ ERREUR lors de la soumission:');
+      console.log(`   Status: ${response.status}`);
+      console.log(`   Message: ${result.error || 'Erreur inconnue'}`);
+      if (result.details) {
+        console.log(`   Détails: ${result.details}`);
+      }
+    }
+    
+  } catch (error) {
+    console.log('💥 ERREUR CRITIQUE:');
+    console.log(`   ${error.message}`);
+    console.log('   Vérifiez votre connexion internet et que l\'URL est accessible');
+  }
 }
 
 // Fonction principale pour soumettre le questionnaire
@@ -348,10 +465,11 @@ Usage:
 Modes disponibles:
   auto          Mode autodiagnostic (défaut)
   evaluation    Mode évaluation d'un collaborateur
-  both          Les deux modes
+  julien        Mode avec les réponses exactes de Julien
+  both          Les deux modes (auto + evaluation)
   help          Affiche cette aide
 
-Biais de réponses disponibles:
+Biais de réponses disponibles (pour auto et evaluation):
   balanced      Distribution équilibrée (défaut)
   positive      Favorise les réponses positives (a, b)
   negative      Favorise les réponses négatives (d, e)
@@ -361,6 +479,7 @@ Exemples:
   node auto-submit-questionnaire.js                    # Mode autodiagnostic équilibré
   node auto-submit-questionnaire.js auto positive      # Mode autodiagnostic avec biais positif
   node auto-submit-questionnaire.js evaluation         # Mode évaluation équilibré
+  node auto-submit-questionnaire.js julien             # Soumission avec les réponses de Julien
   node auto-submit-questionnaire.js both negative      # Les deux modes avec biais négatif
   node auto-submit-questionnaire.js auto neutral       # Mode autodiagnostic avec biais neutre
 
@@ -369,6 +488,7 @@ Exemples:
   - Chaque section contient 9 questions
   - Les réponses vont de A (tout à fait d'accord) à E (pas d'accord du tout)
   - L'API génère automatiquement un rapport Excel et Word
+  - Le mode "julien" utilise un jeu de réponses prédéfinies spécifiques
 `);
 }
 
@@ -405,6 +525,10 @@ async function main() {
       await submitEvaluation(bias);
       break;
       
+    case 'julien':
+      await submitJulienQuestionnaire();
+      break;
+      
     case 'both':
     case 'all':
       console.log('🔄 Mode combiné: autodiagnostic + évaluation\n');
@@ -436,4 +560,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-module.exports = { submitQuestionnaire, submitEvaluation, generateResponses }; 
+module.exports = { submitQuestionnaire, submitEvaluation, submitJulienQuestionnaire, generateResponses, generateJulienResponses }; 
