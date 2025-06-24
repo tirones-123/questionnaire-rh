@@ -610,18 +610,9 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - Paragraphes de 120-180 mots
+   - Paragraphes de 90-150 mots
    - Connecteurs naturels entre les phrases
-   - Éviter les phrases saccadées qui cassent le rythme
-
-EXEMPLES À SUIVRE :
-✅ "${person.firstName} agit avec méthode dans l'organisation de son travail. Il privilégie une approche structurée qui favorise l'efficacité collective."
-✅ "${person.firstName} développe ses initiatives de manière réfléchie. Il sait identifier les moments opportuns pour proposer des solutions."
-
-EXEMPLES INTERDITS :
-❌ "${person.firstName} a choisi de rester dans sa zone de confort." (trop direct)
-❌ "${person.firstName} manifeste une propension remarquable." (vocabulaire complexe)
-❌ "Les réponses témoignent d'une aptitude certaine." (référence au questionnaire)`;
+   - Éviter les phrases saccadées qui cassent le rythme`;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
