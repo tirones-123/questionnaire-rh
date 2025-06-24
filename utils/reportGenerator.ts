@@ -657,12 +657,49 @@ STRUCTURE À PRODUIRE :
 
 IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"`;
 
+    // const part2Exigences = `IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"
+
+// CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
+
+// 1. PROSCRIRE TOTALEMENT :
+//    - "pourrait" → utiliser : "serait en mesure de", "a le potentiel pour", "dispose des ressources pour"
+//    - "il convient de" → "il s'agit de", "l'enjeu consiste à", "la priorité réside dans"
+//    - "afin de" → "pour", "dans l'optique de", "en vue de", "avec l'objectif de"
+
+// 2. POUR LA PARTIE 2 (Profil d'ensemble) :
+//    - Synthèse élégante sans redite de la partie 1
+//    - Mise en perspective des interactions entre critères
+//    - Identification des dynamiques transversales
+
+// 3. POUR LA PARTIE 3 (Points de vigilance) :
+//    - Titres percutants et spécifiques (pas de généralités)
+//    - Formulations nuancées : "Une certaine tendance à...", "Un risque mesuré de..."
+//    - Contextualisation des impacts potentiels
+
+// 4. POUR LA PARTIE 4 (Recommandations) :
+//    - Actions concrètes et ambitieuses
+//    - Verbes d'action directs : engager, déployer, expérimenter, instituer
+//    - Horizons temporels variés : court terme/moyen terme
+//    - Indicateurs tangibles de progrès
+
+// 5. DIVERSITÉ LEXICALE OBLIGATOIRE :
+//    - Maximum 3 occurrences du même verbe sur l'ensemble des parties 2-5
+//    - Synonymes systématiques pour les mots-clés
+
+// 6. ÉLÉGANCE ET CONCISION :
+//    - Éviter les phrases de plus de 25 mots sauf exception justifiée
+//    - Une recommandation = une idée forte, pas trois reformulations
+//    - Supprimer tous les mots superflus : "véritablement", "réellement", "particulièrement"
+//    - Préférer la voix active : "Le manager pilote" plutôt que "Le pilotage est assuré par le manager"
+//    - EXEMPLE à suivre : "Instituer des revues mensuelles de 30 minutes pour calibrer les décisions urgentes" 
+//    - EXEMPLE à éviter : "Il conviendrait de mettre en place de manière régulière des sessions de revue qui permettraient d'améliorer progressivement la capacité décisionnelle"`;
+
     const completion2 = await openai.chat.completions.create({
       model: "o3-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "assistant", name: "retrieval", content: retrievalContext },
-        { role: "user", content: `${userPrompt}\n\n${part2Prompt}\n\n${part2Exigences}` }
+        { role: "user", content: `${userPrompt}\n\n${part2Prompt}` }
       ],
       reasoning_effort: "medium",
       max_completion_tokens: 5000,
