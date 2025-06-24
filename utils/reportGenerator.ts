@@ -484,17 +484,17 @@ FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 AMBITION
 Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
 Score : X,X – [Interprétation]
-[Analyse qualitative – 90 à 150 mots]
+[Analyse qualitative – 80 à 130 mots]
 
 INITIATIVE
 Besoin de prendre des initiatives et d'impulser des projets
 Score : X,X – [Interprétation]
-[Analyse qualitative – 90 à 150 mots]
+[Analyse qualitative – 80 à 130 mots]
 
 RÉSILIENCE
 Persévérance face aux tensions psychologiques et physiologiques
 Score : X,X – [Interprétation]
-[Analyse qualitative – 90 à 150 mots]
+[Analyse qualitative – 80 à 130 mots]
 
 FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 [… répéter pour les 12 critères dans l'ordre et la présentation du modèle …]
@@ -518,7 +518,7 @@ Règles de mise en forme
 • FAMILLE : capitales + guillemets français "…".
 • Nom du critère en MAJUSCULES simples, sans gras.
 • Score : "Score : 3,6 – Dimension solide" (virgule décimale).
-• Analyses : 90 à 150 mots, style fluide, tournures variées ("On observe…", "Il arrive que…").
+• Analyses : 80 à 130 mots, style fluide, tournures variées ("On observe…", "Il arrive que…").
 • Aucune mention d'item, score 4/1, valence ou codage.
 • Longueur totale visée : 1 600 – 2 300 mots.
 
@@ -610,7 +610,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - Paragraphes de 90-150 mots
+   - Paragraphes de 80-130 mots
    - Connecteurs naturels entre les phrases
    - Éviter les phrases saccadées qui cassent le rythme`;
 
