@@ -610,8 +610,6 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Éviter les formulations trop directes ou critiques
 
 5. ÉVITER LES RÉPÉTITIONS :
-   - Une seule idée par paragraphe, ne pas la reformuler
-   - Si une qualité est déjà décrite, passer à un autre aspect
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
