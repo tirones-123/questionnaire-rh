@@ -647,7 +647,7 @@ STRUCTURE À PRODUIRE :
 [Résumé transversal de 200-300 mots qui synthétise les forces et axes de progression identifiés dans la partie 1]
 
 3. Points de vigilance
-[4 à 8 points, bullet liste]
+[6 à 8 points, bullet liste]
 
 4. Recommandations de développement
 [2-3 recommandations par point de vigilance, relier explicitement aux critères]
@@ -672,7 +672,7 @@ PARTIE 2 - Analyse du profil d'ensemble :
 • 3-4 paragraphes fluides de 200-300 mots au total
 
 PARTIE 3 - Points de vigilance :
-• 4-6 points maximum avec bullet points (•)
+• 6-8 points maximum avec bullet points (•)
 • Formulations courtes et percutantes
 • Décrire les risques concrets, pas de généralités
 • Exemples : "Faible projection dans l'avenir professionnel : risque d'errance..."
