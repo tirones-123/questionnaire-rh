@@ -631,7 +631,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Vérifier systématiquement les répétitions avant validation`;
 
     const completion1 = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "o3-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "assistant", name: "retrieval", content: retrievalContext },
