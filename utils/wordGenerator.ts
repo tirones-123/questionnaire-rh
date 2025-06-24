@@ -276,27 +276,35 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
         })
       );
       
-      // Traitement spécial pour la section 2 : ajouter le contenu directement
-      if (newSection === 2 && i + 1 < lines.length) {
-        const nextLine = lines[i + 1].trim();
-        if (nextLine && !nextLine.startsWith('3.') && nextLine.length > 100) {
-          console.log(`[SECTION 2 CONTENT] Adding section 2 content directly: "${nextLine.substring(0, 80)}..."`);
-          children.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: nextLine,
-                  font: 'Avenir Book',
-                  size: 22, // 11pt
-                  color: '000000',
-                }),
-              ],
-              alignment: AlignmentType.JUSTIFIED,
-              spacing: { before: 120, after: 120 },
-            })
-          );
-          // Marquer cette ligne comme déjà traitée
-          i++;
+      // Traitement spécial pour la section 2 : chercher le contenu en sautant les lignes vides
+      if (newSection === 2) {
+        // Chercher le contenu de la section 2 en sautant les lignes vides
+        let contentIndex = i + 1;
+        while (contentIndex < lines.length && !lines[contentIndex].trim()) {
+          contentIndex++;
+        }
+        
+        if (contentIndex < lines.length) {
+          const contentLine = lines[contentIndex].trim();
+          if (contentLine && !contentLine.startsWith('3.') && contentLine.length > 100) {
+            console.log(`[SECTION 2 CONTENT] Adding section 2 content at line ${contentIndex}: "${contentLine.substring(0, 80)}..."`);
+            children.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: contentLine,
+                    font: 'Avenir Book',
+                    size: 22, // 11pt
+                    color: '000000',
+                  }),
+                ],
+                alignment: AlignmentType.JUSTIFIED,
+                spacing: { before: 120, after: 120 },
+              })
+            );
+                         // Marquer cette ligne comme déjà traitée en mettant à jour l'index
+             i = contentIndex;
+          }
         }
       }
       
@@ -504,9 +512,9 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     // Paragraphe normal
     console.log(`Processing normal paragraph at line ${i}: "${line.substring(0, Math.min(80, line.length))}..."`);
     
-    // Forcer le traitement de la ligne de section 2 si elle n'a pas été traitée
-    if (i === 74 || (currentSection === 2 && line.length > 200 && !line.startsWith('3.'))) {
-      console.log(`[FORCE SECTION 2] Creating paragraph for line ${i}`);
+    // Traitement spécial pour le contenu de la section 2 s'il n'a pas été traité
+    if (currentSection === 2 && line.length > 100 && !line.startsWith('3.') && !line.startsWith('4.') && !line.startsWith('5.')) {
+      console.log(`[SECTION 2 CONTENT FALLBACK] Creating paragraph for section 2 content at line ${i}`);
     }
     
     children.push(
