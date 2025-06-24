@@ -586,37 +586,46 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
-    const part1Exigences = `CONSIGNES DE STYLE - ACCESSIBILITÉ ET CLARTÉ :
+    const part1Exigences = `CONSIGNES STRICTES DE STYLE - SIMPLICITÉ OBLIGATOIRE :
 
-1. LANGAGE ACCESSIBLE :
-   - Utiliser un vocabulaire professionnel mais compréhensible par tous
-   - Éviter le jargon littéraire ou trop sophistiqué
-   - Préférer les mots courants aux synonymes rares
-   - Exemples : "montre" plutôt que "arbore", "utilise" plutôt que "mobilise", "aide" plutôt que "concourt à"
+1. PHRASES COURTES OBLIGATOIRES :
+   - MAXIMUM 12-15 mots par phrase
+   - Éviter absolument les phrases de plus de 2 lignes
+   - Structure simple : sujet + verbe + complément
+   - Une seule idée par phrase
 
-2. PHRASES CLAIRES ET DIRECTES :
-   - Privilégier les phrases simples et directes
-   - Éviter les formulations trop complexes ou alambiquées
-   - Viser 15-20 mots par phrase en moyenne
-   - Limiter les subordonnées et les incises
+2. VOCABULAIRE SIMPLE ET DIRECT :
+   - Utiliser des mots du quotidien professionnel
+   - BANNIR : "manifeste", "témoigne", "révèle", "arbore", "concourt", "s'avère"
+   - PRÉFÉRER : "montre", "indique", "fait", "aide", "permet", "est"
+   - BANNIR : "nonobstant", "néanmoins", "vraisemblablement", "assurément"
+   - PRÉFÉRER : "mais", "cependant", "sans doute", "clairement"
 
-3. SYNTHÈSE ET CONCISION :
-   - Aller à l'essentiel sans sacrifier la précision de l'analyse
-   - Paragraphes de 100-140 mots (6-8 lignes)
-   - Éviter les répétitions et redondances
-   - Une idée principale par phrase
+3. INTERDICTIONS ABSOLUES :
+   - ⚠️ JAMAIS de référence aux réponses du questionnaire
+   - ⚠️ JAMAIS de mention de "scores", "items", "questions"
+   - ⚠️ JAMAIS de phrase comme "ses réponses montrent", "d'après ses réponses"
+   - ⚠️ JAMAIS de vocabulaire technique ou psychométrique
 
-4. MAINTENIR LA QUALITÉ D'ANALYSE :
-   - Conserver la profondeur et la pertinence des observations
-   - Garder les nuances importantes
-   - Rester précis dans l'évaluation des forces et faiblesses
-   - Ne pas simplifier le fond, seulement la forme
+4. PARAGRAPHES COURTS :
+   - Maximum 100-120 mots par paragraphe
+   - 5-6 lignes maximum
+   - Chaque phrase apporte une information nouvelle
 
-5. ÉQUILIBRE GÉNÉRAL :
-   - Style professionnel mais accessible
-   - Ton bienveillant et constructif
-   - Éviter d'être trop scolaire ou trop familier
-   - Viser la clarté avant l'élégance`;
+5. STYLE DIRECT ET ACCESSIBLE :
+   - Parler directement de la personne et de ses comportements
+   - Éviter les tournures complexes ou littéraires
+   - Privilégier l'action : "${person.firstName} fait" plutôt que "${person.firstName} fait preuve de"
+   - Ton naturel et professionnel
+
+EXEMPLES À SUIVRE :
+✅ "${person.firstName} agit avec méthode. Il organise son travail efficacement."
+✅ "${person.firstName} prend des initiatives. Il n'attend pas les instructions."
+
+EXEMPLES INTERDITS :
+❌ "${person.firstName} manifeste une propension à agir avec méticulosité dans l'organisation de ses activités."
+❌ "Les réponses témoignent d'une aptitude certaine à impulser des dynamiques."
+❌ "Il s'avère que ${person.firstName} révèle une capacité remarquable."`;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
@@ -722,7 +731,7 @@ CONSIGNES RÉDACTIONNELLES POUR LES PARTIES 2-5 :
 ${part1Content}
 
 ${part2Content}`;
-    
+
     console.log('Report generated successfully');
     
     // Nettoyer le contenu de tout formatage markdown indésirable
