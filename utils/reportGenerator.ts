@@ -637,8 +637,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
         { role: "assistant", name: "retrieval", content: retrievalContext },
         { role: "user", content: `${userPrompt}\n\n${part1Prompt}\n\n${part1Exigences}` }
       ],
-      temperature: 0.7,
-      top_p: 0.9,
+      reasoning_effort: "medium",
       max_completion_tokens: 10000,
     });
 
