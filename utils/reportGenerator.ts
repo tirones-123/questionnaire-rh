@@ -582,9 +582,8 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 +❌ EXEMPLE INTERDIT (contient une recommandation) :
 "Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
 
-- Varier le vocabulaire, éviter toute répétition
+- Varier le vocabulaire, éviter toute répétition mais rester simple
 - TON BIENVEILLANT OBLIGATOIRE
-- Éviter les formulations trop directes ou critiques
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
