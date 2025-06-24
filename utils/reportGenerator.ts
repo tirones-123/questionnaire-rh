@@ -586,49 +586,51 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
-    const part1Exigences = `EXIGENCES RÉDACTIONNELLES STRICTES POUR LA PARTIE 1 :
+    // const part1Exigences = `EXIGENCES RÉDACTIONNELLES STRICTES POUR LA PARTIE 1 :
 
-1. BANNIR ABSOLUMENT ces formulations trop utilisées :
-   - "pourrait" → remplacer par : "est susceptible de", "tend à", "se révèle capable de", "dispose du potentiel pour", "manifeste une aptitude à"
-   - "permet de" → "favorise", "autorise", "offre la possibilité de", "ouvre la voie à", "facilite"
-   - "montre" → "révèle", "témoigne de", "illustre", "met en lumière", "traduit"
-   - "semble" → "apparaît", "se présente comme", "laisse transparaître", "donne à voir"
-   - "capacité à" → "aptitude à", "faculté de", "talent pour", "disposition à", "compétence en matière de"
-   - ⚠️ "BIEN QUE" → MAXIMUM 2 occurrences dans toute la partie 1. Alternatives : "malgré", "nonobstant", "quoique", "cependant", "néanmoins", "toutefois"
+    // 1. BANNIR ABSOLUMENT ces formulations trop utilisées :
+    //    - "pourrait" → remplacer par : "est susceptible de", "tend à", "se révèle capable de", "dispose du potentiel pour", "manifeste une aptitude à"
+    //    - "permet de" → "favorise", "autorise", "offre la possibilité de", "ouvre la voie à", "facilite"
+    //    - "montre" → "révèle", "témoigne de", "illustre", "met en lumière", "traduit"
+    //    - "semble" → "apparaît", "se présente comme", "laisse transparaître", "donne à voir"
+    //    - "capacité à" → "aptitude à", "faculté de", "talent pour", "disposition à", "compétence en matière de"
+    //    - ⚠️ "BIEN QUE" → MAXIMUM 2 occurrences dans toute la partie 1. Alternatives : "malgré", "nonobstant", "quoique", "cependant", "néanmoins", "toutefois"
 
-2. IMPÉRATIF SIMPLICITÉ - FORMULATIONS DIRECTES :
-   - BANNIR les tournures alambiquées : "au sein de" → "dans", "procéder à" → "faire", "être en mesure de" → "pouvoir"
-   - ÉVITER les périphrases : "fait preuve d'une aptitude à" → "sait", "démontre une capacité à" → "parvient à"
-   - PRÉFÉRER les verbes simples : "utilise" plutôt que "met en œuvre", "agit" plutôt que "intervient"
-   - EXEMPLE CORRECT : "${person.firstName} agit avec méthode."
-   - EXEMPLE À ÉVITER : "${person.firstName} fait preuve d'une approche méthodologique dans la conduite de son action."
+    // 2. IMPÉRATIF SIMPLICITÉ - FORMULATIONS DIRECTES :
+    //    - BANNIR les tournures alambiquées : "au sein de" → "dans", "procéder à" → "faire", "être en mesure de" → "pouvoir"
+    //    - ÉVITER les périphrases : "fait preuve d'une aptitude à" → "sait", "démontre une capacité à" → "parvient à"
+    //    - PRÉFÉRER les verbes simples : "utilise" plutôt que "met en œuvre", "agit" plutôt que "intervient"
+    //    - EXEMPLE CORRECT : "${person.firstName} agit avec méthode."
+    //    - EXEMPLE À ÉVITER : "${person.firstName} fait preuve d'une approche méthodologique dans la conduite de son action."
 
-3. LONGUEUR DES PHRASES - RÈGLE STRICTE :
-   - MAXIMUM 2 lignes par phrase (exceptionnellement)
-   - IDÉAL : 1,5 ligne en moyenne (12-18 mots)
-   - ALTERNER phrases courtes (8-12 mots) et moyennes (15-20 mots)
-   - JAMAIS de phrases complexes avec multiples subordonnées
+    // 3. LONGUEUR DES PHRASES - RÈGLE STRICTE :
+    //    - MAXIMUM 2 lignes par phrase (exceptionnellement)
+    //    - IDÉAL : 1,5 ligne en moyenne (12-18 mots)
+    //    - ALTERNER phrases courtes (8-12 mots) et moyennes (15-20 mots)
+    //    - JAMAIS de phrases complexes avec multiples subordonnées
 
-4. LONGUEUR DES PARAGRAPHES - LIMITE STRICTE :
-   - MAXIMUM 8 lignes par paragraphe d'analyse (120-150 mots max au lieu de 180)
-   - PRIVILÉGIER 6-7 lignes (100-130 mots)
-   - Si le contenu dépasse, diviser en 2 paragraphes plus courts
+    // 4. LONGUEUR DES PARAGRAPHES - LIMITE STRICTE :
+    //    - MAXIMUM 8 lignes par paragraphe d'analyse (120-150 mots max au lieu de 180)
+    //    - PRIVILÉGIER 6-7 lignes (100-130 mots)
+    //    - Si le contenu dépasse, diviser en 2 paragraphes plus courts
 
-5. STRUCTURE DE PHRASES SIMPLIFIÉE :
-   - PRIVILÉGIER sujet-verbe-complément
-   - LIMITER les incises et les parenthèses
-   - ÉVITER les inversions complexes
-   - UTILISER des connecteurs simples : "ainsi", "donc", "alors", "puis", "aussi"
+    // 5. STRUCTURE DE PHRASES SIMPLIFIÉE :
+    //    - PRIVILÉGIER sujet-verbe-complément
+    //    - LIMITER les incises et les parenthèses
+    //    - ÉVITER les inversions complexes
+    //    - UTILISER des connecteurs simples : "ainsi", "donc", "alors", "puis", "aussi"
 
-6. ENRICHIR LE VOCABULAIRE avec modération :
-   - Des verbes d'action précis mais simples : agit, pilote, structure, mobilise, développe
-   - ÉVITER l'accumulation d'adjectifs : maximum 1-2 qualificatifs par phrase
-   - PROSCRIRE les redondances
+    // 6. ENRICHIR LE VOCABULAIRE avec modération :
+    //    - Des verbes d'action précis mais simples : agit, pilote, structure, mobilise, développe
+    //    - ÉVITER l'accumulation d'adjectifs : maximum 1-2 qualificatifs par phrase
+    //    - PROSCRIRE les redondances
 
-7. RÈGLE D'OR RENFORCÉE : 
-   - Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe
-   - "Bien que" maximum 2 fois dans toute la partie 1
-   - Vérifier systématiquement les répétitions avant validation`;
+    // 7. RÈGLE D'OR RENFORCÉE : 
+    //    - Aucun mot (sauf prénom et mots-outils) ne doit apparaître plus de 2 fois dans un même paragraphe
+    //    - "Bien que" maximum 2 fois dans toute la partie 1
+    //    - Vérifier systématiquement les répétitions avant validation`;
+
+    const part1Exigences = ``;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
