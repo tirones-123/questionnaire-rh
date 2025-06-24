@@ -583,6 +583,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 "Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
 
 - Varier le vocabulaire, éviter toute répétition
+- TON BIENVEILLANT OBLIGATOIRE :Éviter les formulations trop directes ou critiques
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
