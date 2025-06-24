@@ -121,5 +121,3 @@ Dégager 4-8 points de vigilance.
 Formuler des recommandations concrètes & rattachées.
 
 Conclure en 3 phrases clés.
-
-Utilise ce canevas à chaque fois ; tout écart de présentation ou de style sera considéré comme une non-conformité.
