@@ -586,20 +586,19 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 - Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
-    const part1Exigences = `CONSIGNES STRICTES DE STYLE - SIMPLICITÉ OBLIGATOIRE :
+    const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
 
-1. PHRASES COURTES OBLIGATOIRES :
-   - MAXIMUM 12-15 mots par phrase
-   - Éviter absolument les phrases de plus de 2 lignes
-   - Structure simple : sujet + verbe + complément
-   - Une seule idée par phrase
+1. PHRASES ÉQUILIBRÉES :
+   - 16-22 mots par phrase en moyenne
+   - Éviter les phrases de plus de 3 lignes
+   - Alterner phrases courtes et moyennes pour la fluidité
+   - Structure claire mais pas sèche
 
-2. VOCABULAIRE SIMPLE ET DIRECT :
-   - Utiliser des mots du quotidien professionnel
-   - BANNIR : "manifeste", "témoigne", "révèle", "arbore", "concourt", "s'avère"
-   - PRÉFÉRER : "montre", "indique", "fait", "aide", "permet", "est"
-   - BANNIR : "nonobstant", "néanmoins", "vraisemblablement", "assurément"
-   - PRÉFÉRER : "mais", "cependant", "sans doute", "clairement"
+2. VOCABULAIRE ACCESSIBLE :
+   - Mots professionnels mais courants
+   - BANNIR : "manifeste", "témoigne", "arbore", "concourt", "s'avère", "nonobstant"
+   - PRÉFÉRER : "montre", "indique", "fait", "aide", "permet", "développe", "cependant"
+   - Éviter le jargon technique tout en restant précis
 
 3. INTERDICTIONS ABSOLUES :
    - ⚠️ JAMAIS de référence aux réponses du questionnaire
@@ -607,25 +606,27 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - ⚠️ JAMAIS de phrase comme "ses réponses montrent", "d'après ses réponses"
    - ⚠️ JAMAIS de vocabulaire technique ou psychométrique
 
-4. PARAGRAPHES COURTS :
-   - Maximum 100-120 mots par paragraphe
-   - 5-6 lignes maximum
-   - Chaque phrase apporte une information nouvelle
+4. TON BIENVEILLANT OBLIGATOIRE :
+   - Éviter les formulations trop directes ou critiques
 
-5. STYLE DIRECT ET ACCESSIBLE :
-   - Parler directement de la personne et de ses comportements
-   - Éviter les tournures complexes ou littéraires
-   - Privilégier l'action : "${person.firstName} fait" plutôt que "${person.firstName} fait preuve de"
-   - Ton naturel et professionnel
+5. ÉVITER LES RÉPÉTITIONS :
+   - Une seule idée par paragraphe, ne pas la reformuler
+   - Si une qualité est déjà décrite, passer à un autre aspect
+   - Chaque phrase apporte une information nouvelle et différente
+
+6. STRUCTURE FLUIDE :
+   - Paragraphes de 110-130 mots (6-7 lignes)
+   - Connecteurs naturels entre les phrases
+   - Éviter les phrases saccadées qui cassent le rythme
 
 EXEMPLES À SUIVRE :
-✅ "${person.firstName} agit avec méthode. Il organise son travail efficacement."
-✅ "${person.firstName} prend des initiatives. Il n'attend pas les instructions."
+✅ "${person.firstName} agit avec méthode dans l'organisation de son travail. Il privilégie une approche structurée qui favorise l'efficacité collective."
+✅ "${person.firstName} développe ses initiatives de manière réfléchie. Il sait identifier les moments opportuns pour proposer des solutions."
 
 EXEMPLES INTERDITS :
-❌ "${person.firstName} manifeste une propension à agir avec méticulosité dans l'organisation de ses activités."
-❌ "Les réponses témoignent d'une aptitude certaine à impulser des dynamiques."
-❌ "Il s'avère que ${person.firstName} révèle une capacité remarquable."`;
+❌ "${person.firstName} a choisi de rester dans sa zone de confort." (trop direct)
+❌ "${person.firstName} manifeste une propension remarquable." (vocabulaire complexe)
+❌ "Les réponses témoignent d'une aptitude certaine." (référence au questionnaire)`;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
