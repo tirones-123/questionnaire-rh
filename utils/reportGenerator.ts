@@ -484,17 +484,17 @@ FAMILLE « VOULOIR » (MOTEUR PERSONNEL)
 AMBITION
 Volonté de progresser dans sa carrière en construisant un parcours porteur de sens
 Score : X,X – [Interprétation]
-[Analyse qualitative – 80 à 130 mots]
+[Analyse qualitative]
 
 INITIATIVE
 Besoin de prendre des initiatives et d'impulser des projets
 Score : X,X – [Interprétation]
-[Analyse qualitative – 80 à 130 mots]
+[Analyse qualitative]
 
 RÉSILIENCE
 Persévérance face aux tensions psychologiques et physiologiques
 Score : X,X – [Interprétation]
-[Analyse qualitative – 80 à 130 mots]
+[Analyse qualitative]
 
 FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 [… répéter pour les 12 critères dans l'ordre et la présentation du modèle …]
@@ -518,7 +518,7 @@ Règles de mise en forme
 • FAMILLE : capitales + guillemets français "…".
 • Nom du critère en MAJUSCULES simples, sans gras.
 • Score : "Score : 3,6 – Dimension solide" (virgule décimale).
-• Analyses : 80 à 130 mots, style fluide, tournures variées ("On observe…", "Il arrive que…").
+• Analyses : style fluide, tournures variées ("On observe…", "Il arrive que…").
 • Aucune mention d'item, score 4/1, valence ou codage.
 • Longueur totale visée : 1 600 – 2 300 mots.
 
@@ -563,7 +563,7 @@ Tu dois produire une analyse riche, nuancée et élégante pour chaque critère.
 RAPPELS CRITIQUES :
 - Commencer par le titre exact : "1. Analyse critère par critère"
 - Suivre l'ordre exact des 4 familles et 12 critères
-- Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse 120-180 mots
+- Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse.
 - ⚠️ INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
 - ⚠️⚠️⚠️ ATTENTION CRITIQUE - ZÉRO RECOMMANDATION ⚠️⚠️⚠️
 INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
@@ -575,16 +575,8 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
 - "il conviendrait de..."
 - AUCUNE phrase commençant par "Pour", "Afin de", "Dans l'optique de"
 - AUCUNE suggestion d'amélioration, même subtile
-
-✅ EXEMPLE CORRECT (descriptif pur) :
-"Marie manifeste une aptitude modérée à prendre des initiatives. Elle agit de manière autonome dans certaines circonstances, mais son dynamisme dépend du contexte. En présence de situations stimulantes, elle se mobilise. Ce profil réactif témoigne d'une capacité à intervenir quand les circonstances l'y incitent."
-
-+❌ EXEMPLE INTERDIT (contient une recommandation) :
-"Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
-
 - Varier le vocabulaire, éviter toute répétition
-- Style conseil stratégique premium
-- Utiliser le prénom ${person.firstName} régulièrement`;
+- Style conseil stratégique premium`;
 
     const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
 
@@ -610,7 +602,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - Paragraphes de 80-130 mots
+   - 5-6 phrases maximum par paragraphe
    - Connecteurs naturels entre les phrases
    - Éviter les phrases saccadées qui cassent le rythme`;
 
