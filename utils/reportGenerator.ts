@@ -592,12 +592,9 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - 16-22 mots par phrase en moyenne
    - Éviter les phrases de plus de 3 lignes
    - Alterner phrases courtes et moyennes pour la fluidité
-   - Structure claire mais pas sèche
 
 2. VOCABULAIRE ACCESSIBLE :
    - Mots professionnels mais courants
-   - BANNIR : "manifeste", "témoigne", "arbore", "concourt", "s'avère", "nonobstant"
-   - PRÉFÉRER : "montre", "indique", "fait", "aide", "permet", "développe", "cependant"
    - Éviter le jargon technique tout en restant précis
 
 3. INTERDICTIONS ABSOLUES :
@@ -613,7 +610,7 @@ INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - Paragraphes de 110-130 mots (6-7 lignes)
+   - Paragraphes de 120-180 mots
    - Connecteurs naturels entre les phrases
    - Éviter les phrases saccadées qui cassent le rythme
 
