@@ -574,8 +574,6 @@ RAPPELS CRITIQUES :
 +❌ EXEMPLE INTERDIT (contient une recommandation) :
 "Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
 
-- Varier le vocabulaire, éviter toute répétition mais rester simple
-- Style conseil stratégique premium
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
     const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
