@@ -72,31 +72,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
-    // Debug pour la section 2
-    if (i === 74 || (currentSection === 2 && line.length > 50)) {
-      console.log(`[DEBUG LINE ${i}] line="${line}" length=${line.length} currentSection=${currentSection}`);
-    }
+
     
-    // Log détaillé pour les lignes 73 à 77
-    if (i >= 73 && i <= 77) {
-      console.log(`[DEBUG LINES 73-77] Line ${i}: "${line}" (length=${line.length})`);
-    }
-    
-    // Trace spécifique pour la ligne 74
-    if (i === 74) {
-      console.log(`[TRACE LINE 74] Starting processing of line 74`);
-      console.log(`[TRACE LINE 74] Line content: "${line}"`);
-      console.log(`[TRACE LINE 74] Line starts with "Max": ${line.startsWith("Max")}`);
-      console.log(`[TRACE LINE 74] Is uppercase: ${line === line.toUpperCase()}`);
-      console.log(`[TRACE LINE 74] Starts with bullet: ${line.startsWith('• ')}`);
-      console.log(`[TRACE LINE 74] currentSection=${currentSection}, skipNextLine=${skipNextLine}`);
-    }
-    
-    // Ignorer les délimiteurs de blocs de code Markdown
-    if (line === "```" || line.startsWith("```")) {
-      if (currentSection === 2) console.log(`[DEBUG S2] Skipping markdown delimiter at line ${i}`);
-      continue;
-    }
+          // Ignorer les délimiteurs de blocs de code Markdown
+      if (line === "```" || line.startsWith("```")) {
+        continue;
+      }
     
     // Log spécifique pour AMBITION
     if (line === 'AMBITION' || line.includes('AMBITION')) {
@@ -108,16 +89,11 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     
     // Gestion des lignes vides
     if (!line) {
-      // Debug : log les lignes vides en section 2
-      if (currentSection === 2) {
-        console.log(`[DEBUG SECTION 2] Empty line at ${i}`);
-      }
       continue;
     }
     
     if (skipNextLine) {
       console.log(`[DEBUG] Skipping line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
-      if (currentSection === 2) console.log(`[DEBUG S2] SkipNextLine triggered at line ${i}`);
       skipNextLine = false;
       continue;
     }
@@ -306,15 +282,12 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Nom du critère en majuscules
-    if (line === line.toUpperCase() && line.length > 3 && 
+    // Nom du critère en majuscules - SEULEMENT dans la section 1
+    if (inSection1 && line === line.toUpperCase() && line.length > 3 && 
         !line.includes('RAPPORT') && !line.includes('FAMILLE') && 
         !line.startsWith('Score :') && !line.match(/^[1-5]\./)) {
       
-      // Debug pour voir si la ligne de section 2 est détectée comme critère
-      if (currentSection === 2) {
-        console.log(`[DEBUG SECTION 2] Line detected as uppercase criterion at ${i}: "${line}"`);
-      }
+
       
       console.log(`Found criterion: ${line}`);
       
@@ -499,10 +472,7 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       })
     );
     
-    // Debug spécifique pour la section 2
-    if (currentSection === 2 && !line.startsWith('3.')) {
-      console.log(`[DEBUG SECTION 2] About to create paragraph for line ${i}, length=${line.length}`);
-    }
+
     
     lastWasCriterion = false;
   }
