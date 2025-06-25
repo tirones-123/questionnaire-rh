@@ -553,51 +553,40 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
     
     const part1Prompt = `Génère UNIQUEMENT la partie 1 (Analyse critère par critère) du rapport.
 
-Tu dois produire une analyse riche, nuancée et élégante pour chaque critère.
+**Objectif :** Produire une analyse **simple, claire et directe** pour chaque critère.
 
-RAPPELS CRITIQUES :
-- Commencer par le titre exact : "1. Analyse critère par critère"
-- Suivre l'ordre exact des 4 familles et 12 critères
-- Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse.
-- INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
-- AUCUNE suggestion d'amélioration, même subtile
-- Utilse des termes simples et courants, sans jamais utiliser de jargon technique ou psychométrique
+**Rappels :**
+*   Commence par le titre : "1. Analyse critère par critère"
+*   Suis l'ordre des 12 critères.
+*   Pour chaque critère : nom, définition, score, puis analyse de 100-120 mots.
+*   **INTERDIT :** Aucune recommandation.
+*   **INTERDIT :** Aucun jargon.
+*   Utilise le prénom ${person.firstName}.
+`;
 
-✅ EXEMPLE CORRECT (descriptif pur) :
-"Malgré son jeune âge, Maxime ne semble pas encore porté par une ambition professionnelle
-structurée. Son rapport à la réussite paraît réservé, voire distant, comme si la projection dans
-l’avenir lui était encore étrangère ou peu stimulante. Il semble préférer un cadre stable et
-protecteur, sans chercher activement à en sortir pour conquérir de nouvelles responsabilités.
-Cette posture peut refléter soit une priorité accordée à d'autres sphères de vie, soit une
-difficulté à relier sa trajectoire personnelle à un projet professionnel motivant. On observe peu
-de signes d’engagement volontaire dans une dynamique d’évolution ou de prise de
-responsabilité. Le sens qu’il attribue à sa trajectoire semble en cours de construction."
+    const part1Exigences = `INSTRUCTIONS STRICTES : SIMPLICITÉ AVANT TOUT.
 
-- Utiliser le prénom ${person.firstName} régulièrement`;
+1.  **Structure de Phrase OBLIGATOIRE : Sujet + Verbe + Complément.**
+    *   Maximum 15 mots par phrase.
+    *   Pas de subordonnées complexes, pas d'inversions.
+    *   Une seule idée par phrase.
 
-    const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
+2.  **Vocabulaire OBLIGATOIREMENT Simple.**
+    *   **MOTS INTERDITS :** "manifeste", "témoigne", "révèle", "s'avère", "propension", "aptitude", "semble", "paraît", "nonobstant", "néanmoins", "cependant".
+    *   **MOTS PRÉFÉRÉS :** "montre", "est", "fait", "a", "sait", "peut", "mais", "donc".
+    *   Écrire comme si vous parliez à quelqu'un directement.
 
-1. PHRASES ÉQUILIBRÉES :
-   - Éviter les phrases de plus de 3 lignes
+3.  **Exemples Concrets.**
 
-2. VOCABULAIRE ACCESSIBLE :
-   - Mots professionnels mais courants
-   - Vocabulaire simple et courant
-   - Éviter le jargon technique tout en restant précis
+    *   **STYLE CORRECT (Simple et Direct) :**
+        "Julien est à l'écoute des autres. Sa communication est fluide. Il crée facilement du lien. Il sait co-opérer en équipe. Cependant, son ambition est peu marquée. Il ne prend pas beaucoup d'initiatives."
 
-3. INTERDICTIONS ABSOLUES :
-   - JAMAIS de référence aux réponses du questionnaire
-   - JAMAIS de mention de "scores", "items", "questions"
-   - JAMAIS de phrase comme "ses réponses montrent", "d'après ses réponses"
-   - JAMAIS de vocabulaire technique ou psychométrique
+    *   **STYLE INCORRECT (Trop Compliqué) :**
+        "Le profil de Julien révèle une appétence certaine pour le registre relationnel, où sa communication fluide et sa capacité à coopérer s'avèrent être des points d'ancrage solides. Néanmoins, on observe que ses motivations profondes, telle que l'ambition, paraissent peu structurées."
 
-4. TON BIENVEILLANT OBLIGATOIRE 
-
-5. ÉVITER LES RÉPÉTITIONS :
-   - Chaque phrase apporte une information nouvelle et différente
-
-6. STRUCTURE FLUIDE :
-   - 6-8 phrases par paragraphe`;
+4.  **Rappel : INTERDICTION ABSOLUE de faire des recommandations.**
+    *   L'analyse est 100% descriptive. Ne jamais suggérer ce que la personne "devrait faire" ou "pourrait améliorer".
+`;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
