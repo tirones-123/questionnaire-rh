@@ -562,7 +562,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
 *   **INTERDIT :** Aucune recommandation.
 *   **INTERDIT :** Aucun jargon.
 *   Utilise le prénom ${person.firstName}.
-*   Ne Fais pas références aux réponses du questionnaire ex: "ses réponses montrent"
+*   Ne Fais pas références dans le texte aux réponses du questionnaire ni au score ex: "ses réponses montrent", "son score de 4,6 montre"... Mais bien les prendre en compte dans l'analyse.
 `;
 
     const part1Exigences = `INSTRUCTIONS STRICTES : SIMPLICITÉ AVANT TOUT.
