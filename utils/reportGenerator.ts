@@ -648,8 +648,8 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
 *   **Objectif :** Proposer des actions concrètes et utiles.
 *   **Format OBLIGATOIRE :**
     *   Chaque recommandation est un bloc.
-    *   Titre : compétence à développer (Critère). Exemple : "Renforcer la projection dans l'avenir professionnel (Ambition)".
-    *   Texte : Deux phrases complètes et fluides. Chaque phrase commence par une action.
+    *   Titre en bullet point : compétence à développer (Critère). Exemple : "Renforcer la projection dans l'avenir professionnel (Ambition)".
+    *   Texte en tiret : Deux phrases complètes et fluides. Chaque phrase commence par une action.
 *   **Exemple de format à suivre :**
 
     Renforcer la projection dans l'avenir professionnel (Ambition)
