@@ -558,12 +558,11 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
 **Rappels :**
 *   Commence par le titre : "1. Analyse critère par critère"
 *   Suis l'ordre des 12 critères.
-*   Pour chaque critère : nom, définition, score, puis analyse de maximum 120 mots.
+*   Pour chaque critère : nom, définition, score, puis analyse de 100-120 mots.
 *   **INTERDIT :** Aucune recommandation.
 *   **INTERDIT :** Aucun jargon.
 *   Utilise le prénom ${person.firstName}.
 *   Ne Fais pas références dans le texte aux réponses du questionnaire ni au score ex: "ses réponses montrent", "son score de 4,6 montre"... Mais bien les prendre en compte dans l'analyse.
-*   Ne formule pas 2 fois la même idée dans le texte.
 `;
 
     const part1Exigences = `INSTRUCTIONS STRICTES : SIMPLICITÉ AVANT TOUT.
@@ -617,37 +616,61 @@ STRUCTURE À PRODUIRE :
 
 IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"`;
 
-         const part2Exigences = `IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse du profil d'ensemble"
+         const part2Exigences = `INSTRUCTIONS SIMPLES POUR LES PARTIES 2 à 5 :
 
-STYLE ET TON :
-• Style consultant premium, fluide et naturel
-• Éviter le jargon technique et les formulations scolaires
-• Langage accessible mais professionnel
-• Varier le vocabulaire (éviter les répétitions de "pourrait")
+**Style Général :**
+*   Ton professionnel, simple et bienveillant.
+*   Pas de jargon, pas de phrases trop compliquées.
 
-PARTIE 2 - Analyse du profil d'ensemble :
-• Synthèse transversale des interactions entre les 4 familles de critères
-• Identifier les équilibres, déséquilibres et tensions du profil
-• Mettre en perspective les forces et axes de progression
-• 3-4 paragraphes fluides de 200-300 mots au total
+---
 
-PARTIE 3 - Points de vigilance :
-• 4-6 points maximum avec bullet points (•)
-• Formulations courtes et percutantes
-• Décrire les risques concrets, pas de généralités
-• Exemples : "Faible projection dans l'avenir professionnel : risque d'errance..."
+**Partie 2 - Analyse du profil d'ensemble :**
+*   **Objectif :** Créer une synthèse qui explique le profil de la personne.
+*   **Contenu :**
+    *   Décrire comment les 4 familles de critères ("Vouloir", "Penser", "Agir", "Ensemble") interagissent.
+    *   Montrer si le profil est équilibré ou contrasté (ex: fort en relationnel mais faible en ambition).
+    *   Donner des exemples concrets des atouts et des risques au quotidien en entreprise.
+    *   Utiliser les "Points d'attention" du document "12 critères" pour guider l'analyse.
+    *   Terminer par un paragraphe de conclusion sur le potentiel global.
+*   **Format :** 3-4 paragraphes, 200-300 mots au total.
 
-PARTIE 4 - Recommandations :
-• Actions concrètes et réalisables
-• Relier explicitement aux critères concernés
-• Verbes d'action directs
-• Exemples : "Coaching de clarification de projet professionnel (Ambition, Initiative)"
+---
 
-PARTIE 5 - Conclusion synthétique :
-• 80-120 mots maximum
-• Synthèse des atouts principaux
-• Levier clé de développement
-• Perspective d'évolution`;
+**Partie 3 - Points de vigilance :**
+*   **Objectif :** Lister les risques principaux de manière claire.
+*   **Format :**
+    *   Utiliser des puces (•).
+    *   Écrire des phrases courtes et directes.
+    *   Exemple : "• Difficulté à maintenir son effort sur la durée : risque de ne pas finir les projets exigeants."
+
+---
+
+**Partie 4 - Recommandations de développement :**
+*   **Objectif :** Proposer des actions concrètes et utiles.
+*   **Format OBLIGATOIRE :**
+    *   Chaque recommandation est un bloc.
+    *   Titre : compétence à développer (Critère). Exemple : "Renforcer la projection dans l'avenir professionnel (Ambition)".
+    *   Texte : Deux phrases complètes et fluides. Chaque phrase commence par une action.
+*   **Exemple de format à suivre :**
+
+    Renforcer la projection dans l'avenir professionnel (Ambition)
+    Engager un travail de coaching pour clarifier ses aspirations profondes et construire un projet de carrière motivant.
+    Définir des objectifs professionnels à court et moyen terme pour donner une direction claire à ses actions.
+
+    Améliorer la structuration des projets (Organisation)
+    Adopter une méthode simple de gestion des priorités pour mieux organiser ses tâches quotidiennes.
+    Mettre en place des points de suivi réguliers pour s'assurer du respect des délais.
+
+---
+
+**Partie 5 - Conclusion synthétique :**
+*   **Objectif :** Résumer le profil et donner une perspective.
+*   **Format :**
+    *   Paragraphe 1 : Rappeler les points forts principaux.
+    *   Paragraphe 2 : Indiquer les axes de progrès les plus importants.
+    *   Paragraphe 3 : Suggérer des pistes d'amélioration et conclure sur le potentiel.
+*   **Lisibilité :** Ajouter des sauts de ligne entre chaque paragraphe.
+`;
 
     const completion2 = await openai.chat.completions.create({
       model: "o3-mini",
