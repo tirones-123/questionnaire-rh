@@ -639,7 +639,7 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
 *   **Format :**
     *   Utiliser des puces (•).
     *   Formuler chaque point comme un titre descriptif.
-    *   La plupart des points doivent se terminer par le critère concerné entre parenthèses `(Critère)`.
+    *   La plupart des points doivent se terminer par le critère concerné entre parenthèses (Critère).
     *   SI il y a un déséquilibre entre deux ou trois critères qui comporte un risque, il faut le signaler (ex: "Fort en décision et faible en pertinence").
 
 ---
