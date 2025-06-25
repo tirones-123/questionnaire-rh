@@ -90,18 +90,28 @@ export async function generateRadarChartBuffer(scores: { [key: string]: ScoreDet
       title: {
         display: true,
         text: 'Vision globale des compétences',
-        fontSize: 18
+        fontSize: 18,
+        fontColor: '#000000',
+        fontStyle: 'bold'
       },
       scale: {
         ticks: {
           min: 0,
           max: 5,
           stepSize: 1
+        },
+        pointLabels: {
+          fontColor: '#000000',
+          fontStyle: 'bold'
         }
       },
       legend: {
         display: true,
-        position: 'bottom'
+        position: 'bottom',
+        labels: {
+            fontColor: '#000000',
+            fontStyle: 'bold'
+        }
       },
       maintainAspectRatio: true
     }
@@ -132,7 +142,9 @@ export async function generateSortedBarChartBuffer(scores: { [key: string]: Scor
       title: {
         display: true,
         text: 'Forces et axes de progression',
-        fontSize: 18
+        fontSize: 18,
+        fontColor: '#000000',
+        fontStyle: 'bold'
       },
       legend: {
         display: false
@@ -142,6 +154,12 @@ export async function generateSortedBarChartBuffer(scores: { [key: string]: Scor
           ticks: {
             min: 0,
             max: 5
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            fontColor: '#000000',
+            fontStyle: 'bold'
           }
         }]
       }
@@ -193,7 +211,9 @@ export async function generateFamilyBarChartBuffer(scores: { [key: string]: Scor
       title: {
         display: true,
         text: 'Forces par famille de compétences',
-        fontSize: 18
+        fontSize: 18,
+        fontColor: '#000000',
+        fontStyle: 'bold'
       },
       legend: {
         display: false
@@ -203,6 +223,12 @@ export async function generateFamilyBarChartBuffer(scores: { [key: string]: Scor
           ticks: {
             min: 0,
             max: 5
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            fontColor: '#000000',
+            fontStyle: 'bold'
           }
         }]
       }

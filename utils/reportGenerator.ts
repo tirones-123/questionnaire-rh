@@ -603,10 +603,10 @@ Maintenant, génère les parties 2 à 5 du rapport en te basant sur l'analyse ci
 STRUCTURE À PRODUIRE :
 
 2. Analyse du profil d'ensemble
-[Résumé transversal de 200-300 mots qui synthétise les forces et axes de progression identifiés dans la partie 1]
+[Résumé transversal de 3-4 paragraphes, 200-300 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
 
 3. Points de vigilance
-[4 à 8 points, bullet liste]
+[bullet liste]
 
 4. Recommandations de développement
 [2-3 recommandations par point de vigilance, relier explicitement aux critères]
@@ -627,10 +627,9 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
 **Partie 2 - Analyse Approfondie du Profil :**
 *   **Objectif :** Aller au-delà de la description pour révéler la dynamique de fond du profil.
 *   **Contenu :**
-    *   **Analyse des Équilibres :** Mettre en lumière les équilibres ou déséquilibres MAJEURS entre les 4 familles de critères. Ne pas juste les lister, mais expliquer ce que cela signifie pour la personne.
+    *   **Analyse des Équilibres :** Mettre en lumière les équilibres ou déséquilibres.
     *   **Identifier la "Mécanique" du Profil :** Décrire comment la personne fonctionne.
     *   **Conséquences et Potentiel :** Expliquer les conséquences concrètes de cette dynamique dans une entreprise et le levier principal pour libérer ce potentiel.
-*   **Format :** 3-4 paragraphes fluides, 200-300 mots au total, qui racontent une histoire cohérente sur le profil.
 *   **Lisibilité :** Ajouter des sauts de ligne entre chaque paragraphe.
 
 ---
@@ -641,6 +640,7 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   Utiliser des puces (•).
     *   Formuler chaque point comme un titre descriptif.
     *   La plupart des points doivent se terminer par le critère concerné entre parenthèses (Critère).
+    *   Soit exaustif sur le nombre de points de vigilance.
     *   SI il y a un déséquilibre entre deux ou trois critères qui comporte un risque, il faut le signaler (ex: "Fort en décision et faible en pertinence").
 
 ---
@@ -651,16 +651,7 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   Chaque recommandation est un bloc.
     *   Titre en bullet point : compétence à développer (Critère). Exemple : "Renforcer la projection dans l'avenir professionnel (Ambition)".
     *   Texte en tiret : Deux phrases complètes et fluides. Chaque phrase commence par une action.
-*   **Exemple de format à suivre :**
-
-    Renforcer la projection dans l'avenir professionnel (Ambition)
-    Engager un travail de coaching pour clarifier ses aspirations profondes et construire un projet de carrière motivant.
-    Définir des objectifs professionnels à court et moyen terme pour donner une direction claire à ses actions.
-
-    Améliorer la structuration des projets (Organisation)
-    Adopter une méthode simple de gestion des priorités pour mieux organiser ses tâches quotidiennes.
-    Mettre en place des points de suivi réguliers pour s'assurer du respect des délais.
-
+    * 
 ---
 
 **Partie 5 - Conclusion synthétique :**
