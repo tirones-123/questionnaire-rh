@@ -101,6 +101,16 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     // Log pour debug
     if (line.length > 0) {
       console.log(`Processing line ${i}: "${line.substring(0, Math.min(50, line.length))}..."`);
+      
+      // Log spécial pour la ligne 75 problématique
+      if (i === 75 || (currentSection === 2 && i < 80)) {
+        console.log(`[DEBUG L${i}] Full line: "${line}"`);
+        console.log(`[DEBUG L${i}] Line length: ${line.length}`);
+        console.log(`[DEBUG L${i}] currentSection: ${currentSection}`);
+        console.log(`[DEBUG L${i}] Starts with bullet: ${line.startsWith('• ')}`);
+        console.log(`[DEBUG L${i}] Starts with dash: ${line.startsWith('- ')}`);
+        console.log(`[DEBUG L${i}] Is uppercase: ${line === line.toUpperCase()}`);
+      }
     }
 
     // Titre principal et identité sur fond gris
@@ -161,10 +171,15 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
       continue;
     }
 
-    // Ne pas traiter l'identité séparément si on vient de traiter le titre
-    if (lastWasTitle && (line.includes(data.person.firstName) || line.includes('ans'))) {
+    // Ne pas traiter l'identité séparément si on vient de traiter le titre (seulement dans les premières lignes)
+    if (lastWasTitle && i < 5 && (line.includes(data.person.firstName) || line.includes('ans'))) {
       lastWasTitle = false;
       continue;
+    }
+    
+    // Réinitialiser lastWasTitle pour tous les autres cas
+    if (lastWasTitle) {
+      lastWasTitle = false;
     }
 
     // Sections numérotées
