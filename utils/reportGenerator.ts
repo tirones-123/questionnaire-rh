@@ -500,13 +500,13 @@ FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 [… répéter pour les 12 critères dans l'ordre et la présentation du modèle …]
 
 2. Analyse du profil d'ensemble
-[Résumé transversal – 200 à 300 mots]
+[analyse globale du profil – 300 à 400 mots, 3-4 paragraphes]
 
 3. Points de vigilance
-• 4 à 8 points (bullet list) – paragraphe 80-120 mots chacun
+bullet list
 
 4. Recommandations de développement
-• 1 à 2 recommandations par point de vigilance, relier explicitement aux critères – 100-120 mots chacune
+• 1 à 2 recommandations par point de vigilance, relier explicitement aux critères
 
 5. Conclusion synthétique
 [80 à 120 mots : atouts, leviers, point clé de vigilance]
@@ -603,7 +603,7 @@ Maintenant, génère les parties 2 à 5 du rapport en te basant sur l'analyse ci
 STRUCTURE À PRODUIRE :
 
 2. Analyse du profil d'ensemble
-[Résumé transversal de 3-4 paragraphes, 200-300 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
+[Résumé transversal de 3-4 paragraphes, 300-400 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
 
 3. Points de vigilance
 [bullet liste]
