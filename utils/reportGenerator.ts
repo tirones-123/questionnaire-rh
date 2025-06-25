@@ -624,24 +624,23 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
 
 ---
 
-**Partie 2 - Analyse du profil d'ensemble :**
-*   **Objectif :** Créer une synthèse qui explique le profil de la personne.
+**Partie 2 - Analyse Approfondie du Profil :**
+*   **Objectif :** Aller au-delà de la description pour révéler la dynamique de fond du profil.
 *   **Contenu :**
-    *   Décrire comment les 4 familles de critères ("Vouloir", "Penser", "Agir", "Ensemble") interagissent.
-    *   Montrer si le profil est équilibré ou contrasté (ex: fort en relationnel mais faible en ambition).
-    *   Donner des exemples concrets des atouts et des risques au quotidien en entreprise.
-    *   Utiliser les "Points d'attention" du document "12 critères" pour guider l'analyse.
-    *   Terminer par un paragraphe de conclusion sur le potentiel global.
-*   **Format :** 3-4 paragraphes, 200-300 mots au total.
+    *   **Analyse des Équilibres :** Mettre en lumière les équilibres ou déséquilibres MAJEURS entre les 4 familles de critères. Ne pas juste les lister, mais expliquer ce que cela signifie pour la personne.
+    *   **Identifier la "Mécanique" du Profil :** Décrire comment la personne fonctionne.
+    *   **Conséquences et Potentiel :** Expliquer les conséquences concrètes de cette dynamique dans une entreprise et le levier principal pour libérer ce potentiel.
+*   **Format :** 3-4 paragraphes fluides, 200-300 mots au total, qui racontent une histoire cohérente sur le profil.
 
 ---
 
 **Partie 3 - Points de vigilance :**
-*   **Objectif :** Lister les risques principaux de manière claire.
+*   **Objectif :** Lister les risques et points faibles de manière concise et percutante.
 *   **Format :**
     *   Utiliser des puces (•).
-    *   Écrire des phrases courtes et directes.
-    *   Exemple : "• Difficulté à maintenir son effort sur la durée : risque de ne pas finir les projets exigeants."
+    *   Formuler chaque point comme un titre descriptif.
+    *   La plupart des points doivent se terminer par le critère concerné entre parenthèses `(Critère)`.
+    *   SI il y a un déséquilibre entre deux ou trois critères qui comporte un risque, il faut le signaler (ex: "Fort en décision et faible en pertinence").
 
 ---
 
