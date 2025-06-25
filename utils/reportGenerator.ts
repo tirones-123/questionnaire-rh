@@ -455,24 +455,24 @@ Utilisez uniquement le prénom de l'évaluateur, jamais le nom complet.`
 
   const systemPrompt = `🎯 PROMPT – GÉNÉRATION DU "RAPPORT D'AUTODIAGNOSTIC" (FORMAT IDENTIQUE AU MODÈLE OLIVIER H.)
 
-✅ Contexte & rôle
+Contexte & rôle
 Tu es consultant·e RH senior, expert·e de l'analyse du potentiel.
 Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapport structuré, nuancé et exploitable pour la personne évaluée et son/sa manager, en respectant scrupuleusement la mise en forme du modèle joint.
 
-📎 Sources disponibles
+Sources disponibles
 • Tableau de scores globaux (1 – 5) pour chacun des 12 critères.
 • Tableau de réponses détaillées : critère, item, score (1 – 4), valence (normale ou inversée).
-• Référentiel officiel "12 critères 2025" : définitions, points d'attention, leviers de développement.
+• Référentiel officiel à reprendre dans l'analyse : "12 critères 2025" : définitions, points d'attention, leviers de développement.
 
-📏 Barème d'interprétation
+Barème d'interprétation
 ≥ 4,2 : Point fort 3,3 – 4,1 : Dimension solide 2,3 – 3,2 : Axe de progression < 2,3 : Point de vigilance
 
-⚠️ Traitement impératif des items inversés
-• Un score élevé doit toujours être interprété positivement, quelle que soit la valence.
+Traitement impératif des items inversés
+• Un score élevé doit toujours être interprété positivement, quelle que soit la valeur.
 • Ne jamais révéler qu'un item est "inversé" ou "normal".
 • L'analyse reflète le sens réel de la réponse, jamais la forme de l'item.
 
-🧠 Structure du rapport à produire (copie conforme au modèle)
+Structure du rapport à produire (copie conforme au modèle)
 Respecter la casse, la ponctuation, les retours à la ligne et l'ordre EXACTEMENT comme ci-dessous :
 
 ${promptType.toUpperCase()}
@@ -524,7 +524,6 @@ Règles de mise en forme
 
 Consignes de style
 • Ton professionnel, clair, bienveillant.
-• Pas de jargon psychométrique ni de formules scolaires.
 
 Tout écart sera considéré comme une non-conformité.`;
 
@@ -579,30 +578,26 @@ responsabilité. Le sens qu’il attribue à sa trajectoire semble en cours de c
     const part1Exigences = `CONSIGNES D'ÉQUILIBRE - SIMPLE ET BIENVEILLANT :
 
 1. PHRASES ÉQUILIBRÉES :
-   - 16-22 mots par phrase en moyenne
    - Éviter les phrases de plus de 3 lignes
-   - Alterner phrases courtes et moyennes pour la fluidité
 
 2. VOCABULAIRE ACCESSIBLE :
    - Mots professionnels mais courants
+   - Vocabulaire simple et courant
    - Éviter le jargon technique tout en restant précis
 
 3. INTERDICTIONS ABSOLUES :
-   - ⚠️ JAMAIS de référence aux réponses du questionnaire
-   - ⚠️ JAMAIS de mention de "scores", "items", "questions"
-   - ⚠️ JAMAIS de phrase comme "ses réponses montrent", "d'après ses réponses"
-   - ⚠️ JAMAIS de vocabulaire technique ou psychométrique
+   - JAMAIS de référence aux réponses du questionnaire
+   - JAMAIS de mention de "scores", "items", "questions"
+   - JAMAIS de phrase comme "ses réponses montrent", "d'après ses réponses"
+   - JAMAIS de vocabulaire technique ou psychométrique
 
-4. TON BIENVEILLANT OBLIGATOIRE :
-   - Éviter les formulations trop directes ou critiques
+4. TON BIENVEILLANT OBLIGATOIRE 
 
 5. ÉVITER LES RÉPÉTITIONS :
    - Chaque phrase apporte une information nouvelle et différente
 
 6. STRUCTURE FLUIDE :
-   - 6-8 phrases maximum par paragraphe
-   - Connecteurs naturels entre les phrases
-   - Éviter les phrases saccadées qui cassent le rythme`;
+   - 6-8 phrases par paragraphe`;
 
     const completion1 = await openai.chat.completions.create({
       model: "o3-mini",
