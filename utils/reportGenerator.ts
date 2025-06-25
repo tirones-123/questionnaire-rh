@@ -465,7 +465,7 @@ Ta mission : transformer les résultats d'un questionnaire d'évaluation en rapp
 • Référentiel officiel "12 critères 2025" : définitions, points d'attention, leviers de développement.
 
 📏 Barème d'interprétation
-≥ 4,2 : Point fort  3,3 – 4,1 : Dimension solide  2,3 – 3,2 : Axe de progression  < 2,3 : Point de vigilance
+≥ 4,2 : Point fort 3,3 – 4,1 : Dimension solide 2,3 – 3,2 : Axe de progression < 2,3 : Point de vigilance
 
 ⚠️ Traitement impératif des items inversés
 • Un score élevé doit toujours être interprété positivement, quelle que soit la valence.
@@ -523,12 +523,8 @@ Règles de mise en forme
 • Longueur totale visée : 1 600 – 2 300 mots.
 
 Consignes de style
-• Ton professionnel, clair, bienveillant, orienté solutions.
+• Ton professionnel, clair, bienveillant.
 • Pas de jargon psychométrique ni de formules scolaires.
-• Style premium de conseil stratégique : verbes d'action, transitions fluides.
-• Bannir les répétitions ("pourrait" max 4 fois, etc.).
-• Illustrations contextualisées, jamais scolaires.
-• NE PAS inclure de recommandations dans la section 1 ; exclusivement en section 4.
 
 Tout écart sera considéré comme une non-conformité.`;
 
@@ -566,6 +562,7 @@ RAPPELS CRITIQUES :
 - Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse.
 - INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
 - AUCUNE suggestion d'amélioration, même subtile
+- Utilse des termes simples et courants, sans jamais utiliser de jargon technique ou psychométrique
 
 ✅ EXEMPLE CORRECT (descriptif pur) :
 "Malgré son jeune âge, Maxime ne semble pas encore porté par une ambition professionnelle
