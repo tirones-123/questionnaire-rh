@@ -566,14 +566,6 @@ RAPPELS CRITIQUES :
 - Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse.
 - ⚠️ INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
 - ⚠️⚠️⚠️ ATTENTION CRITIQUE - ZÉRO RECOMMANDATION ⚠️⚠️⚠️
-INTERDICTIONS FORMELLES - NE JAMAIS ÉCRIRE :
-- "Pour renforcer ce critère..."
-- "Un développement de..."
-- "pourrait être bénéfique"
-- "gagnerait à..."
-- "serait judicieux de..."
-- "il conviendrait de..."
-- AUCUNE phrase commençant par "Pour", "Afin de", "Dans l'optique de"
 - AUCUNE suggestion d'amélioration, même subtile
 
 ✅ EXEMPLE CORRECT (descriptif pur) :
