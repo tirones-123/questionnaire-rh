@@ -564,15 +564,18 @@ RAPPELS CRITIQUES :
 - Commencer par le titre exact : "1. Analyse critère par critère"
 - Suivre l'ordre exact des 4 familles et 12 critères
 - Pour chaque critère : nom en MAJUSCULES, définition en dessous, ligne "Score : X,X – [Interprétation]", puis analyse.
-- ⚠️ INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
-- ⚠️⚠️⚠️ ATTENTION CRITIQUE - ZÉRO RECOMMANDATION ⚠️⚠️⚠️
+- INTERDICTION ABSOLUE : AUCUNE recommandation, conseil, suggestion d'action ou piste de développement dans cette partie
 - AUCUNE suggestion d'amélioration, même subtile
 
 ✅ EXEMPLE CORRECT (descriptif pur) :
-"Marie manifeste une aptitude modérée à prendre des initiatives. Elle agit de manière autonome dans certaines circonstances, mais son dynamisme dépend du contexte. En présence de situations stimulantes, elle se mobilise. Ce profil réactif témoigne d'une capacité à intervenir quand les circonstances l'y incitent."
-
-+❌ EXEMPLE INTERDIT (contient une recommandation) :
-"Pour renforcer ce critère, un développement de sa propension à impulser des projets serait bénéfique."
+"Malgré son jeune âge, Maxime ne semble pas encore porté par une ambition professionnelle
+structurée. Son rapport à la réussite paraît réservé, voire distant, comme si la projection dans
+l’avenir lui était encore étrangère ou peu stimulante. Il semble préférer un cadre stable et
+protecteur, sans chercher activement à en sortir pour conquérir de nouvelles responsabilités.
+Cette posture peut refléter soit une priorité accordée à d'autres sphères de vie, soit une
+difficulté à relier sa trajectoire personnelle à un projet professionnel motivant. On observe peu
+de signes d’engagement volontaire dans une dynamique d’évolution ou de prise de
+responsabilité. Le sens qu’il attribue à sa trajectoire semble en cours de construction."
 
 - Utiliser le prénom ${person.firstName} régulièrement`;
 
