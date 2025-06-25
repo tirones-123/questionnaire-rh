@@ -558,7 +558,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
 **Rappels :**
 *   Commence par le titre : "1. Analyse critère par critère"
 *   Suis l'ordre des 12 critères.
-*   Pour chaque critère : nom, définition, score, puis analyse de 100-120 mots.
+*   Pour chaque critère : nom, définition, score, puis analyse de maximum 120 mots.
 *   **INTERDIT :** Aucune recommandation.
 *   **INTERDIT :** Aucun jargon.
 *   Utilise le prénom ${person.firstName}.
