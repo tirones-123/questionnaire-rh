@@ -566,23 +566,7 @@ Génère le rapport complet conformément aux instructions fournies, sans répé
 
     const part1Exigences = `INSTRUCTIONS STRICTES : SIMPLICITÉ AVANT TOUT.
 
-1.  **Structure de Phrase OBLIGATOIRE : Sujet + Verbe + Complément.**
-    *   Maximum 15 mots par phrase.
-    *   Pas de subordonnées complexes, pas d'inversions.
-    *   Une seule idée par phrase.
-
 2.  **Vocabulaire OBLIGATOIREMENT Simple.**
-    *   **MOTS INTERDITS :** "manifeste", "témoigne", "révèle", "s'avère", "propension", "aptitude", "semble", "paraît", "nonobstant", "néanmoins", "cependant".
-    *   **MOTS PRÉFÉRÉS :** "montre", "est", "fait", "a", "sait", "peut", "mais", "donc".
-    *   Écrire comme si vous parliez à quelqu'un directement.
-
-3.  **Exemples Concrets.**
-
-    *   **STYLE CORRECT (Simple et Direct) :**
-        "Julien est à l'écoute des autres. Sa communication est fluide. Il crée facilement du lien. Il sait co-opérer en équipe. Cependant, son ambition est peu marquée. Il ne prend pas beaucoup d'initiatives."
-
-    *   **STYLE INCORRECT (Trop Compliqué) :**
-        "Le profil de Julien révèle une appétence certaine pour le registre relationnel, où sa communication fluide et sa capacité à coopérer s'avèrent être des points d'ancrage solides. Néanmoins, on observe que ses motivations profondes, telle que l'ambition, paraissent peu structurées."
 
 4.  **Rappel : INTERDICTION ABSOLUE de faire des recommandations.**
     *   L'analyse est 100% descriptive. Ne jamais suggérer ce que la personne "devrait faire" ou "pourrait améliorer".
