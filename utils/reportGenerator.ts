@@ -603,7 +603,7 @@ Maintenant, génère les parties 2 à 5 du rapport en te basant sur l'analyse ci
 STRUCTURE À PRODUIRE :
 
 2. Analyse du profil d'ensemble
-[Résumé transversal de 4 paragraphes, 250-350 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
+[Résumé transversal de 4 paragraphes, 200-300 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
 
 3. Points de vigilance
 [bullet liste]
