@@ -631,6 +631,7 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   **Identifier la "Mécanique" du Profil :** Décrire comment la personne fonctionne.
     *   **Conséquences et Potentiel :** Expliquer les conséquences concrètes de cette dynamique dans une entreprise et le levier principal pour libérer ce potentiel.
 *   **Lisibilité :** Ajouter des sauts de ligne entre chaque paragraphe.
+*   **Garder un style simple.**
 
 ---
 
