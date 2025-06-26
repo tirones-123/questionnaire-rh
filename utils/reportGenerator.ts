@@ -640,7 +640,7 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   Utiliser des puces (•).
     *   Formuler chaque point comme un titre descriptif.
     *   La plupart des points doivent se terminer par le critère concerné entre parenthèses (Critère).
-    *   **Être exhaustif sur le nombre de points de vigilance (plus que 4 si possible).**
+    *   **Être exhaustif sur le nombre de points de vigilance (plus que 6 si possible).**
     *   SI il y a un déséquilibre entre deux ou trois critères qui comporte un risque, il faut le signaler (ex: "Fort en décision et faible en pertinence").
 
 ---
