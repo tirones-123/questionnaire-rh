@@ -652,7 +652,6 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   Chaque recommandation est un bloc.
     *   Titre en bullet point : compétence à développer (Critère). Exemple : "Renforcer la projection dans l'avenir professionnel (Ambition)".
     *   Texte en tiret : Deux phrases complètes et fluides. Chaque phrase commence par une action.
-    * 
 ---
 
 **Partie 5 - Conclusion synthétique :**
