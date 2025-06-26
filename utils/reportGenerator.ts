@@ -500,7 +500,7 @@ FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 [… répéter pour les 12 critères dans l'ordre et la présentation du modèle …]
 
 2. Analyse du profil d'ensemble
-[analyse globale du profil – 300 à 350 mots, 3-4 paragraphes]
+[analyse globale du profil – 300 à 350 mots, 4 paragraphes]
 
 3. Points de vigilance
 bullet list
@@ -603,7 +603,7 @@ Maintenant, génère les parties 2 à 5 du rapport en te basant sur l'analyse ci
 STRUCTURE À PRODUIRE :
 
 2. Analyse du profil d'ensemble
-[Résumé transversal de 3-4 paragraphes, 300-350 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
+[Résumé transversal de 4 paragraphes, 250-350 mots au total, qui synthétise et fait une analyse global les forces et axes de progression identifiés dans la partie 1]
 
 3. Points de vigilance
 [bullet liste]
@@ -631,7 +631,6 @@ IMPORTANT : Ne pas répéter la partie 1, commencer directement par "2. Analyse 
     *   **Identifier la "Mécanique" du Profil :** Décrire comment la personne fonctionne.
     *   **Conséquences et Potentiel :** Expliquer les conséquences concrètes de cette dynamique dans une entreprise et le levier principal pour libérer ce potentiel.
 *   **Lisibilité :** Ajouter des sauts de ligne entre chaque paragraphe.
-*   **Garder un style simple.**
 
 ---
 
