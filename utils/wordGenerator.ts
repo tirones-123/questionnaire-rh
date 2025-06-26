@@ -397,56 +397,29 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
     if (line.startsWith('• ')) {
       console.log(`Found bullet point: "${line}"`);
       
-      // Vérifier si c'est un titre (contient des parenthèses ou deux-points)
-      const isTitle = line.includes('(') && line.includes(')') || line.includes(' : ');
+      // Les titres de puces (contenant des parenthèses) sont en gras.
+      const isTitle = line.includes('(') && line.includes(')');
       
-      // Pour le chapitre 4 (recommandations), on ne met pas en gras
-      const isBold = isTitle && currentSection !== 4;
-      
-      if (isTitle) {
-        // C'est un titre de point de vigilance ou recommandation
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                font: 'Avenir Book',
-                size: 22, // 11pt
-                bold: isBold, // En gras seulement pour les titres hors chapitre 4
-              }),
-            ],
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 120, after: 40 }, // Plus d'espace avant, moins après
-            indent: {
-              left: 240, // Indentation pour les bullets
-            },
-          })
-        );
-        inBulletSection = true; // On est dans une section avec bullets
-      } else {
-        // C'est un point normal
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                font: 'Avenir Book',
-                size: 22, // 11pt
-              }),
-            ],
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 60, after: 60 },
-            indent: {
-              left: 240, // Indentation pour les bullets
-            },
-          })
-        );
-      }
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: line,
+              font: 'Avenir Book',
+              size: 22, // 11pt
+              bold: isTitle,
+            }),
+          ],
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { before: 120, after: 40 },
+          // Pas d'indentation pour la puce principale, elle s'aligne sur la marge.
+        })
+      );
       lastWasCriterion = false;
       continue;
     }
 
-    // Ancien traitement des tirets (pour compatibilité)
+    // Tirets pour les détails de recommandation
     if (line.startsWith('- ')) {
       children.push(
         new Paragraph({
@@ -459,6 +432,8 @@ export async function generateWordDocument(data: WordReportData): Promise<Buffer
           ],
           alignment: AlignmentType.JUSTIFIED,
           spacing: { before: 60, after: 60 },
+          // Indentation pour les sous-puces, uniquement dans la section des recommandations.
+          ...(currentSection === 4 ? { indent: { left: 360 } } : {}),
         })
       );
       lastWasCriterion = false;
