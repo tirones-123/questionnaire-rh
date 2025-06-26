@@ -500,7 +500,7 @@ FAMILLE « PENSER » (INTELLIGENCE DES SITUATIONS)
 [… répéter pour les 12 critères dans l'ordre et la présentation du modèle …]
 
 2. Analyse du profil d'ensemble
-[analyse globale du profil – 300 à 350 mots, 4 paragraphes]
+[analyse globale du profil – 200 à 300 mots, 4 paragraphes]
 
 3. Points de vigilance
 bullet list
