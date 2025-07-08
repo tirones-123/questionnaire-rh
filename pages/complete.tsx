@@ -243,13 +243,12 @@ export default function CompletePage() {
           />
           <div style={{ 
             display: 'flex', 
-            justifyContent: 'space-between', 
+            justifyContent: 'flex-end', 
             alignItems: 'center',
             marginTop: '0.5rem',
             fontSize: '0.875rem',
             color: '#6b7280'
           }}>
-            <span>Cette question est optionnelle et n'affecte pas votre score</span>
             <span style={{ 
               color: openQuestion.length > 350 ? '#ef4444' : '#6b7280',
               fontWeight: openQuestion.length > 350 ? '600' : '400'
