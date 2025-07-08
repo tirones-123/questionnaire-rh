@@ -186,19 +186,7 @@ export default function CompletePage() {
       <div className="container" style={{ marginTop: '-2rem', position: 'relative', zIndex: 2, paddingBottom: '4rem' }}>
         <div className="glass-card complete-card">
         
-        <div className="complete-info">
-          <p className="complete-congratulations">
-            <strong>
-              {isEvaluationMode 
-                ? `Félicitations ! Évaluation de ${evaluationInfo?.evaluatedPerson?.firstName} ${evaluationInfo?.evaluatedPerson?.lastName} terminée.`
-                : `Félicitations ${userInfo?.firstName} ${userInfo?.lastName} !`
-              }
-            </strong>
-          </p>
-          <p className="complete-description">
-            Vous avez répondu aux 72 questions du questionnaire.
-          </p>
-        </div>
+
 
         {/* Question ouverte */}
         <div style={{ 
@@ -271,11 +259,7 @@ export default function CompletePage() {
           </div>
         </div>
 
-        <div className="complete-info">
-          <p className="complete-instruction">
-            Cliquez sur le bouton ci-dessous pour envoyer vos réponses.
-          </p>
-        </div>
+
 
         {error && (
           <div className="error-message">
