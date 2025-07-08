@@ -84,6 +84,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const responses = await extractResponses(worksheet);
     console.log('Responses extracted:', Object.keys(responses).length, 'responses');
 
+    // Extraire la question ouverte
+    const openQuestion = await extractOpenQuestion(worksheet);
+    console.log('Open question extracted:', openQuestion ? 'yes' : 'no');
+
     // Validation des données
     if (!isEvaluation && !userInfo) {
       return res.status(400).json({ error: 'Impossible d\'extraire les informations utilisateur' });
@@ -128,12 +132,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         type: 'evaluation',
         evaluationInfo,
         scores,
-        scoresTable
+        scoresTable,
+        openQuestion
       } : {
         type: 'autodiagnostic',
         userInfo,
         scores,
-        scoresTable
+        scoresTable,
+        openQuestion
       };
 
       // Déclencher l'API de génération de rapport
@@ -316,5 +322,33 @@ async function extractResponses(worksheet: ExcelJS.Worksheet): Promise<{ [key: s
   } catch (error) {
     console.error('Error extracting responses:', error);
     return {};
+  }
+}
+
+async function extractOpenQuestion(worksheet: ExcelJS.Worksheet): Promise<string | null> {
+  try {
+    let openQuestionResponse = null;
+
+    // Parcourir les lignes pour trouver la question complémentaire
+    worksheet.eachRow((row, rowNumber) => {
+      const cellA = row.getCell(1).text;
+      const cellB = row.getCell(2).text;
+
+      // Chercher la réponse à la question complémentaire
+      if (cellA === 'Réponse' && cellB && cellB.trim()) {
+        // Vérifier si la ligne précédente contient la question complémentaire
+        const prevRow = worksheet.getRow(rowNumber - 1);
+        const prevCellB = prevRow.getCell(2).text;
+        
+        if (prevCellB && prevCellB.includes('interrogations souhaitez-vous clarifier')) {
+          openQuestionResponse = cellB.trim();
+        }
+      }
+    });
+
+    return openQuestionResponse;
+  } catch (error) {
+    console.error('Error extracting open question:', error);
+    return null;
   }
 } 

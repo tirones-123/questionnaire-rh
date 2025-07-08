@@ -18,6 +18,7 @@ interface UserInfo {
 interface RequestBody {
   userInfo: UserInfo;
   responses: { [key: string]: string };
+  openQuestion?: string;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { userInfo, responses }: RequestBody = req.body;
+    const { userInfo, responses, openQuestion }: RequestBody = req.body;
 
     if (!userInfo || !responses) {
       return res.status(400).json({ error: 'Données manquantes' });
@@ -67,6 +68,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     worksheet.addRow(['Email', userInfo.email, '']);
     worksheet.addRow(['Date de completion', new Date().toLocaleDateString('fr-FR'), '']);
     worksheet.addRow(['', '', '']); // Ligne vide
+    
+    // Question ouverte
+    if (openQuestion && openQuestion.trim()) {
+      worksheet.addRow(['QUESTION COMPLÉMENTAIRE', '', '']);
+      worksheet.addRow(['Question', 'Quelles interrogations souhaitez-vous clarifier grâce à ce questionnaire ?', '']);
+      worksheet.addRow(['Réponse', openQuestion.trim(), '']);
+      worksheet.addRow(['', '', '']); // Ligne vide
+    }
 
     // Ajouter une nouvelle ligne d'en-têtes pour les réponses
     const headerRow = worksheet.addRow(['Numéro', 'Question', 'Réponse']);
@@ -180,6 +189,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return `<li>${section.title}: ${sectionResponses.length}/9 questions</li>`;
               }).join('')}
             </ul>
+            
+            ${openQuestion && openQuestion.trim() ? `
+            <h2>Question complémentaire</h2>
+            <p><strong>Quelles interrogations souhaitez-vous clarifier grâce à ce questionnaire ?</strong></p>
+            <div style="background-color: #f9fafb; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1rem 0; font-style: italic;">
+              ${openQuestion.trim().replace(/\n/g, '<br>')}
+            </div>
+            ` : ''}
             
             <div style="background-color: #fff4e6; border: 1px solid #ffd700; padding: 15px; border-radius: 5px; margin-top: 20px;">
               <p><strong>📊 Document Excel joint</strong></p>

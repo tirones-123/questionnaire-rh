@@ -14,6 +14,7 @@ export default function CompletePage() {
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState<string>('');
   const [isEvaluationMode, setIsEvaluationMode] = useState(false);
+  const [openQuestion, setOpenQuestion] = useState<string>('');
 
   useEffect(() => {
     // Détecter le mode d'évaluation
@@ -70,6 +71,13 @@ export default function CompletePage() {
         return;
       }
     }
+
+    // Charger la réponse à la question ouverte si elle existe
+    const storageKey = isEvaluation ? 'evaluation-open-question' : 'questionnaire-open-question';
+    const savedOpenQuestion = localStorage.getItem(storageKey);
+    if (savedOpenQuestion) {
+      setOpenQuestion(savedOpenQuestion);
+    }
   }, [router]);
 
   const handleSubmit = async () => {
@@ -84,8 +92,8 @@ export default function CompletePage() {
       
       const apiEndpoint = isEvaluationMode ? '/api/submit-evaluation' : '/api/submit-questionnaire';
       const requestBody = isEvaluationMode 
-        ? { evaluationInfo, responses }
-        : { userInfo, responses };
+        ? { evaluationInfo, responses, openQuestion }
+        : { userInfo, responses, openQuestion };
 
       const response = await fetch(apiEndpoint, {
         method: 'POST',
@@ -109,9 +117,11 @@ export default function CompletePage() {
       if (isEvaluationMode) {
         localStorage.removeItem('evaluation-data');
         localStorage.removeItem('evaluation-info');
+        localStorage.removeItem('evaluation-open-question');
       } else {
         localStorage.removeItem('questionnaire-data');
         localStorage.removeItem('user-info');
+        localStorage.removeItem('questionnaire-open-question');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de l\'envoi des réponses');
@@ -188,6 +198,80 @@ export default function CompletePage() {
           <p className="complete-description">
             Vous avez répondu aux 72 questions du questionnaire.
           </p>
+        </div>
+
+        {/* Question ouverte */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)', 
+          border: '1px solid rgba(102, 126, 234, 0.2)', 
+          padding: '1.5rem', 
+          borderRadius: '15px',
+          marginBottom: '2rem'
+        }}>
+          <h3 style={{ 
+            fontSize: '1.1rem', 
+            marginBottom: '1rem', 
+            color: '#4b5563',
+            fontWeight: '600'
+          }}>
+            Question complémentaire (optionnelle)
+          </h3>
+          <label htmlFor="open-question" style={{ 
+            display: 'block',
+            marginBottom: '0.5rem',
+            fontSize: '1rem',
+            fontWeight: '500',
+            color: '#374151'
+          }}>
+            Quelles interrogations souhaitez-vous clarifier grâce à ce questionnaire ?
+          </label>
+          <textarea
+            id="open-question"
+            value={openQuestion}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (newValue.length <= 400) {
+                setOpenQuestion(newValue);
+                // Sauvegarder automatiquement
+                const storageKey = isEvaluationMode ? 'evaluation-open-question' : 'questionnaire-open-question';
+                localStorage.setItem(storageKey, newValue);
+              }
+            }}
+            placeholder="Décrivez vos interrogations ou les aspects que vous souhaitez approfondir..."
+            style={{
+              width: '100%',
+              minHeight: '100px',
+              padding: '0.75rem',
+              border: '2px solid #d1d5db',
+              borderRadius: '0.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#ffffff',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              lineHeight: '1.5'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+          />
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginTop: '0.5rem',
+            fontSize: '0.875rem',
+            color: '#6b7280'
+          }}>
+            <span>Cette question est optionnelle et n'affecte pas votre score</span>
+            <span style={{ 
+              color: openQuestion.length > 350 ? '#ef4444' : '#6b7280',
+              fontWeight: openQuestion.length > 350 ? '600' : '400'
+            }}>
+              {openQuestion.length}/400 caractères
+            </span>
+          </div>
+        </div>
+
+        <div className="complete-info">
           <p className="complete-instruction">
             Cliquez sur le bouton ci-dessous pour envoyer vos réponses.
           </p>
