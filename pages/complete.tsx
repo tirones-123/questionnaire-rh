@@ -278,11 +278,27 @@ export default function CompletePage() {
             fontSize: '1.125rem', 
             padding: '1rem 2rem',
             width: '100%',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            animation: isSubmitting ? 'none' : 'gentle-pulse 2s ease-in-out infinite',
+            transformOrigin: 'center'
           }}
         >
           {isSubmitting ? 'Envoi en cours...' : 'Envoyer mes réponses'}
         </button>
+
+        <style jsx>{`
+          @keyframes gentle-pulse {
+            0% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.02);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+        `}</style>
 
         <button 
           onClick={() => router.push(isEvaluationMode ? '/questionnaire/8?mode=evaluation' : '/questionnaire/8')}
